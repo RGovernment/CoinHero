@@ -1,0 +1,131 @@
+[
+  {
+    "Name": "장검",
+    "Id": 1000,
+    "Type": "Weapon",
+    "Value": 4,
+    "Coin": 2,
+    "CoinPoint": 1,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "Value",
+        "value": 3
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      }
+    ],
+    "Effect": [],
+    "Description": "평범한 장검"
+  },
+  {
+    "Name": "방패",
+    "Id": 2000,
+    "Type": "Armor",
+    "Value": 4,
+    "Coin": 1,
+    "CoinPoint": 2,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Value",
+        "value": 1
+      },
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "Coin",
+        "value": 1
+      }
+    ],
+    "Effect": [],
+    "Description": "평범한 방패"
+  },
+  {
+    "Name": "철퇴",
+    "Id": 1001,
+    "Type": "Weapon",
+    "Value": 2,
+    "Coin": 1,
+    "CoinPoint": 6,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 4
+      }
+    ],
+    "Effect": [],
+    "Description": "강력한 철퇴. 다루기 어렵다."
+  },
+  {
+    "Name": "빵",
+    "Id": 3000,
+    "Type": "Item",
+    "Value": 2,
+    "Coin": 2,
+    "CoinPoint": 2,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      },
+      {
+        "statType": "Value",
+        "value": 4
+      }
+    ],
+    "Effect": [
+      {
+        "EffectId": 101,
+        "Value": -1,
+        "Duration": 0
+      }
+    ],
+    "Description": "사용자 체력 회복 +[Value] ~ [ValuePlusCoinValue]"
+  },
+  {
+    "Name": "은시계",
+    "Id": 4000,
+    "Type": "Special",
+    "Value": 0,
+    "Coin": 0,
+    "CoinPoint": 0,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [],
+    "Effect": [
+      {
+        "EffectId": 102,
+        "Value": 1,
+        "Duration": 0
+      }
+    ],
+    "Description": "이번 턴 동안 [ExtraSlot] +1"
+  }
+]

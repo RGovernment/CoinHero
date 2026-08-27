@@ -1,5 +1,17 @@
 public static class Enums
 {
+    public enum BattleStateType { 
+        RoundStart,
+        TurnStart, 
+        DrawPhase, 
+        PlayerChoosePhase, 
+        PlayerComplete,
+        EnemyChoosePhase, 
+        BattlePhase, 
+        BattleEnd, 
+        TurnEnd , 
+        RoundEnd }
+
     /// <summary>
     /// 카드 타입, 무기, 방어구, 아이템, 특수
     /// 아이템과 특수 타입은 Value + coin의 값이 Effect의 효과에 사용되므로

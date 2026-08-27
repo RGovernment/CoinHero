@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class RoundStartState : IState
+public class BattlePhaseState : IState
 {
 
     private BattleManager manager;
 
-    public RoundStartState(BattleManager manager)
+    public BattlePhaseState(BattleManager manager)
     {
         this.manager = manager;
     }

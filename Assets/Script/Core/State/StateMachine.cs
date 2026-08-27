@@ -9,17 +9,17 @@ public class StateMachine : MonoBehaviour
         if (nowState == null)
         {
             nowState = nextState;
-            nowState?.Start();
+            nowState?.OnStart();
             return;
         }
 
-        nowState.End();
+        nowState.OnEnd();
         nowState = nextState;
-        nextState.Start();
+        nextState.OnStart();
     }
 
-    public void Continue()
+    public void Stay()
     {
-        nowState?.Continue();
+        nowState?.OnStay();
     }
 }

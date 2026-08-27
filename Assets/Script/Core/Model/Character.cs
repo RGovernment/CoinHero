@@ -21,7 +21,7 @@ public abstract class Character : MonoBehaviour, IDamageable, IBuffable
     /// <para>Character : 피해를 입힌 캐릭터 객체</para>
     /// </summary>
     public event Action<int, Character> OnAPHit;
-
+    
     /// <summary>
     /// HP가 피해를 입을때 작동하는 함수
     /// <para>int : 입은 피해 </para>

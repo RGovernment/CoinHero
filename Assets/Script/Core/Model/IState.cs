@@ -2,7 +2,7 @@ using UnityEngine;
 
 public interface IState
 {
-    public void Start();
-    public void Continue();
-    public void End();
+    public void OnStart();
+    public void OnStay();
+    public void OnEnd();
 }

@@ -1,14 +1,9 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Unity.VisualScripting;
 using UnityEngine;
 using static Enums;
-using static Constants;
-using static EffectTextParser;
 
 [Serializable]
 public class Card
@@ -146,41 +141,15 @@ public class Card
 
     public string GetDescription(Dictionary<int, StatusEffectData> list)
     {
-        /*StringBuilder sb = new(Description);*/
         string result = Description;
-        
-        /*foreach (var item in Effect)
-        {
-            if(list.TryGetValue(item.EffectId, out StatusEffectData data))
-            {
 
-                string enumText = Enum.GetName(typeof(EffectType), data.Type);
-
-                // 디버프/버프 효과 텍스트 변환
-                sb.Replace($"{{{enumText}}}", $"<link={data.Id}>[{data.Name}]</link>")
-                    .Replace($"[{enumText}_{VALUE}]", $"{data.Value}")
-                    // 수치 텍스트 변환
-                    // 코인값 제공
-                    .Replace($"[{COIN}]", $"{Coin}")
-                    // 코인 위력 값 제공
-                    .Replace($"[{COIN_POINT}]", $"{CoinPoint}")
-                    // (모두 앞면일 경우) 코인 위력 제공
-                    .Replace($"[{COIN}{MULTIPLY}{COIN_POINT}]", $"{Coin * CoinPoint}")
-                    // (모두 앞면일 경우) 전체 위력 제공
-                    .Replace($"[{VALUE}{PLUS}{COIN}{MULTIPLY}{COIN_POINT}]", $"{Value + Coin * CoinPoint}")
-                    // 기본 위력 제공
-                    .Replace($"[{VALUE}]", $"{Value}");
-
-            }
-
-        }*/
         foreach (var item in Effect)
         {
             if (list.TryGetValue(item.EffectId, out StatusEffectData data))
             {
                 // {EffectType} 태그 변환 (예: {Heal} -> <link=101>[체력 회복]</link>)
                 string enumText = Enum.GetName(typeof(EffectType), data.Type);
-                Debug.Log(enumText);
+
                 if (!string.IsNullOrEmpty(enumText))
                 {
                     string effectLink = $"<link={data.Id}>[{data.Name}]</link>";
@@ -190,7 +159,7 @@ public class Card
                 }
             }
         }
-        Debug.Log(result);
+
         return result.ParseDescription(this);
     }
 }

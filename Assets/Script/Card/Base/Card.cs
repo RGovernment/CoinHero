@@ -13,21 +13,6 @@ using static EffectTextParser;
 [Serializable]
 public class Card
 {
-/*    public Card(CardWriteOnly card)
-    {
-        Name = card.Name;
-        Id = card.Id;
-        Type = card.Type;
-        Value = card.Value;
-        Coin = card.Coin;
-        CoinPoint = card.CoinPoint;
-        CurrentUpgradeLv = card.CurrentUpgradeLv;
-        MaxUpgradeLv = card.MaxUpgradeLv;
-        UpgradeData = card.UpgradeData;
-        Effect = card.Effect;
-        Description = card.Description;
-    }*/
-
     /// <summary>
     /// 카드 이름
     /// </summary>

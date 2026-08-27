@@ -10,9 +10,9 @@ using System.Linq;
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }
-    public Dictionary<int, Card> CardData;
+    public Dictionary<int, Card> CardData { get; private set; }
 
-    public Dictionary<int, StatusEffectData> EffectData;
+    public Dictionary<int, StatusEffectData> EffectData { get; private set; }
     private void Awake()
     {
         if(Instance == null)

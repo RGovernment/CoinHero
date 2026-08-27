@@ -107,7 +107,7 @@
         "Duration": 0
       }
     ],
-    "Description": "사용자 체력 회복 +[Value] ~ [ValuePlusCoinValue]"
+    "Description": "사용자 {InstantHeal} +[Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
   },
   {
     "Name": "은시계",
@@ -126,6 +126,6 @@
         "Duration": 0
       }
     ],
-    "Description": "이번 턴 동안 [ExtraSlot] +1"
+    "Description": "이번 턴 동안 {ExtraSlot} +1"
   }
 ]

@@ -936,13 +936,14 @@ GameObject:
   - component: {fileID: 1824085014560701406}
   - component: {fileID: 2054587120764609412}
   - component: {fileID: 4374369634310941383}
+  - component: {fileID: 9152583294695575198}
   m_Layer: 5
   m_Name: CardBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1145788312270933771
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1019,7 +1020,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6300a5c6685d19a44a9e61eb58f02ea8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  user: {fileID: 0}
   itemImage: {fileID: 900327267441291498}
   starSlot: {fileID: 3960128769795785589}
   starImage: {fileID: 1631324958491282197, guid: 1d35d88c3b760264f91ed7d561a4a6b3, type: 3}
@@ -1035,6 +1035,7 @@ MonoBehaviour:
   coinCountText: {fileID: 330504244257186426}
   description: {fileID: 5831032574610679373}
   canvasGroup: {fileID: 4374369634310941383}
+  rect: {fileID: 1145788312270933771}
 --- !u!225 &4374369634310941383
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1047,6 +1048,35 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &9152583294695575198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7203546931576098317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2054587120764609412}
+          m_TargetAssemblyTypeName: CardData, Assembly-CSharp
+          m_MethodName: OpenInfo
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &7286808671600749676
 GameObject:
   m_ObjectHideFlags: 0

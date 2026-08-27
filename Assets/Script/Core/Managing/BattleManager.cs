@@ -1,13 +1,19 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static Enums;
+using SF = UnityEngine.SerializeField;
 
 public class BattleManager : MonoBehaviour
 {
+    [SF] private HandManager handManager;
     private StateMachine state;
     private Dictionary<BattleStateType, IState> stateGroup;
 
-    void Start()
+    private Player player;
+
+    private void Start()
     {
         state = new();
 
@@ -24,13 +30,32 @@ public class BattleManager : MonoBehaviour
             [BattleStateType.TurnEnd] = new TurnEndState(this),
             [BattleStateType.RoundEnd] = new RoundEndState(this)
         };
-
+        
         state.ChangeState(stateGroup[BattleStateType.RoundStart]);
+        List<Card> cd = new();
+        foreach (var item in ResourceManager.Instance.CardData)
+        {
+            cd.Add(item.Value);
+        }
+        player = new (10, 50, cd);
+
+        DrawTest(player);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         state.Stay();
+    }
+
+    public void DrawTest(Character player)
+    {
+        handManager.CreateAllCard(player.CardList, player);
+        handManager.ShuffleAndSettingHand();
+        handManager.UpdateHandPos();
+    }
+
+    public HandManager GetHandManager()
+    {
+        return handManager;
     }
 }

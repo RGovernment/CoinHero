@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Character : MonoBehaviour, IDamageable, IBuffable
+public abstract class Character : IDamageable, IBuffable
 {
     public int Id { get; private set; }
     public int HP { get; private set; }

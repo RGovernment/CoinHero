@@ -53,7 +53,7 @@ public class CardWrite : MonoBehaviour
     };
 
     public void JsonWrite()
-    {
+    {/*
         List<Card> dataWrite = new();
         foreach (var card in data) {
             Card cardshort = new(card);
@@ -62,7 +62,7 @@ public class CardWrite : MonoBehaviour
         }
 
 
-        Debug.Log(JsonConvert.SerializeObject(dataWrite, Formatting.Indented));
+        Debug.Log(JsonConvert.SerializeObject(dataWrite, Formatting.Indented));*/
 
         
 

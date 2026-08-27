@@ -13,7 +13,7 @@ using static EffectTextParser;
 [Serializable]
 public class Card
 {
-    public Card(CardWriteOnly card)
+/*    public Card(CardWriteOnly card)
     {
         Name = card.Name;
         Id = card.Id;
@@ -26,7 +26,7 @@ public class Card
         UpgradeData = card.UpgradeData;
         Effect = card.Effect;
         Description = card.Description;
-    }
+    }*/
 
     /// <summary>
     /// 카드 이름

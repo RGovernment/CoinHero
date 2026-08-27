@@ -2,7 +2,9 @@ using UnityEngine;
 
 public static class Constants
 {
-    public static string ASSET_DATA_PATH = "Assets/Resources/Data/";
+    public static string ASSET_DATA_PATH = "Data/";
+    public static string STATUS_EFFECT_DATA = "StatusEffectData";
+    public static string PLAYER_CARD_DATA = "PlayerCardData";
     public static string VALUE = "Value";
     public static string DURATION = "Duration";
     public static string COIN_POINT = "CoinPoint";

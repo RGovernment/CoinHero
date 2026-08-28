@@ -28,6 +28,9 @@ public class BattleManager : MonoBehaviour
     private Queue<Card> nowPlayerCards;
     private Queue<Card> nowEnemyCards;
 
+    private BattleCoinUI playerUI;
+    private BattleCoinUI enemyUI;
+
     private void Awake()
     {
         Instance = this;
@@ -95,6 +98,7 @@ public class BattleManager : MonoBehaviour
         EnemyCardOpen();
     }
 
+
     public void EnemyCardOpen()
     {
         List<Card> dummy = enemyHandManager.CardSelect(enemyCombat[0].Enemy.CardList);
@@ -106,7 +110,7 @@ public class BattleManager : MonoBehaviour
             EnemyZone.SetCardToEnemyZone(bd);
         }
 
-        
+
     }
 
     public void SelectCard(CardData data)
@@ -118,6 +122,59 @@ public class BattleManager : MonoBehaviour
     {
         nowPlayerCards = PlayerZone.GetCardList();
         nowEnemyCards = EnemyZone.GetCardList();
+        playerUI = Instantiate(coinUI, playerCombat.transform);
+
+        // 임시로 0으로 지정
+        enemyUI = Instantiate(coinUI, enemyCombat[0].transform);
+    }
+
+    public async UniTaskVoid BattleTypeCheck()
+    {
+        bool playerAble = nowPlayerCards.TryDequeue(out Card playerCard);
+        bool enemyAble = nowPlayerCards.TryDequeue(out Card enemyCard);
+
+        // 양쪽 다 사용이 불가능하다면 턴 종료
+        if (!playerAble && !enemyAble)
+        {
+            return;
+        }
+
+        if (!playerAble || !enemyAble)
+        {
+            Character attacker = playerAble ? playerCombat.Player : enemyCombat[0].Enemy;
+            Character defender = playerAble ? enemyCombat[0].Enemy : playerCombat.Player;
+            var card = playerAble ? playerCard : enemyCard;
+
+            await OneWayAction(attacker, card, defender);
+        }
+        else if (playerAble && enemyAble)
+        {
+            await ClashAction(playerCombat, playerCard, enemyCombat[0], enemyCard);
+        }
+
+        // 다음 스킬로 전환 시키기
+    }
+
+    /// <summary>
+    /// 아이템이나 일방 공격/방어를 했을 경우의 처리
+    /// </summary>
+    public async UniTask OneWayAction(Character attacker, Card attackerCard, Character defender)
+    {
+
+    }
+
+    public async UniTask ClashAction(PlayerCombat player, Card playerCard, EnemyCombat enemy, Card enemyCard)
+    {
+        if (playerCard.Type == CardType.Weapon && enemyCard.Type == CardType.Weapon)
+        {
+            // 합 진행 전 UI 및 코인 세팅
+            playerUI.CoinSet(playerCard);
+            enemyUI.CoinSet(enemyCard);
+            playerUI.CoinFlip();
+            enemyUI.CoinFlip();
+
+
+        }
     }
 
     public HandManager GetHandManager()

@@ -7,12 +7,18 @@ using SF = UnityEngine.SerializeField;
 
 public class BattleManager : MonoBehaviour
 {
+    public static BattleManager Instance { get; set; }
     [SF] private HandManager handManager;
-    
+    [SF] private PlayerCombat playerCombat;
+    //[SF] private EnemyCombat enemy;
     private StateMachine state;
     private Dictionary<BattleStateType, IState> stateGroup;
 
-    private Player player;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -38,9 +44,9 @@ public class BattleManager : MonoBehaviour
         {
             cd.Add(item.Value);
         }
-        player = new (10, 50, cd);
+        playerCombat.player = new (10, 50, cd);
 
-        DrawTest(player);
+        DrawTest(playerCombat.player);
     }
 
     private void Update()
@@ -58,5 +64,10 @@ public class BattleManager : MonoBehaviour
     public HandManager GetHandManager()
     {
         return handManager;
+    }
+
+    public void RegisterPlayer(PlayerCombat player)
+    {
+        playerCombat = player;
     }
 }

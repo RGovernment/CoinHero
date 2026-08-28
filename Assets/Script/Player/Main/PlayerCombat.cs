@@ -2,15 +2,9 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public Player player { get; set; }
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
     }
 }

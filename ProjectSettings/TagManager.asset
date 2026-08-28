@@ -52,5 +52,8 @@ TagManager:
   - name: Character
     uniqueID: 2734964183
     locked: 0
+  - name: CoinCanvas
+    uniqueID: 2049403087
+    locked: 0
   m_RenderingLayers:
   - Default

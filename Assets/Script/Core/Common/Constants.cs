@@ -15,4 +15,6 @@ public static class Constants
     public static string MULTIPLY = "Multiply";
     public static string PLAYER_TAG = "Player";
     public static string ENEMY_TAG = "Enemy";
+    public static string HAND_TAG = "Hand";
+    public static string SLOT_TAG = "Slot";
 }

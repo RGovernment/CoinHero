@@ -13,15 +13,16 @@ public class BattleCoinUI : MonoBehaviour
     [SF] private Transform coinAreaParent;
     [SF] private CoinObject coinPrefab;
     public List<CoinObject> coinGroup;
-    private CardData card;
+    private Card card;
 
     private int nowCount = 0;
     private int nowVal = 0;
-    public void CoinSet(CardData card)
+    public void CoinSet(Card card)
     {
-        nameText.text = card.cardData.Name;
-        valueText.text = card.cardData.Value.ToString();
-        nowVal = card.cardData.Value;
+        this.card = card;
+        nameText.text = card.Name;
+        valueText.text = card.Value.ToString();
+        nowVal = card.Value;
         gameObject.SetActive(true);
 
         for (int i = coinAreaParent.childCount - 1; i >= 0; i--)
@@ -29,7 +30,7 @@ public class BattleCoinUI : MonoBehaviour
             Destroy(coinAreaParent.GetChild(i).gameObject);
         }
 
-        int makeCount = card.cardData.Coin;
+        int makeCount = card.Coin;
 
         for (int i = 0; i < makeCount; i++) 
         {
@@ -50,7 +51,7 @@ public class BattleCoinUI : MonoBehaviour
 
     public void CoinStop(bool front)
     {
-        nowVal += front ? card.cardData.CoinPoint : 0;
+        nowVal += front ? card.CoinPoint : 0;
         coinGroup[nowCount].Stop(front);
 
         valueText.text = $"{nowVal}";

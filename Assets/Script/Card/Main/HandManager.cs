@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SF = UnityEngine.SerializeField;
+using static Constants;
+
 public class HandManager : MonoBehaviour
 {
     [Header("기본 참조")]
@@ -88,29 +90,41 @@ public class HandManager : MonoBehaviour
 
     public void UpdateHandPos()
     {
+        if (handCards == null) return;
+        int activeCardCount = 0;
         int cardCount = handCards.Count;
+        foreach (var item in handCards)
+        {
+            if (item.gameObject.activeSelf)
+                activeCardCount++;
+            
+        }
+        
         if (cardCount == 0) return;
 
         // 카드 총 간격이 칸 간격 보다 적으면 간격대로, 많으면 폭 내에서 존재하도록 재계산 
-        float totalWidth = (cardCount - 1) * cardSpacing;
+        float totalWidth = (activeCardCount - 1) * cardSpacing;
         if (totalWidth > maxHandWidth)
         {
             totalWidth = maxHandWidth;
         }
 
         // 카드가 한장일 경우 정중앙에 배치
-        float currentSpacing = (cardCount > 1) ? totalWidth / (cardCount - 1) : 0f;
+        float currentSpacing = (activeCardCount > 1) ? totalWidth / (activeCardCount - 1) : 0f;
 
         // 시작점 계산
         float startX = -totalWidth / 2f;
+        int activeIdx = 0;
 
         for (int i = 0; i < cardCount; i++)
         {
+            if (!handCards[i].gameObject.activeSelf) continue;
+
             // 상대 위치 계산
-            float normalizedPosition = (cardCount > 1) ? (i / (float)(cardCount - 1)) * 2f - 1f : 0f;
+            float normalizedPosition = (activeCardCount > 1) ? (activeIdx / (float)(activeCardCount - 1)) * 2f - 1f : 0f;
 
             // X축 간격 지정
-            float xOffset = startX + (i * currentSpacing);
+            float xOffset = startX + (activeIdx * currentSpacing);
 
             // y축 위치 지정
             // 중앙이 0, 나머지는 curveStrength값에 따라 아래로 내려감
@@ -129,10 +143,20 @@ public class HandManager : MonoBehaviour
                 rect.localPosition = new Vector3(xOffset, yOffset, 0);
                 rect.localRotation = Quaternion.Euler(0, 0, zRotation);
 
-                rect.SetSiblingIndex(i);
-                rect.tag = "Hand";
+                rect.SetSiblingIndex(activeIdx);
+                rect.tag = HAND_TAG;
             }
             rect.gameObject.SetActive(true);
+
+            activeIdx++;
+        }
+    }
+
+    public void HandActive()
+    {
+        foreach (Transform item in cardHolderPos)
+        {
+            item.gameObject.SetActive(true);
         }
     }
 }

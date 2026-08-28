@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,16 +9,29 @@ using SF = UnityEngine.SerializeField;
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; set; }
+
+    [Header("덱/패 관련")]
     [SF] private HandManager handManager;
+
+    [Header("전투 관련")]
     [SF] private PlayerCombat playerCombat;
     [SF] private List<EnemyCombat> enemyCombat;
+    [SF] private SelectZone PlayerZone;
+    [SF] private SelectZone EnemyZone;
+
+    [Header("프리팹")]
+    [SF] private BattleCoinUI coinUI;
     private StateMachine state;
     private Dictionary<BattleStateType, IState> stateGroup;
 
+    private Queue<Card> nowPlayerCards;
+    private Queue<Card> nowEnemyCards;
 
     private void Awake()
     {
         Instance = this;
+        nowPlayerCards = new();
+        nowEnemyCards = new();
     }
 
     private async UniTaskVoid Start()
@@ -45,6 +59,7 @@ public class BattleManager : MonoBehaviour
         await UniTask.WaitUntil(() => playerCombat != null, 
             cancellationToken: this.GetCancellationTokenOnDestroy());
         DrawTest(playerCombat.Player);
+        PlayerZone.CardZoneOpen();
     }
 
     private void Update()
@@ -52,11 +67,39 @@ public class BattleManager : MonoBehaviour
         state.Stay();
     }
 
+    private void OnEnable()
+    {
+        PlayerZone.OnSelectCard += handManager.UpdateHandPos;
+        PlayerZone.OnCancelCard += handManager.HandActive;
+        PlayerZone.OnCancelCard += handManager.UpdateHandPos;
+        PlayerZone.OnSelectCardComplete += BattleStatusSet;
+    }
+
+    private void OnDisable()
+    {
+        PlayerZone.OnSelectCard -= handManager.UpdateHandPos;
+        PlayerZone.OnCancelCard -= handManager.HandActive;
+        PlayerZone.OnCancelCard -= handManager.UpdateHandPos;
+        PlayerZone.OnSelectCardComplete -= BattleStatusSet;
+    }
+
     public void DrawTest(Character player)
     {
         handManager.CreateAllCard(player.CardList, player);
         handManager.ShuffleAndSettingHand();
+        handManager.HandActive();
         handManager.UpdateHandPos();
+    }
+
+    public void SelectCard(CardData data)
+    {
+        PlayerZone.SetCardToZone(data).Forget();
+    }
+
+    public void BattleStatusSet()
+    {
+        nowPlayerCards = PlayerZone.GetCardList();
+        nowEnemyCards = EnemyZone.GetCardList();
     }
 
     public HandManager GetHandManager()

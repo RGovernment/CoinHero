@@ -10,7 +10,7 @@ public class BattleManager : MonoBehaviour
     public static BattleManager Instance { get; set; }
     [SF] private HandManager handManager;
     [SF] private PlayerCombat playerCombat;
-    //[SF] private EnemyCombat enemy;
+    [SF] private List<EnemyCombat> enemyCombat;
     private StateMachine state;
     private Dictionary<BattleStateType, IState> stateGroup;
 
@@ -22,6 +22,7 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        enemyCombat = new List<EnemyCombat>();
         state = new();
 
         stateGroup = new Dictionary<BattleStateType, IState>()
@@ -69,5 +70,10 @@ public class BattleManager : MonoBehaviour
     public void RegisterPlayer(PlayerCombat player)
     {
         playerCombat = player;
+    }
+
+    public void RegisterEnemy(EnemyCombat enemy)
+    {
+        enemyCombat.Add(enemy);
     }
 }

@@ -6,5 +6,11 @@ public class PlayerCombat : MonoBehaviour
 
     private void Awake()
     {
+
+    }
+
+    private void Start()
+    {
+        BattleManager.Instance.RegisterPlayer(this);
     }
 }

@@ -7,4 +7,5 @@ public interface ICombat
     /// </summary>
     /// <returns>코인 값</returns>
     public int CoinToss();
+    
 }

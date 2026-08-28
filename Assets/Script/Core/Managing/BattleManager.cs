@@ -8,6 +8,7 @@ using SF = UnityEngine.SerializeField;
 public class BattleManager : MonoBehaviour
 {
     [SF] private HandManager handManager;
+    
     private StateMachine state;
     private Dictionary<BattleStateType, IState> stateGroup;
 

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using SF = UnityEngine.SerializeField;
 public class HandManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class HandManager : MonoBehaviour
     [SF] private CardData baseCardObj;
     [SF] private Transform baseHolderPos;
     [SF] private RectTransform cardHolderPos;
+    [SF] private Button closeBtn;
     [Header("드래그 앤 드롭 용 더미 객체")]
     [SF] private CardData ClickCard;
     [Header("카드 배치 부채꼴 설정")]
@@ -43,14 +45,15 @@ public class HandManager : MonoBehaviour
         handCards = new List<CardData>();
         deckCards = new List<CardData>();
         discardCards = new List<CardData>();
-
         foreach (var item in data)
         {
             CardData card = Instantiate(baseCardObj, baseHolderPos);
             card.gameObject.SetActive(false);
             card.cardData = item;
             card.user = user;
-
+            card.parentTransform = handCanvas.transform;
+            card.handTransform = cardHolderPos;
+            card.CloseBtn = closeBtn;
             allCards.Add(card);
         }
 
@@ -72,12 +75,14 @@ public class HandManager : MonoBehaviour
             deckCards.AddRange(discardCards);
             discardCards.Clear();
         }
-
+        int count = 0;
         while (handCards.Count < 5 && deckCards.Count > 0)
         {
             deckCards[0].transform.SetParent(cardHolderPos);
+            deckCards[0].posIndex = count;
             handCards.Add(deckCards[0]);
             deckCards.RemoveAt(0);
+            count++;
         }
     }
 

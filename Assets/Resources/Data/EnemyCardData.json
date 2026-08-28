@@ -1,0 +1,64 @@
+[
+  {
+    "Name": "손",
+    "Id": 5000,
+    "Type": "Weapon",
+    "Value": 2,
+    "Coin": 1,
+    "CoinPoint": 1,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+    ],
+    "Effect": [],
+    "Description": "손."
+  },
+  {
+    "Name": "천옷",
+    "Id": 6000,
+    "Type": "Armor",
+    "Value": 2,
+    "Coin": 1,
+    "CoinPoint": 1,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+    ],
+    "Effect": [],
+    "Description": "천옷."
+  },
+  {
+    "Name": "낫.",
+    "Id": 5001,
+    "Type": "Weapon",
+    "Value": 1,
+    "Coin": 2,
+    "CoinPoint": 3,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+    ],
+    "Effect": [],
+    "Description": "생전에 들고 있던 낫."
+  },
+  {
+    "Name": "재생",
+    "Id": 7000,
+    "Type": "Item",
+    "Value": 2,
+    "Coin": 2,
+    "CoinPoint": 1,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+    ],
+    "Effect": [
+      {
+        "EffectId": 101,
+        "Value": -1,
+        "Duration": 0
+      }
+    ],
+    "Description": "사용자 {InstantHeal} +[Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
+  }
+]

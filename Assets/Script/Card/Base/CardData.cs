@@ -7,8 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class CardData : MonoBehaviour, 
-    IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Card cardData;
     
@@ -70,9 +69,10 @@ public class CardData : MonoBehaviour,
 
     }
 
-
     public async UniTaskVoid OpenInfo()
     {
+        if (!CompareTag("Hand")) return;
+        // 확대시
         if (!isPopup && Mouse.current.rightButton.wasReleasedThisFrame)
         {
             isPopup = true;
@@ -86,6 +86,7 @@ public class CardData : MonoBehaviour,
             outline2.enabled = false;
             await seq
                 .Join(rect.DOLocalMove(rect.localPosition + new Vector3(0, baseRect.sizeDelta.y, 0), 0.15f))
+                .Join(rect.DOScale(Vector3.one * 1.25f, 0.15f))
                 .Join(rect.DORotate(Vector3.zero, 0.15f)).ToUniTask();
 
             transform.SetParent(parentTransform);
@@ -93,6 +94,13 @@ public class CardData : MonoBehaviour,
             
             CloseBtn.onClick.RemoveAllListeners();
             CloseBtn.onClick.AddListener(CloseBtnToEvent);
+        }
+        // 선택시
+        else if (!isPopup && Mouse.current.leftButton.wasReleasedThisFrame)
+        {
+            outline1.enabled = false;
+            outline2.enabled = false;
+            BattleManager.Instance.SelectCard(this);
         }
     }
     public void OpenInfoEvent()
@@ -108,6 +116,7 @@ public class CardData : MonoBehaviour,
         transform.SetSiblingIndex(posIndex);
         await seq
             .Join(rect.DOLocalMove(beforeLocalPos, 0.15f))
+            .Join(rect.DOScale(Vector3.one, 0.15f))
             .Join(rect.DOLocalRotate(beforeLocalRotate.eulerAngles, 0.15f)).ToUniTask();
         
         CloseBtn.gameObject.SetActive(false);
@@ -119,14 +128,9 @@ public class CardData : MonoBehaviour,
         CloseBtnActive().Forget();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        OpenInfo().Forget();
-    }
-
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!isPopup)
+        if (!isPopup && CompareTag("Hand"))
         {
             transform.SetAsLastSibling();
             outline1.enabled = true;
@@ -137,7 +141,7 @@ public class CardData : MonoBehaviour,
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!isPopup)
+        if (!isPopup && CompareTag("Hand"))
         {
             transform.SetSiblingIndex(posIndex);
             outline1.enabled = false;

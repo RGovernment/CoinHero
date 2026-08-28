@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,20 +9,35 @@ using SF = UnityEngine.SerializeField;
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; set; }
+
+    [Header("덱/패 관련")]
     [SF] private HandManager handManager;
+    [SF] private EnemyHandManager enemyHandManager;
+
+    [Header("전투 관련")]
     [SF] private PlayerCombat playerCombat;
-    //[SF] private EnemyCombat enemy;
+    [SF] private List<EnemyCombat> enemyCombat;
+    [SF] private SelectZone PlayerZone;
+    [SF] private SelectZone EnemyZone;
+
+    [Header("프리팹")]
+    [SF] private BattleCoinUI coinUI;
     private StateMachine state;
     private Dictionary<BattleStateType, IState> stateGroup;
 
+    private Queue<Card> nowPlayerCards;
+    private Queue<Card> nowEnemyCards;
 
     private void Awake()
     {
         Instance = this;
+        nowPlayerCards = new();
+        nowEnemyCards = new();
     }
 
-    private void Start()
+    private async UniTaskVoid Start()
     {
+        enemyCombat = new List<EnemyCombat>();
         state = new();
 
         stateGroup = new Dictionary<BattleStateType, IState>()
@@ -39,14 +55,14 @@ public class BattleManager : MonoBehaviour
         };
         
         state.ChangeState(stateGroup[BattleStateType.RoundStart]);
-        List<Card> cd = new();
-        foreach (var item in ResourceManager.Instance.CardData)
-        {
-            cd.Add(item.Value);
-        }
-        playerCombat.player = new (10, 50, cd);
+        
+        //테스트용
+        await UniTask.WaitUntil(() => playerCombat != null, 
+            cancellationToken: this.GetCancellationTokenOnDestroy());
+        PlayerZone.CardZoneOpen();
+        EnemyZone.CardZoneOpen();
+        DrawTest(playerCombat.Player);
 
-        DrawTest(playerCombat.player);
     }
 
     private void Update()
@@ -54,11 +70,54 @@ public class BattleManager : MonoBehaviour
         state.Stay();
     }
 
+    private void OnEnable()
+    {
+        PlayerZone.OnSelectCard += handManager.UpdateHandPos;
+        PlayerZone.OnCancelCard += handManager.HandActive;
+        PlayerZone.OnCancelCard += handManager.UpdateHandPos;
+        PlayerZone.OnSelectCardComplete += BattleStatusSet;
+    }
+
+    private void OnDisable()
+    {
+        PlayerZone.OnSelectCard -= handManager.UpdateHandPos;
+        PlayerZone.OnCancelCard -= handManager.HandActive;
+        PlayerZone.OnCancelCard -= handManager.UpdateHandPos;
+        PlayerZone.OnSelectCardComplete -= BattleStatusSet;
+    }
+
     public void DrawTest(Character player)
     {
         handManager.CreateAllCard(player.CardList, player);
         handManager.ShuffleAndSettingHand();
+        handManager.HandActive();
         handManager.UpdateHandPos();
+        EnemyCardOpen();
+    }
+
+    public void EnemyCardOpen()
+    {
+        List<Card> dummy = enemyHandManager.CardSelect(enemyCombat[0].Enemy.CardList);
+        foreach (var item in dummy)
+        {
+            nowEnemyCards.Enqueue(item);
+            BehindCardData bd = enemyHandManager.CardCreate(item);
+            bd.SetTypeIcon();
+            EnemyZone.SetCardToEnemyZone(bd);
+        }
+
+        
+    }
+
+    public void SelectCard(CardData data)
+    {
+        PlayerZone.SetCardToZone(data).Forget();
+    }
+
+    public void BattleStatusSet()
+    {
+        nowPlayerCards = PlayerZone.GetCardList();
+        nowEnemyCards = EnemyZone.GetCardList();
     }
 
     public HandManager GetHandManager()
@@ -69,5 +128,10 @@ public class BattleManager : MonoBehaviour
     public void RegisterPlayer(PlayerCombat player)
     {
         playerCombat = player;
+    }
+
+    public void RegisterEnemy(EnemyCombat enemy)
+    {
+        enemyCombat.Add(enemy);
     }
 }

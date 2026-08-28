@@ -141,21 +141,24 @@ public class Card
 
     public string GetDescription(Dictionary<int, StatusEffectData> list)
     {
+        if (list == null || list.Count <= 0 ) return "";
         string result = Description;
-
-        foreach (var item in Effect)
+        if(Effect != null)
         {
-            if (list.TryGetValue(item.EffectId, out StatusEffectData data))
+            foreach (var item in Effect)
             {
-                // {EffectType} 태그 변환 (예: {Heal} -> <link=101>[체력 회복]</link>)
-                string enumText = Enum.GetName(typeof(EffectType), data.Type);
-
-                if (!string.IsNullOrEmpty(enumText))
+                if (list.TryGetValue(item.EffectId, out StatusEffectData data))
                 {
-                    string effectLink = $"<link={data.Id}>[{data.Name}]</link>";
-                    result = result
-                        .Replace($"{{{enumText}}}", effectLink)
-                        .Replace($"[{enumText}_Value]", item.Value.ToString());
+                    // {EffectType} 태그 변환 (예: {Heal} -> <link=101>[체력 회복]</link>)
+                    string enumText = Enum.GetName(typeof(EffectType), data.Type);
+
+                    if (!string.IsNullOrEmpty(enumText))
+                    {
+                        string effectLink = $"<link={data.Id}>[{data.Name}]</link>";
+                        result = result
+                            .Replace($"{{{enumText}}}", effectLink)
+                            .Replace($"[{enumText}_Value]", item.Value.ToString());
+                    }
                 }
             }
         }

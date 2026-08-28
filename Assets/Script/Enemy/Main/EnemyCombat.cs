@@ -1,16 +1,23 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyCombat : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public Enemy Enemy { get; set; }
+
+    private void Awake()
     {
-        
+        List<Card> cd = new();
+        foreach (var item in ResourceManager.Instance.EnemyCardData)
+        {
+            cd.Add(item.Value);
+        }
+
+        Enemy = new Enemy(50, 50, cd);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        BattleManager.Instance.RegisterEnemy(this);
     }
 }

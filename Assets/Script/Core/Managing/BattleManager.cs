@@ -12,6 +12,7 @@ public class BattleManager : MonoBehaviour
 
     [Header("덱/패 관련")]
     [SF] private HandManager handManager;
+    [SF] private EnemyHandManager enemyHandManager;
 
     [Header("전투 관련")]
     [SF] private PlayerCombat playerCombat;
@@ -58,8 +59,10 @@ public class BattleManager : MonoBehaviour
         //테스트용
         await UniTask.WaitUntil(() => playerCombat != null, 
             cancellationToken: this.GetCancellationTokenOnDestroy());
-        DrawTest(playerCombat.Player);
         PlayerZone.CardZoneOpen();
+        EnemyZone.CardZoneOpen();
+        DrawTest(playerCombat.Player);
+
     }
 
     private void Update()
@@ -89,6 +92,21 @@ public class BattleManager : MonoBehaviour
         handManager.ShuffleAndSettingHand();
         handManager.HandActive();
         handManager.UpdateHandPos();
+        EnemyCardOpen();
+    }
+
+    public void EnemyCardOpen()
+    {
+        List<Card> dummy = enemyHandManager.CardSelect(enemyCombat[0].Enemy.CardList);
+        foreach (var item in dummy)
+        {
+            nowEnemyCards.Enqueue(item);
+            BehindCardData bd = enemyHandManager.CardCreate(item);
+            bd.SetTypeIcon();
+            EnemyZone.SetCardToEnemyZone(bd);
+        }
+
+        
     }
 
     public void SelectCard(CardData data)

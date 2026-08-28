@@ -94,7 +94,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1145788312270933771
 RectTransform:
   m_ObjectHideFlags: 0
@@ -166,6 +166,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BehindCardData
   typeIcon: {fileID: 6288431564819812057}
+  typeIconSprite:
+  - {fileID: 21300000, guid: ca0ad474a8ec041d28159498150a13f6, type: 3}
+  - {fileID: 21300000, guid: 7e90e810597984e9d992c5445b61875a, type: 3}
+  - {fileID: 21300000, guid: b97c1199e847d4859939673ab3b49479, type: 3}
+  - {fileID: 21300000, guid: e211b620d4f344184b2e098eee4f570d, type: 3}
+  Type: 0
 --- !u!225 &4374369634310941383
 CanvasGroup:
   m_ObjectHideFlags: 0

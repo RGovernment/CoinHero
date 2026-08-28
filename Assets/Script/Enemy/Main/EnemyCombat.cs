@@ -13,7 +13,7 @@ public class EnemyCombat : MonoBehaviour
             cd.Add(item.Value);
         }
 
-        Enemy = new Enemy(10, 50, cd);
+        Enemy = new Enemy(50, 50, cd);
     }
 
     private void Start()

@@ -9,9 +9,11 @@ using SF = UnityEngine.SerializeField;
 
 public class SelectZone : MonoBehaviour
 {
+    [SF] private Transform Canvas;
     [SF] private List<GameObject> EmptySlot;
 
     [SF] private Button CancelBtn;
+    [SF] private Button TurnEndBtn;
 
     private Queue<Card> cardList;
     private int nowSelectCount = 0;
@@ -53,6 +55,11 @@ public class SelectZone : MonoBehaviour
         OnCancelCard?.Invoke();
     }
 
+    public void TurnEnd()
+    {
+        OnSelectCardComplete?.Invoke();
+    }
+
     public void CardZoneOpen(int zone = 3)
     {
         zone = zone < 5 ? zone : 5;
@@ -68,9 +75,15 @@ public class SelectZone : MonoBehaviour
         }
         gameObject.SetActive(true);
     }
-    public void SetCardToEnemyZone(CardData data)
-    {
 
+    public void SetCardToEnemyZone(BehindCardData data)
+    {
+        data.transform.SetParent(EmptySlot[nowSelectCount].transform);
+        data.transform.localPosition = Vector3.zero;
+        data.transform.localScale = Vector3.one;
+        data.gameObject.SetActive(true);
+
+        nowSelectCount++;
     }
 
     public async UniTaskVoid SetCardToZone(CardData data)
@@ -79,13 +92,13 @@ public class SelectZone : MonoBehaviour
 
         Transform emptySlot = EmptySlot[nowSelectCount].transform;
         data.gameObject.SetActive(false);
-        CardData slotObj = Instantiate(data, transform);
+        CardData slotObj = Instantiate(data, Canvas);
         slotObj.cardData = data.cardData;
-        slotObj.gameObject.SetActive(true);
-        slotObj.gameObject.tag = "Slot";
-        await UniTask.Delay(1);
         slotObj.transform
             .SetPositionAndRotation(data.transform.position, data.transform.rotation);
+        slotObj.gameObject.tag = "Slot";
+        await UniTask.DelayFrame(1);
+        slotObj.gameObject.SetActive(true);
         cardList.Enqueue(slotObj.cardData);
 
         Sequence seq = DOTween.Sequence();

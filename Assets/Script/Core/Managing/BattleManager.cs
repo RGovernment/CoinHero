@@ -20,7 +20,7 @@ public class BattleManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
+    private async UniTaskVoid Start()
     {
         enemyCombat = new List<EnemyCombat>();
         state = new();
@@ -40,14 +40,11 @@ public class BattleManager : MonoBehaviour
         };
         
         state.ChangeState(stateGroup[BattleStateType.RoundStart]);
-        List<Card> cd = new();
-        foreach (var item in ResourceManager.Instance.CardData)
-        {
-            cd.Add(item.Value);
-        }
-        playerCombat.player = new (10, 50, cd);
-
-        DrawTest(playerCombat.player);
+        
+        //테스트용
+        await UniTask.WaitUntil(() => playerCombat != null, 
+            cancellationToken: this.GetCancellationTokenOnDestroy());
+        DrawTest(playerCombat.Player);
     }
 
     private void Update()

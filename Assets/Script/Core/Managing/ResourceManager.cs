@@ -11,6 +11,7 @@ public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance { get; private set; }
     public Dictionary<int, Card> CardData { get; private set; }
+    public Dictionary<int, Card> EnemyCardData { get; private set; }
 
     public Dictionary<int, StatusEffectData> EffectData { get; private set; }
     private void Awake()
@@ -37,16 +38,21 @@ public class ResourceManager : MonoBehaviour
         // 플레이어 카드 및 기본 효과 데이터 로드
         string playerCardJson 
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + PLAYER_CARD_DATA).text;
+        string enemyCardJson
+            = Resources.Load<TextAsset>(ASSET_DATA_PATH + Enemy_CARD_DATA).text;
         string statusEffectJson
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + STATUS_EFFECT_DATA).text;
+
         List<Card> cardList 
             = JsonConvert.DeserializeObject<List<Card>>(playerCardJson);
 
-        CardData = cardList.ToDictionary(x => x.Id);
-
+        List<Card> enemyCardList
+            = JsonConvert.DeserializeObject<List<Card>>(enemyCardJson);
         List<StatusEffectData> effectList 
             = JsonConvert.DeserializeObject<List<StatusEffectData>>(statusEffectJson);
 
+        CardData = cardList.ToDictionary(x => x.Id);
+        EnemyCardData = enemyCardList.ToDictionary(x => x.Id);
         EffectData = effectList.ToDictionary(x => x.Id);
     }
 }

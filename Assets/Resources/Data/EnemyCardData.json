@@ -4,7 +4,7 @@
     "Id": 5000,
     "Type": "Weapon",
     "Value": 2,
-    "Coin": 1,
+    "Coin": 5,
     "CoinPoint": 1,
     "CurrentUpgradeLv": 0,
     "MaxUpgradeLv": 0,
@@ -28,7 +28,7 @@
     "Description": "천옷."
   },
   {
-    "Name": "낫.",
+    "Name": "낫",
     "Id": 5001,
     "Type": "Weapon",
     "Value": 1,

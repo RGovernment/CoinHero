@@ -9,6 +9,7 @@ public abstract class Character : IDamageable, IBuffable
     public int HP { get; private set; }
     public int MaxHP { get; private set; }
     public int SP { get; private set; }
+    public int Sanity { get; private set; }
     public List<Card> CardList;
 
     // 인게임에서만 사용
@@ -56,6 +57,7 @@ public abstract class Character : IDamageable, IBuffable
         MaxHP = maxHp;
         HP = MaxHP;
         CardList = data;
+        Sanity = 50;
         StatusEffectList = new();
     }
 
@@ -104,6 +106,11 @@ public abstract class Character : IDamageable, IBuffable
     {
         MaxHP = changeMaxHp;
         OnHPChanged?.Invoke(HP, MaxHP);
+    }
+
+    public void SetSanity(int changeSanity)
+    {
+        Sanity = Mathf.Clamp(changeSanity, 0, 100);
     }
 
     public void TakeEffect(StatusEffect effect)

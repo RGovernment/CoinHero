@@ -165,4 +165,18 @@ public class Card
 
         return result.ParseDescription(this);
     }
+
+    public int CalcCoinValue(bool[] coinResults)
+    {
+        int finalValue = FinalValue();
+        int coinPoint = FinalCoinPoint();
+        for (int i = 0; i < coinResults.Length; i++)
+        {
+            if (coinResults[i])
+            {
+                finalValue += coinPoint;
+            }
+        }
+        return finalValue;
+    }
 }

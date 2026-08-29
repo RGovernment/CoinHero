@@ -53,9 +53,9 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if(ResourceManager.Instance.EffectData == null) return;
 
         string name = cardData.Name;
-        int value = cardData.Value;
-        int coin = cardData.Coin;
-        int coinPoint = cardData.CoinPoint;
+        int value = cardData.FinalValue();
+        int coin = cardData.FinalCoin();
+        int coinPoint = cardData.FinalCoinPoint();
         int typeInt = (int)cardData.Type;
         string descriptionText 
             = cardData.GetDescription(ResourceManager.Instance.EffectData);

@@ -53,6 +53,7 @@ public class SelectZone : MonoBehaviour
         CancelBtn.gameObject.SetActive(false);
 
         OnCancelCard?.Invoke();
+        
     }
 
     public void TurnEnd()
@@ -74,6 +75,7 @@ public class SelectZone : MonoBehaviour
             EmptySlot[i].SetActive(true);
         }
         gameObject.SetActive(true);
+        TurnEndBtn.gameObject.SetActive(true);
     }
 
     public void SetCardToEnemyZone(BehindCardData data)
@@ -125,5 +127,11 @@ public class SelectZone : MonoBehaviour
     public Queue<Card> GetCardList()
     {
         return new(cardList);
+    }
+
+    public void BtnClose()
+    {
+        TurnEndBtn.gameObject.SetActive(false);
+        CancelBtn.gameObject.SetActive(false);
     }
 }

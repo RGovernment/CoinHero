@@ -4,7 +4,7 @@
     "Id": 1000,
     "Type": "Weapon",
     "Value": 4,
-    "Coin": 2,
+    "Coin": 5,
     "CoinPoint": 1,
     "CurrentUpgradeLv": 0,
     "MaxUpgradeLv": 3,

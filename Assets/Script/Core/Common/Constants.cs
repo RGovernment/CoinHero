@@ -17,4 +17,7 @@ public static class Constants
     public static string ENEMY_TAG = "Enemy";
     public static string HAND_TAG = "Hand";
     public static string SLOT_TAG = "Slot";
+
+    public static int CoinFlipTimer = 500;
+    public static int CoinNextTimer = 300;
 }

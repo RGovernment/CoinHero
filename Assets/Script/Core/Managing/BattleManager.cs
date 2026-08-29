@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using static Enums;
 using SF = UnityEngine.SerializeField;
+using static Constants;
 
 public class BattleManager : MonoBehaviour
 {
@@ -20,16 +21,17 @@ public class BattleManager : MonoBehaviour
     [SF] private SelectZone PlayerZone;
     [SF] private SelectZone EnemyZone;
 
+    [Header("사운드")]
+    [SF] private AudioSource battleUISound;
+    [SF] private AudioClip atkSound;
+
     [Header("프리팹")]
-    [SF] private BattleCoinUI coinUI;
+    [SF] 
     private StateMachine state;
     private Dictionary<BattleStateType, IState> stateGroup;
 
     private Queue<Card> nowPlayerCards;
     private Queue<Card> nowEnemyCards;
-
-    private BattleCoinUI playerUI;
-    private BattleCoinUI enemyUI;
 
     private void Awake()
     {
@@ -102,6 +104,7 @@ public class BattleManager : MonoBehaviour
     public void EnemyCardOpen()
     {
         List<Card> dummy = enemyHandManager.CardSelect(enemyCombat[0].Enemy.CardList);
+        
         foreach (var item in dummy)
         {
             nowEnemyCards.Enqueue(item);
@@ -121,17 +124,19 @@ public class BattleManager : MonoBehaviour
     public void BattleStatusSet()
     {
         nowPlayerCards = PlayerZone.GetCardList();
-        nowEnemyCards = EnemyZone.GetCardList();
-        playerUI = Instantiate(coinUI, playerCombat.transform);
+        // 적은 처음에 결정됨
 
-        // 임시로 0으로 지정
-        enemyUI = Instantiate(coinUI, enemyCombat[0].transform);
+        PlayerZone.gameObject.SetActive(false);
+        EnemyZone.gameObject.SetActive(false);
+        PlayerZone.BtnClose();
+        BattleTypeCheck().Forget();
     }
 
     public async UniTaskVoid BattleTypeCheck()
     {
+        
         bool playerAble = nowPlayerCards.TryDequeue(out Card playerCard);
-        bool enemyAble = nowPlayerCards.TryDequeue(out Card enemyCard);
+        bool enemyAble = nowEnemyCards.TryDequeue(out Card enemyCard);
 
         // 양쪽 다 사용이 불가능하다면 턴 종료
         if (!playerAble && !enemyAble)
@@ -160,20 +165,102 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     public async UniTask OneWayAction(Character attacker, Card attackerCard, Character defender)
     {
-
+        await UniTask.Delay(0);
     }
 
     public async UniTask ClashAction(PlayerCombat player, Card playerCard, EnemyCombat enemy, Card enemyCard)
     {
-        if (playerCard.Type == CardType.Weapon && enemyCard.Type == CardType.Weapon)
+        if ((   
+            playerCard.Type == CardType.Weapon ||
+            playerCard.Type == CardType.Armor
+            )&&(
+            enemyCard.Type == CardType.Weapon ||
+            enemyCard.Type == CardType.Armor
+            ))
         {
             // 합 진행 전 UI 및 코인 세팅
-            playerUI.CoinSet(playerCard);
-            enemyUI.CoinSet(enemyCard);
-            playerUI.CoinFlip();
-            enemyUI.CoinFlip();
+            player.CoinUI.CoinSet(player.transform, playerCard);
+            enemy.CoinUI.CoinSet(player.transform, enemyCard);
 
+            // --- 이하 코인 결과에 따른 처리 ---
+            while (true)
+            {
+                bool[] playerCoins = player.CoinToss(playerCard);
+                bool[] enemyCoins = enemy.CoinToss(enemyCard);
 
+                int coinCount = Math.Max(playerCoins.Length, enemyCoins.Length);
+
+                player.CoinUI.CoinFlip();
+                enemy.CoinUI.CoinFlip();
+
+                // 코인 결과를 보여주기 전 딜레이
+                await UniTask.Delay(CoinFlipTimer);
+
+                // 코인 결과에 따른 UI 처리
+                for (int i = 0; i < coinCount; i++)
+                {
+                    bool playerEnd = i < playerCoins.Length;
+                    bool enemyEnd = i < enemyCoins.Length;
+
+                    if (playerEnd)
+                    {
+                        // 플레이어 코인 스탑
+                        player.CoinUI.CoinStop(playerCoins[i]);
+                    }
+
+                    if (enemyEnd)
+                    {
+                        // 적 코인 스탑
+                        enemy.CoinUI.CoinStop(enemyCoins[i]);
+                    }
+
+                    // 코인을 순차적으로 보여주기 위해 다음 코인까지 딜레이
+                    await UniTask.Delay(CoinNextTimer);
+                }
+
+                // 플레이어 카드 코인 결과 계산
+                int playerResult = playerCard.CalcCoinValue(playerCoins);
+
+                // 적 카드 코인 결과 계산
+                int enemyResult = enemyCard.CalcCoinValue(enemyCoins);
+
+                // 쌍방 공격일 경우에만 결과 비교, 한쪽이 아이템이면 무시
+                if ((
+                    playerCard.Type == CardType.Weapon ||
+                    playerCard.Type == CardType.Armor)
+                    &&
+                    (
+                    enemyCard.Type == CardType.Weapon ||
+                    enemyCard.Type == CardType.Armor
+                    ))
+                {
+                    battleUISound.clip = atkSound;
+                    battleUISound.Play();
+                    // 무승부 처리
+                    if (playerResult == enemyResult)
+                    {
+                        await UniTask.Delay(CoinNextTimer);
+                        continue;
+                    }
+                    else if (playerResult > enemyResult)
+                    {
+                        enemyCard.Coin--;
+                        await enemy.CoinUI.CoinBroken();
+
+                        // 적 코인이 0이 되면 더 이상 진행하지 않고 종료
+                        if (enemyCard.Coin <= 0)  break;
+                        
+                    }
+                    else if (playerResult < enemyResult)
+                    {
+                        playerCard.Coin--;
+                        await player.CoinUI.CoinBroken();
+
+                        // 플레이어 코인이 0이 되면 더 이상 진행하지 않고 종료
+                        if (playerCard.Coin <= 0) break;
+                    }
+                }
+            }
         }
     }
 

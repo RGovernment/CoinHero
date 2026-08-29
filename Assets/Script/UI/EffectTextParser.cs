@@ -23,19 +23,19 @@ public static class EffectTextParser
             string key = match.Value;
 
             if (key == $"[{VALUE}{PLUS}{COIN}{MULTIPLY}{COIN_POINT}]")
-                return (card.Value + (card.Coin * card.CoinPoint)).ToString();
+                return (card.FinalValue() + (card.FinalCoin() * card.FinalCoinPoint())).ToString();
 
             if (key == $"[{COIN}{MULTIPLY}{COIN_POINT}]")
-                return (card.Coin * card.CoinPoint).ToString();
+                return (card.FinalCoin() * card.FinalCoinPoint()).ToString();
 
             if (key == $"[{COIN_POINT}]")
-                return card.CoinPoint.ToString();
+                return card.FinalCoinPoint().ToString();
 
             if (key == $"[{COIN}]")
-                return card.Coin.ToString();
+                return card.FinalCoin().ToString();
 
             if (key == $"[{VALUE}]")
-                return card.Value.ToString();
+                return card.FinalValue().ToString();
 
             return match.Value;
         });

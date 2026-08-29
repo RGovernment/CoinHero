@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using SF = UnityEngine.SerializeField;
 
-public class PlayerCombat : MonoBehaviour
+public class PlayerCombat : MonoBehaviour, ICombat
 {
     public Player Player { get; set; }
+    [SF] private BattleCoinUI coinUI;
+    public BattleCoinUI CoinUI { get => coinUI; set => coinUI = value; }
 
     private void Awake()
     {
@@ -14,11 +17,27 @@ public class PlayerCombat : MonoBehaviour
             cd.Add(item.Value);
         }
 
-        Player = new Player(10,50, cd);
+        Player = new Player(10, 50, cd);
+        CoinUI.gameObject.SetActive(false);
     }
 
     private void Start()
     {
         BattleManager.Instance.RegisterPlayer(this);
     }
+
+    public bool[] CoinToss(Card card)
+    {
+        int coinCount = card.FinalCoin();
+
+        bool[] result = new bool[coinCount];
+        for (int i = 0; i < coinCount; i++)
+        {
+            result[i] = Player.Sanity < Random.Range(0, 100);
+        }
+
+        return result;
+    }
+
+
 }

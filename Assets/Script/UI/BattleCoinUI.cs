@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,12 +19,15 @@ public class BattleCoinUI : MonoBehaviour
 
     private int nowCount = 0;
     private int nowVal = 0;
-    public void CoinSet(Card card)
+    public void CoinSet(Transform chara, Card card)
     {
+        nowCount = 0;
         this.card = card;
         nameText.text = card.Name;
         valueText.text = card.Value.ToString();
         nowVal = card.Value;
+        transform.SetParent(chara);
+
         gameObject.SetActive(true);
 
         for (int i = coinAreaParent.childCount - 1; i >= 0; i--)
@@ -30,11 +35,13 @@ public class BattleCoinUI : MonoBehaviour
             Destroy(coinAreaParent.GetChild(i).gameObject);
         }
 
-        int makeCount = card.Coin;
+        int makeCount = card.FinalCoin();
 
         for (int i = 0; i < makeCount; i++) 
         {
-            CoinObject obj= Instantiate(coinPrefab, coinAreaParent);
+            CoinObject obj = Instantiate(coinPrefab, coinAreaParent);
+            obj.SetCoinRectByBattleUI();
+            obj.OnBrokenComplete += RemoveCoinFromGroup;
             coinGroup.Add(obj);
         }
     }
@@ -46,12 +53,17 @@ public class BattleCoinUI : MonoBehaviour
 
     public void CoinFlip()
     {
-        coinGroup[nowCount].Spin();
+        nowVal = card.Value;
+        foreach (var item in coinGroup)
+        {
+            item.Spin();
+        }
+        nowCount = 0;
     }
 
     public void CoinStop(bool front)
     {
-        nowVal += front ? card.CoinPoint : 0;
+        nowVal += front ? card.FinalCoinPoint() : 0;
         coinGroup[nowCount].Stop(front);
 
         valueText.text = $"{nowVal}";
@@ -63,9 +75,40 @@ public class BattleCoinUI : MonoBehaviour
         nowCount = 0;
     }
 
-    public void CoinBroken()
+    public async UniTask CoinBroken()
     {
-        coinGroup[^1].Broken();
+        CoinObject obj = coinGroup[^1];
+        
+
+        var utcs = new UniTaskCompletionSource();
+
+        Action<CoinObject> onComplete = null;
+        onComplete = (coin) =>
+        {
+            obj.OnBrokenComplete -= onComplete;
+            coinGroup.Remove(coin);
+            utcs.TrySetResult(); // 대기 중인 await를 풀어줍니다.
+        };
+
+        obj.OnBrokenComplete += onComplete;
+        obj.Broken();
+
+        await utcs.Task;
     }
 
+    public void Release()
+    {
+        coinGroup.Clear();
+        gameObject.SetActive(false);
+    }
+
+    private void RemoveCoinFromGroup(CoinObject coin)
+    {
+        // 이벤트 구독 해제 (메모리 누수 방지)
+        coin.OnBrokenComplete -= RemoveCoinFromGroup;
+
+        // 리스트에서 제거
+        if (coinGroup.Contains(coin))
+            coinGroup.Remove(coin);
+    }
 }

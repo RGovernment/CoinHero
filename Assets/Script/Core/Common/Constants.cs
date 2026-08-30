@@ -24,4 +24,8 @@ public static class Constants
 
     public static int CoinFlipTimer = 500;
     public static int CoinNextTimer = 300;
+
+    public static int REBOUND_SANITY_COST = 5;
+    public static int MAX_SANITY = 95;
+    public static int MIN_SANITY = 35;
 }

@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public abstract class Character : IDamageable, IBuffable
 {
@@ -17,11 +18,11 @@ public abstract class Character : IDamageable, IBuffable
     public List<StatusEffect> StatusEffectList;
 
     /// <summary>
-    /// AP가 피해를 입을때 작동하는 함수
+    /// SP가 피해를 입을때 작동하는 함수
     /// <para>int : 입은 피해 </para>
     /// <para>Character : 피해를 입힌 캐릭터 객체</para>
     /// </summary>
-    public event Action<int, Character> OnAPHit;
+    public event Action<int, Character> OnSPHit;
     
     /// <summary>
     /// HP가 피해를 입을때 작동하는 함수
@@ -31,25 +32,32 @@ public abstract class Character : IDamageable, IBuffable
     public event Action<int, Character> OnHPHit;
 
     /// <summary>
-    /// AP가 변경될 때 작동하는 함수
-    /// <para>int1 : 현재 아머 포인트</para>
-    /// <para>int2 : 변경된 아머 포인트</para>
+    /// SP가 변경될 때 작동하는 함수
+    /// <para>int1 : 현재 실드 포인트</para>
+    /// <para>int2 : 변경된 실드 포인트</para>
     /// </summary>
-    public event Action<int, int> OnAPChanged;
-
-    /// <summary>
-    /// HP가 변경될 때 작동하는 함수
-    /// <para>int1 : 현재 체력</para>
-    /// <para>int2 : 최대 체력</para>
-    /// </summary>
-    public event Action<int, int> OnHPChanged;
+    public event Action<int, int> OnSPChanged;
 
     /// <summary>
     /// HP가 변경될 때 작동하는 함수
     /// <para>int1 : 현재 체력</para>
     /// <para>int2 : 변경된 체력</para>
     /// </summary>
+    public event Action<int, int> OnHPChanged;
+
+    /// <summary>
+    /// MaxHP가 변경될 때 작동하는 함수
+    /// <para>int1 : 현재 체력</para>
+    /// <para>int2 : 변경된 체력</para>
+    /// </summary>
     public event Action<int, int> OnMaxHPChanged;
+
+    /// <summary>
+    /// Sanity가 변경될 때 작동하는 함수
+    /// <para>int1 : 현재 정신력</para>
+    /// <para>int2 : 변경된 정신력</para>
+    /// </summary>
+    public event Action<int, int> OnSanityChanged;
 
     public Character(int id, int maxHp, List<Card> data)
     {
@@ -82,15 +90,15 @@ public abstract class Character : IDamageable, IBuffable
             int nowAP = SP;
             SP = Mathf.Max(0, SP - damage);
 
-            OnAPHit?.Invoke(damage, attacker);
-            OnAPChanged?.Invoke(nowAP, SP);
+            OnSPHit?.Invoke(damage, attacker);
+            OnSPChanged?.Invoke(nowAP, SP);
             return;
         }
         else if (SP <= damage)
         {
             SP = 0;
-            OnAPHit?.Invoke(SP, attacker);
-            OnAPChanged?.Invoke(SP, 0);
+            OnSPHit?.Invoke(SP, attacker);
+            OnSPChanged?.Invoke(SP, 0);
 
             damage -= SP;
 
@@ -99,18 +107,45 @@ public abstract class Character : IDamageable, IBuffable
         int nowHP = HP;
         HP = Mathf.Clamp(HP - damage, 0, MaxHP);
         OnHPHit?.Invoke(damage, attacker);
-        OnHPChanged?.Invoke(HP, MaxHP);
+        OnHPChanged?.Invoke(nowHP, HP);
+    }
+
+    /// <summary>
+    /// 상대가 방어에 성공했을 경우 반동 데미지를 받는 함수
+    /// </summary>
+    public void TakeRebound(int AP)
+    {
+        int reboundDamage = 0;
+
+        if (AP < 10)
+            reboundDamage = REBOUND_SANITY_COST;
+        else
+            reboundDamage = REBOUND_SANITY_COST + (AP / 10);
+        
+        int nowSanity = Sanity;
+
+        Sanity = Mathf.Clamp(Sanity - reboundDamage, MIN_SANITY, MAX_SANITY);
+
+        OnSanityChanged?.Invoke(nowSanity, Sanity);
+    }
+
+    public void TakeShieldPoint(int getSP)
+    {
+        int nowSP = SP;
+        SP += getSP;
+        
+        OnSPChanged?.Invoke(nowSP, SP);
     }
 
     public void SetMaxHP(int changeMaxHp)
     {
         MaxHP = changeMaxHp;
-        OnHPChanged?.Invoke(HP, MaxHP);
+        OnMaxHPChanged?.Invoke(MaxHP, changeMaxHp);
     }
 
     public void SetSanity(int changeSanity)
     {
-        Sanity = Mathf.Clamp(changeSanity, 0, 100);
+        Sanity = Mathf.Clamp(changeSanity, MIN_SANITY, MAX_SANITY);
     }
 
     public void TakeEffect(StatusEffect effect)

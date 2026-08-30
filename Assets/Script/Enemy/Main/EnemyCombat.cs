@@ -25,16 +25,27 @@ public class EnemyCombat : MonoBehaviour, ICombat
         BattleManager.Instance.RegisterEnemy(this);
     }
 
-    public bool[] CoinToss(Card card)
+    public bool[] CoinToss(Card card, int SanitySet = -1)
     {
         int coinCount = card.FinalCoin();
 
         bool[] result = new bool[coinCount];
         for (int i = 0; i < coinCount; i++)
         {
-            result[i] = Character.Sanity < Random.Range(0, 100);
+            result[i] = (SanitySet < 0 ? Character.Sanity : SanitySet) < Random.Range(0, 100); 
         }
 
         return result;
+    }
+
+    public int TotalValueByWin(Card card, int APDiscount = 0)
+    {
+        // 승리 시 밸류 + 남은 코인 * 코인 위력 리턴
+        return Mathf.Max(1, (card.Value + card.Coin * card.CoinPoint) - APDiscount);
+    }
+
+    public int APDiscountByLose(Card card)
+    {
+        return card.Value + card.Coin;
     }
 }

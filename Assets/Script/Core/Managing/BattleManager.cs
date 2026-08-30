@@ -51,8 +51,7 @@ public class BattleManager : MonoBehaviour
             [BattleStateType.TurnStart]= new TurnStartState(this),
             [BattleStateType.DrawPhase] = new DrawPhaseState(this),
             [BattleStateType.PlayerChoosePhase] = new PlayerChoosePhaseState(this),
-            [BattleStateType.PlayerComplete] = new PlayerCompleteState(this),
-            [BattleStateType.EnemyChoosePhase]= new EnemyChoosePhaseState(this),
+            [BattleStateType.BattleStart] = new BattleStartState(this),
             [BattleStateType.BattlePhase] = new BattlePhaseState(this),
             [BattleStateType.BattleEnd] = new BattleEndState(this),
             [BattleStateType.TurnEnd] = new TurnEndState(this),
@@ -313,20 +312,43 @@ public class BattleManager : MonoBehaviour
 
     public void BattleActionLogic(ICombat user, ICombat target, Card card, Card targetCard, CrashType flag)
     {
-        int damage = 0;
-
         switch(card.Type)
         {
             case CardType.Weapon:
+                
+                int APDiscount = 0;
+
+                // 방어에 의한 감쇄가 발생할 경우, 감쇄량 계산
+                if (flag == CrashType.Crash && targetCard.Type == CardType.Armor)
+                    APDiscount = target.APDiscountByLose(targetCard);
+                // 여기서 대미지 스킨 출력 명령 할 것, 대미지(방어구로 인한 경감시 경감됨! 표시 추가)
+                int damage = user.TotalValueByWin(card, APDiscount);
+
                 target.Character.TakeDamage(damage, user.Character);
                 break;
             case CardType.Armor:
-                target.Character.TakeDamage(damage, user.Character);
+
+                if(flag == CrashType.Crash && targetCard.Type == CardType.Weapon)
+                {
+                    int SP = target.TotalValueByWin(targetCard, 0);
+
+                    user.Character.TakeShieldPoint(SP);
+                    target.Character.TakeRebound(SP);
+                }
+                else
+                {
+
+                }
+
+                    
+                //target.Character.TakeDamage(damage, user.Character);
                 break;
             case CardType.Item:
                 
                 break;
         }
+
+        BattleTypeCheck().Forget();
     }
 
     public HandManager GetHandManager()

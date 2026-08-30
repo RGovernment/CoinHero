@@ -7,6 +7,7 @@ public static class Enums
         PlayerChoosePhase, 
         PlayerComplete,
         EnemyChoosePhase, 
+        BattleStart,
         BattlePhase, 
         BattleEnd, 
         TurnEnd , 

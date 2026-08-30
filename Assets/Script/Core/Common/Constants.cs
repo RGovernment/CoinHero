@@ -7,7 +7,7 @@ public static class Constants
 
     public static string STATUS_EFFECT_DATA = "StatusEffectData";
     public static string PLAYER_CARD_DATA = "PlayerCardData";
-    public static string Enemy_CARD_DATA = "EnemyCardData";
+    public static string ENEMY_CARD_DATA = "EnemyCardData";
     
 
     public static string VALUE = "Value";
@@ -22,8 +22,8 @@ public static class Constants
     public static string HAND_TAG = "Hand";
     public static string SLOT_TAG = "Slot";
 
-    public static int CoinFlipTimer = 500;
-    public static int CoinNextTimer = 300;
+    public static int COIN_FLIP_TIMER = 500;
+    public static int COIN_NEXT_TIMER = 300;
 
     public static int REBOUND_SANITY_COST = 5;
     public static int MAX_SANITY = 95;

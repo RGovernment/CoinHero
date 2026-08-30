@@ -1,3 +1,4 @@
+using UnityEngine;
 public class RoundStartState : IState
 {
 
@@ -14,6 +15,9 @@ public class RoundStartState : IState
 
     public void OnStart()
     {
+        Debug.Log("Round start");
+        manager.GetPlayerZone().CardZoneOpen();
+        manager.GetEnemyZone().CardZoneOpen();
     }
 
     public void OnStay()

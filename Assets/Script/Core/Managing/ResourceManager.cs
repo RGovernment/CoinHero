@@ -45,7 +45,7 @@ public class ResourceManager : MonoBehaviour
         string playerCardJson 
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + PLAYER_CARD_DATA).text;
         string enemyCardJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + Enemy_CARD_DATA).text;
+            = Resources.Load<TextAsset>(ASSET_DATA_PATH + ENEMY_CARD_DATA).text;
         string statusEffectJson
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + STATUS_EFFECT_DATA).text;
 

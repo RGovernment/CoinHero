@@ -1,3 +1,6 @@
+using UnityEngine;
+using static Enums;
+
 public class PlayerChoosePhaseState : IState
 {
 
@@ -14,9 +17,11 @@ public class PlayerChoosePhaseState : IState
 
     public void OnStart()
     {
+        Debug.Log("Player Choose Phase start");
     }
 
     public void OnStay()
     {
+
     }
 }

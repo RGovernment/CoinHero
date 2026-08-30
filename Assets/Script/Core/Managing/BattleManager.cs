@@ -23,55 +23,58 @@ public class BattleManager : MonoBehaviour
 
     [Header("사운드")]
     [SF] private AudioSource battleUISound;
-    [SF] private AudioClip atkSound;
+    public AudioClip atkSound;
 
     [Header("프리팹")]
-    [SF] 
-    private StateMachine state;
-    private Dictionary<BattleStateType, IState> stateGroup;
+    public StateMachine state;
+    public Dictionary<BattleStateType, IState> stateGroup;
 
     private Queue<Card> nowPlayerCards;
     private Queue<Card> nowEnemyCards;
+
+    public int enemyActionOrderCount = 0;
 
     private void Awake()
     {
         Instance = this;
         nowPlayerCards = new();
         nowEnemyCards = new();
+        enemyCombat = new List<EnemyCombat>();
     }
 
-    private async UniTaskVoid Start()
+    private void Start()
     {
-        enemyCombat = new List<EnemyCombat>();
         state = new();
 
         stateGroup = new Dictionary<BattleStateType, IState>()
         {
-            [BattleStateType.RoundStart] = new RoundStartState(this),
-            [BattleStateType.TurnStart]= new TurnStartState(this),
-            [BattleStateType.DrawPhase] = new DrawPhaseState(this),
-            [BattleStateType.PlayerChoosePhase] = new PlayerChoosePhaseState(this),
-            [BattleStateType.BattleStart] = new BattleStartState(this),
-            [BattleStateType.BattlePhase] = new BattlePhaseState(this),
-            [BattleStateType.BattleEnd] = new BattleEndState(this),
-            [BattleStateType.TurnEnd] = new TurnEndState(this),
-            [BattleStateType.RoundEnd] = new RoundEndState(this)
+            [BattleStateType.RoundStart] = new RoundStartState(Instance),
+            [BattleStateType.TurnStart]= new TurnStartState(Instance),
+            [BattleStateType.DrawPhase] = new DrawPhaseState(Instance),
+            [BattleStateType.PlayerChoosePhase] = new PlayerChoosePhaseState(Instance),
+            [BattleStateType.BattleStart] = new BattleStartState(Instance),
+            [BattleStateType.BattlePhase] = new BattlePhaseState(Instance),
+            [BattleStateType.BattleEnd] = new BattleEndState(Instance),
+            [BattleStateType.TurnEnd] = new TurnEndState(Instance),
+            [BattleStateType.RoundEnd] = new RoundEndState(Instance)
         };
-        
-        state.ChangeState(stateGroup[BattleStateType.RoundStart]);
-        
-        //테스트용
-        await UniTask.WaitUntil(() => playerCombat != null, 
-            cancellationToken: this.GetCancellationTokenOnDestroy());
-        PlayerZone.CardZoneOpen();
-        EnemyZone.CardZoneOpen();
-        DrawTest(playerCombat.Character);
 
+        state.ChangeState(stateGroup[BattleStateType.RoundStart]);
+        state.ChangeState(stateGroup[BattleStateType.TurnStart]);
+
+        DrawPhaseDelay().Forget();
     }
 
     private void Update()
     {
         state.Stay();
+    }
+
+    private async UniTask DrawPhaseDelay()
+    {
+        // 드로우 페이즈 애니메이션 도입 전까지 임시 딜레이
+        await UniTask.Delay(500);
+        state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
     }
 
     private void OnEnable()
@@ -90,31 +93,6 @@ public class BattleManager : MonoBehaviour
         PlayerZone.OnSelectCardComplete -= BattleStatusSet;
     }
 
-    public void DrawTest(Character player)
-    {
-        handManager.CreateAllCard(player.CardList, player);
-        handManager.ShuffleAndSettingHand();
-        handManager.HandActive();
-        handManager.UpdateHandPos();
-        EnemyCardOpen();
-    }
-
-
-    public void EnemyCardOpen()
-    {
-        List<Card> dummy = enemyHandManager.CardSelect(enemyCombat[0].Character.CardList);
-        
-        foreach (var item in dummy)
-        {
-            nowEnemyCards.Enqueue(item);
-            BehindCardData bd = enemyHandManager.CardCreate(item);
-            bd.SetTypeIcon();
-            EnemyZone.SetCardToEnemyZone(bd);
-        }
-
-
-    }
-
     public void SelectCard(CardData data)
     {
         PlayerZone.SetCardToZone(data).Forget();
@@ -122,44 +100,10 @@ public class BattleManager : MonoBehaviour
 
     public void BattleStatusSet()
     {
-        nowPlayerCards = PlayerZone.GetCardList();
-        // 적은 처음에 결정됨
-
-        PlayerZone.gameObject.SetActive(false);
-        EnemyZone.gameObject.SetActive(false);
-        PlayerZone.BtnClose();
-        BattleTypeCheck().Forget();
+        state.ChangeState(stateGroup[BattleStateType.BattleStart]);
     }
 
-    public async UniTaskVoid BattleTypeCheck()
-    {
-        
-        bool playerAble = nowPlayerCards.TryDequeue(out Card playerCard);
-        bool enemyAble = nowEnemyCards.TryDequeue(out Card enemyCard);
-
-        // 양쪽 다 사용이 불가능하다면 턴 종료
-        if (!playerAble && !enemyAble)
-        {
-            return;
-        }
-
-        if (!playerAble || !enemyAble)
-        {
-            Character attacker = playerAble ? playerCombat.Character : enemyCombat[0].Character;
-            Character defender = playerAble ? enemyCombat[0].Character : playerCombat.Character;
-            var card = playerAble ? playerCard : enemyCard;
-
-            await OneWayAction(attacker, card, defender);
-        }
-        else if (playerAble && enemyAble)
-        {
-            await ClashAction(playerCombat, playerCard, enemyCombat[0], enemyCard);
-        }
-
-        // 다음 스킬로 전환 시키기
-    }
-
-    /// <summary>
+/*    /// <summary>
     /// 아이템이나 일방 공격/방어를 했을 경우의 처리
     /// </summary>
     public async UniTask OneWayAction(Character attacker, Card attackerCard, Character defender)
@@ -198,7 +142,7 @@ public class BattleManager : MonoBehaviour
                 enemy.CoinUI.CoinFlip();
 
                 // 코인 결과를 보여주기 전 딜레이
-                await UniTask.Delay(CoinFlipTimer);
+                await UniTask.Delay(COIN_NEXT_TIMER);
 
                 // 코인 결과에 따른 UI 처리
                 for (int i = 0; i < coinCount; i++)
@@ -219,7 +163,7 @@ public class BattleManager : MonoBehaviour
                     }
 
                     // 코인을 순차적으로 보여주기 위해 다음 코인까지 딜레이
-                    await UniTask.Delay(CoinNextTimer);
+                    await UniTask.Delay(COIN_NEXT_TIMER);
                 }
 
                 // 플레이어 카드 코인 결과 계산
@@ -243,7 +187,7 @@ public class BattleManager : MonoBehaviour
                     // 무승부 처리
                     if (playerResult == enemyResult)
                     {
-                        await UniTask.Delay(CoinNextTimer);
+                        await UniTask.Delay(COIN_NEXT_TIMER);
                         continue;
                     }
                     else if (playerResult > enemyResult)
@@ -337,11 +281,10 @@ public class BattleManager : MonoBehaviour
                 }
                 else
                 {
-
+                    int SP = target.TotalValueByWin(targetCard, 0) / 2;
+                    user.Character.TakeShieldPoint(SP);
                 }
 
-                    
-                //target.Character.TakeDamage(damage, user.Character);
                 break;
             case CardType.Item:
                 
@@ -349,11 +292,66 @@ public class BattleManager : MonoBehaviour
         }
 
         BattleTypeCheck().Forget();
-    }
+    }*/
 
     public HandManager GetHandManager()
     {
         return handManager;
+    }
+
+    public EnemyHandManager GetEnemyHandManager()
+    {
+        return enemyHandManager;
+    }
+
+    public List<EnemyCombat> GetEnemyCombat()
+    {
+        return enemyCombat;
+    }
+
+    public int GetEnemyCombatCount()
+    {
+        return enemyCombat.Count;
+    }
+
+    public PlayerCombat GetPlayerCombat()
+    {
+        return playerCombat;
+    }
+
+    public SelectZone GetPlayerZone()
+    {
+        return PlayerZone;
+    }
+
+    public SelectZone GetEnemyZone()
+    {
+        return EnemyZone;
+    }           
+
+    public void SetNowPlayerCards(Queue<Card> cards)
+    {
+        nowPlayerCards = cards;
+    }
+
+    public void SetNowEnemyCards(Queue<Card> cards)
+    {
+        nowEnemyCards = cards;
+    }
+
+    public Queue<Card> GetNowPlayerCards()
+    {
+        return nowPlayerCards;
+    }
+
+    public Queue<Card> GetNowEnemyCards()
+    {
+        return nowEnemyCards;
+    }
+
+    public AudioSource GetBattleUISound()
+    {
+        return battleUISound;
     }
 
     public void RegisterPlayer(PlayerCombat player)

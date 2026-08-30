@@ -32,11 +32,15 @@ public class SelectZone : MonoBehaviour
         return count;
     }
 
+    private void Awake()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void Start()
     {
         cardList = new();
         ResetCardZone();
-        gameObject.SetActive(false);
     }
 
     public void ResetCardZone()
@@ -74,6 +78,7 @@ public class SelectZone : MonoBehaviour
         {
             EmptySlot[i].SetActive(true);
         }
+
         gameObject.SetActive(true);
         TurnEndBtn.gameObject.SetActive(true);
     }

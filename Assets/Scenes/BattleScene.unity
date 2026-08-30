@@ -1865,7 +1865,7 @@ MonoBehaviour:
   PlayerZone: {fileID: 1593545618}
   EnemyZone: {fileID: 1378262916}
   battleUISound: {fileID: 243913580}
-  atkSound: {fileID: 8300000, guid: 38b4533a57226ce4fbb8d743347b2f64, type: 3}
+  atkSound: {fileID: 8300000, guid: 6bd32ff029c5f7d469cf7519fe6756b8, type: 3}
 --- !u!4 &747545145
 Transform:
   m_ObjectHideFlags: 0

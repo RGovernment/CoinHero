@@ -4,7 +4,7 @@
     "Id": 1000,
     "Type": "Weapon",
     "Value": 4,
-    "Coin": 5,
+    "Coin": 3,
     "CoinPoint": 1,
     "CurrentUpgradeLv": 0,
     "MaxUpgradeLv": 3,
@@ -23,36 +23,10 @@
       }
     ],
     "Effect": [],
-    "Description": "평범한 장검"
+    "Description": "평범한 장검."
   },
   {
-    "Name": "방패",
-    "Id": 2000,
-    "Type": "Armor",
-    "Value": 4,
-    "Coin": 1,
-    "CoinPoint": 2,
-    "CurrentUpgradeLv": 0,
-    "MaxUpgradeLv": 3,
-    "UpgradeData": [
-      {
-        "statType": "Value",
-        "value": 1
-      },
-      {
-        "statType": "Value",
-        "value": 2
-      },
-      {
-        "statType": "Coin",
-        "value": 1
-      }
-    ],
-    "Effect": [],
-    "Description": "평범한 방패"
-  },
-  {
-    "Name": "철퇴",
+    "Name": "망치",
     "Id": 1001,
     "Type": "Weapon",
     "Value": 2,
@@ -75,7 +49,111 @@
       }
     ],
     "Effect": [],
-    "Description": "강력한 철퇴. 다루기 어렵다."
+    "Description": "강력한 망치. 다루기 어렵다."
+  },
+  {
+    "Name": "단검",
+    "Id": 1002,
+    "Type": "Weapon",
+    "Value": 1,
+    "Coin": 4,
+    "CoinPoint": 1,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Coin",
+        "value": 1
+      },
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      }
+    ],
+    "Effect": [],
+    "Description": "짧은 단검."
+  },
+  {
+    "Name": "작은 도끼",
+    "Id": 1003,
+    "Type": "Weapon",
+    "Value": 1,
+    "Coin": 2,
+    "CoinPoint": 1,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Coin",
+        "value": 1
+      },
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      }
+    ],
+    "Effect": [],
+    "Description": "짧은 단검."
+  },
+  {
+    "Name": "나무 방패",
+    "Id": 2000,
+    "Type": "Armor",
+    "Value": 4,
+    "Coin": 1,
+    "CoinPoint": 2,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "Coin",
+        "value": 1
+      }
+    ],
+    "Effect": [],
+    "Description": "낡은 나무 방패."
+  },
+  {
+    "Name": "마법 방패",
+    "Id": 2001,
+    "Type": "Armor",
+    "Value": 1,
+    "Coin": 3,
+    "CoinPoint": 3,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      }
+    ],
+    "Effect": [],
+    "Description": "다루기 어렵지만 마법의 효과는 확실하다."
   },
   {
     "Name": "빵",
@@ -107,25 +185,39 @@
         "Duration": 0
       }
     ],
-    "Description": "사용자 {InstantHeal} +[Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
+    "Description": "사용자에게 {InstantHeal} : [Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
   },
   {
-    "Name": "은시계",
-    "Id": 4000,
-    "Type": "Special",
-    "Value": 0,
-    "Coin": 0,
-    "CoinPoint": 0,
+    "Name": "횃불",
+    "Id": 3001,
+    "Type": "Item",
+    "Value": 6,
+    "Coin": 1,
+    "CoinPoint": 1,
     "CurrentUpgradeLv": 0,
-    "MaxUpgradeLv": 0,
-    "UpgradeData": [],
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Value",
+        "value": 2
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 3
+      },
+      {
+        "statType": "Value",
+        "value": 4
+      }
+    ],
     "Effect": [
       {
-        "EffectId": 102,
-        "Value": 1,
+        "EffectId": 201,
+        "Value": -1,
         "Duration": 0
       }
     ],
-    "Description": "이번 턴 동안 {ExtraSlot} +1"
+    "Description": "대상에게 {InstantDamage} : [Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
   }
+
 ]

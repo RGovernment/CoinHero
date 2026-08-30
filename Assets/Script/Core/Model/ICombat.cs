@@ -2,6 +2,7 @@ using UnityEngine;
 
 public interface ICombat
 {
+    public Character Character { get; set; }
     public BattleCoinUI CoinUI { get; set; }
     /// <summary>
     /// 코인 출력, 세 코인 전부 

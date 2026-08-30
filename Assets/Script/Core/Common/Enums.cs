@@ -49,4 +49,6 @@ public static class Enums
     public enum StatType { Value, CoinPoint, Coin }
     // Json 파일로의 저장시 참고용
     public enum EffectType { ValueUp, ValueDown, InstantHeal, InstantDamage, ExtraSlot }
+
+    public enum CrashType { Crash, OneWay }
 }

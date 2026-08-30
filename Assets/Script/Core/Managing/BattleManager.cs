@@ -66,7 +66,7 @@ public class BattleManager : MonoBehaviour
             cancellationToken: this.GetCancellationTokenOnDestroy());
         PlayerZone.CardZoneOpen();
         EnemyZone.CardZoneOpen();
-        DrawTest(playerCombat.Player);
+        DrawTest(playerCombat.Character);
 
     }
 
@@ -103,7 +103,7 @@ public class BattleManager : MonoBehaviour
 
     public void EnemyCardOpen()
     {
-        List<Card> dummy = enemyHandManager.CardSelect(enemyCombat[0].Enemy.CardList);
+        List<Card> dummy = enemyHandManager.CardSelect(enemyCombat[0].Character.CardList);
         
         foreach (var item in dummy)
         {
@@ -146,8 +146,8 @@ public class BattleManager : MonoBehaviour
 
         if (!playerAble || !enemyAble)
         {
-            Character attacker = playerAble ? playerCombat.Player : enemyCombat[0].Enemy;
-            Character defender = playerAble ? enemyCombat[0].Enemy : playerCombat.Player;
+            Character attacker = playerAble ? playerCombat.Character : enemyCombat[0].Character;
+            Character defender = playerAble ? enemyCombat[0].Character : playerCombat.Character;
             var card = playerAble ? playerCard : enemyCard;
 
             await OneWayAction(attacker, card, defender);
@@ -170,14 +170,19 @@ public class BattleManager : MonoBehaviour
 
     public async UniTask ClashAction(PlayerCombat player, Card playerCard, EnemyCombat enemy, Card enemyCard)
     {
-        if ((   
+        if ((
             playerCard.Type == CardType.Weapon ||
             playerCard.Type == CardType.Armor
-            )&&(
+            ) && (
             enemyCard.Type == CardType.Weapon ||
             enemyCard.Type == CardType.Armor
             ))
         {
+            Card winCard = null;
+            Card loseCard = null;
+            ICombat winCombat = null;
+            ICombat loseCombat = null;
+
             // 합 진행 전 UI 및 코인 세팅
             player.CoinUI.CoinSet(player.transform, playerCard);
             enemy.CoinUI.CoinSet(player.transform, enemyCard);
@@ -248,8 +253,15 @@ public class BattleManager : MonoBehaviour
                         await enemy.CoinUI.CoinBroken();
 
                         // 적 코인이 0이 되면 더 이상 진행하지 않고 종료
-                        if (enemyCard.Coin <= 0)  break;
-                        
+                        if (enemyCard.Coin <= 0)
+                        {
+                            winCard = playerCard;
+                            loseCard = enemyCard;
+                            winCombat = player;
+                            loseCombat = enemy;
+                            break;
+                        }
+
                     }
                     else if (playerResult < enemyResult)
                     {
@@ -257,10 +269,84 @@ public class BattleManager : MonoBehaviour
                         await player.CoinUI.CoinBroken();
 
                         // 플레이어 코인이 0이 되면 더 이상 진행하지 않고 종료
-                        if (playerCard.Coin <= 0) break;
+                        if (playerCard.Coin <= 0)
+                        {
+                            winCard = enemyCard;
+                            winCombat = enemy;
+                            loseCard = playerCard;
+                            loseCombat = player;
+                            break;
+                        }
                     }
                 }
             }
+
+            BattleActionLogic(winCombat, loseCombat, winCard, loseCard, CrashType.Crash);
+        }
+
+        // 스페셜 카드는 합을 진행하지 않으므로 여기서 계산 배제
+        if (playerCard.Type == CardType.Item && enemyCard.Type == CardType.Item)
+        {
+            // 둘다 아이템이므로 플레이어 먼저 효과를 처리 하고, 이후 적 효과 처리 로직 작동
+            // 조건 처리 후 BattleActionLogic 작동, 항상 플레이어 먼저
+
+            BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
+            BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
+        }
+
+        if (playerCard.Type == CardType.Item || enemyCard.Type == CardType.Item)
+        {
+            // 한쪽이 아이템이면 아이템 효과를 먼저 처리하고, 이후 상대 일방 공격 진행
+
+            if(playerCard.Type == CardType.Item)
+            {
+                BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
+                BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
+            }
+            else
+            {
+                BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
+                BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
+            }
+        }
+    }
+
+    public void BattleActionLogic(ICombat user, ICombat target, Card card, Card targetCard, CrashType flag)
+    {
+        switch(card.Type)
+        {
+            case CardType.Weapon:
+                WeaponAction(user, target, card, targetCard);
+                break;
+            case CardType.Armor:
+                ArmorAction(user, target, card, targetCard);
+                break;
+            case CardType.Item:
+                ItemAction(user, target, card, targetCard);
+                break;
+            case CardType.Special:
+                SpecialAction(user, target, card, targetCard);
+                break;
+        }
+
+        if (card.Type == CardType.Weapon)
+        {
+            // 상대쪽이 무기일 경우
+            if(targetCard.Type == CardType.Weapon)
+            {
+
+
+                target.Character.TakeDamage(target, user.Character);
+            }
+
+            target.Character.TakeDamage(target, user.Character);
+        }else if(card.Type == CardType.Armor)
+        {
+            
+        }
+        else if (card.Type == CardType.Item)
+        {
+            target.Character.TakeDamage(target, user.Character);
         }
     }
 

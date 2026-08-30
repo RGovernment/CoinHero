@@ -4,7 +4,7 @@ using SF = UnityEngine.SerializeField;
 
 public class EnemyCombat : MonoBehaviour, ICombat
 {
-    public Enemy Enemy { get; set; }
+    public Character Character { get; set; }
     [SF] private BattleCoinUI coinUI;
     public BattleCoinUI CoinUI { get => coinUI; set => coinUI = value; }
 
@@ -16,7 +16,7 @@ public class EnemyCombat : MonoBehaviour, ICombat
             cd.Add(item.Value);
         }
 
-        Enemy = new Enemy(50, 50, cd);
+        Character = new Enemy(50, 50, cd);
         CoinUI.gameObject.SetActive(false);
     }
 
@@ -32,7 +32,7 @@ public class EnemyCombat : MonoBehaviour, ICombat
         bool[] result = new bool[coinCount];
         for (int i = 0; i < coinCount; i++)
         {
-            result[i] = Enemy.Sanity < Random.Range(0, 100);
+            result[i] = Character.Sanity < Random.Range(0, 100);
         }
 
         return result;

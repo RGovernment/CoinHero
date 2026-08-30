@@ -66,6 +66,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         coinValueText.text = coinPoint.ToString();
         coinCountText.text = $"x{coin}";
         typeIcon.sprite = typeIconSprite[typeInt];
+        itemImage.sprite = ResourceManager.Instance.CardImageData[cardData.Id];
 
     }
 

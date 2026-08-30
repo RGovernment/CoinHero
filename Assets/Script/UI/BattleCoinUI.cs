@@ -26,6 +26,7 @@ public class BattleCoinUI : MonoBehaviour
         nameText.text = card.Name;
         valueText.text = card.Value.ToString();
         nowVal = card.Value;
+        iconImage.sprite = ResourceManager.Instance.CardImageData[card.Id];
         transform.SetParent(chara);
 
         gameObject.SetActive(true);

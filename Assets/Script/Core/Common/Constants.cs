@@ -3,9 +3,13 @@ using UnityEngine;
 public static class Constants
 {
     public static string ASSET_DATA_PATH = "Data/";
+    public static string CARD_IMAGE_PATH = "IgnoreImage/CardImage/";
+
     public static string STATUS_EFFECT_DATA = "StatusEffectData";
     public static string PLAYER_CARD_DATA = "PlayerCardData";
     public static string Enemy_CARD_DATA = "EnemyCardData";
+    
+
     public static string VALUE = "Value";
     public static string DURATION = "Duration";
     public static string COIN_POINT = "CoinPoint";

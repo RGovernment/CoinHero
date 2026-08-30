@@ -313,40 +313,19 @@ public class BattleManager : MonoBehaviour
 
     public void BattleActionLogic(ICombat user, ICombat target, Card card, Card targetCard, CrashType flag)
     {
+        int damage = 0;
+
         switch(card.Type)
         {
             case CardType.Weapon:
-                WeaponAction(user, target, card, targetCard);
+                target.Character.TakeDamage(damage, user.Character);
                 break;
             case CardType.Armor:
-                ArmorAction(user, target, card, targetCard);
+                target.Character.TakeDamage(damage, user.Character);
                 break;
             case CardType.Item:
-                ItemAction(user, target, card, targetCard);
+                
                 break;
-            case CardType.Special:
-                SpecialAction(user, target, card, targetCard);
-                break;
-        }
-
-        if (card.Type == CardType.Weapon)
-        {
-            // 상대쪽이 무기일 경우
-            if(targetCard.Type == CardType.Weapon)
-            {
-
-
-                target.Character.TakeDamage(target, user.Character);
-            }
-
-            target.Character.TakeDamage(target, user.Character);
-        }else if(card.Type == CardType.Armor)
-        {
-            
-        }
-        else if (card.Type == CardType.Item)
-        {
-            target.Character.TakeDamage(target, user.Character);
         }
     }
 

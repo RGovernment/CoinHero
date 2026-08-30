@@ -82,15 +82,15 @@ public abstract class Character : IDamageable, IBuffable
             int nowAP = SP;
             SP = Mathf.Max(0, SP - damage);
 
-            OnAPHit(damage, attacker);
-            OnAPChanged(nowAP, SP);
+            OnAPHit?.Invoke(damage, attacker);
+            OnAPChanged?.Invoke(nowAP, SP);
             return;
         }
         else if (SP <= damage)
         {
             SP = 0;
-            OnAPHit(SP, attacker);
-            OnAPChanged(SP, 0);
+            OnAPHit?.Invoke(SP, attacker);
+            OnAPChanged?.Invoke(SP, 0);
 
             damage -= SP;
 

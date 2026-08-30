@@ -12,6 +12,7 @@ public class ResourceManager : MonoBehaviour
     public static ResourceManager Instance { get; private set; }
     public Dictionary<int, Card> CardData { get; private set; }
     public Dictionary<int, Card> EnemyCardData { get; private set; }
+    public Dictionary<int, Sprite> CardImageData { get; private set; }
 
     public Dictionary<int, StatusEffectData> EffectData { get; private set; }
     private void Awake()
@@ -25,9 +26,14 @@ public class ResourceManager : MonoBehaviour
         {
              Destroy(gameObject);
         }
+
         CardData = new();
         EffectData = new();
+        EnemyCardData = new();
+        CardImageData = new();
+
         ResourceLoad();
+        CardImageLoad();
     }
 
     /// <summary>
@@ -54,5 +60,22 @@ public class ResourceManager : MonoBehaviour
         CardData = cardList.ToDictionary(x => x.Id);
         EnemyCardData = enemyCardList.ToDictionary(x => x.Id);
         EffectData = effectList.ToDictionary(x => x.Id);
+    }
+
+    private void CardImageLoad()
+    {
+        foreach (var item in CardData)
+        {
+            int id = item.Value.Id;
+            Sprite sprite = Resources.Load<Sprite>(CARD_IMAGE_PATH + $"Card_{id}");
+            CardImageData[id] = sprite;
+        }
+
+        foreach (var item in EnemyCardData)
+        {
+            int id = item.Value.Id;
+            Sprite sprite = Resources.Load<Sprite>(CARD_IMAGE_PATH + $"Card_{id}");
+            CardImageData[id] = sprite;
+        }
     }
 }

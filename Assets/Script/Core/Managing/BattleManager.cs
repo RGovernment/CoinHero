@@ -1,11 +1,12 @@
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static Constants;
 using static Enums;
 using SF = UnityEngine.SerializeField;
-using static Constants;
 
 public class BattleManager : MonoBehaviour
 {
@@ -21,6 +22,12 @@ public class BattleManager : MonoBehaviour
     [SF] private SelectZone PlayerZone;
     [SF] private SelectZone EnemyZone;
 
+    [Header("스폰 위치")]
+    public Transform playerSpawnPoint;
+    public Transform playerBattlePoint;
+    public Transform[] enemySpawnPoint;
+    public Transform enemyBattlePoint;
+
     [Header("사운드")]
     [SF] private AudioSource battleUISound;
     public AudioClip atkSound;
@@ -32,7 +39,7 @@ public class BattleManager : MonoBehaviour
     private Queue<Card> nowPlayerCards;
     private Queue<Card> nowEnemyCards;
 
-
+    public Transform enemyBeforePos;
     public int enemyActionOrderCount = 0;
 
     private void Awake()
@@ -101,6 +108,33 @@ public class BattleManager : MonoBehaviour
 
     public void BattleStatusSet()
     {
+        BatttleZoneMove().Forget();
+    }
+
+    public async UniTask BatttleZoneMove()
+    {
+        Sequence seq = DOTween.Sequence();
+        PlayerCombat player = playerCombat;
+        EnemyCombat enemy = enemyCombat[GetEnemyCombatOrderCount()];
+        enemyBeforePos = enemy.transform;
+        player.AnimatorManager.OnMove();
+        enemy.AnimatorManager.OnMove();
+        // 이동 연출
+        await
+            seq
+            .Join(
+                player.transform.DOMove(
+                    playerBattlePoint.position, MOVE_TIMER)
+            )
+            .Join(
+                enemy.transform.DOMove(
+                    enemyBattlePoint.position, MOVE_TIMER)
+            ).ToUniTask();
+        
+
+        player.AnimatorManager.OnIdle();
+        enemy.AnimatorManager.OnIdle();
+
         state.ChangeState(stateGroup[BattleStateType.BattleStart]);
     }
 
@@ -137,9 +171,9 @@ public class BattleManager : MonoBehaviour
         return enemyCombat;
     }
 
-    public int GetEnemyCombatCount()
+    public int GetEnemyCombatOrderCount()
     {
-        return enemyCombat.Count;
+        return enemyActionOrderCount % enemyCombat.Count;
     }
 
     public PlayerCombat GetPlayerCombat()

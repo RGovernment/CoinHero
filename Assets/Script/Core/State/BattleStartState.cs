@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 using static Enums;
+using static Constants;
 
 public class BattleStartState : IState
 {
@@ -21,6 +23,7 @@ public class BattleStartState : IState
         Debug.Log("BattleStartState start");
         manager.GetPlayerZone().gameObject.SetActive(false);
         manager.GetEnemyZone().gameObject.SetActive(false);
+        
         manager.GetPlayerZone().BtnClose();
 
         BattleTypeCheck().Forget();
@@ -33,10 +36,8 @@ public class BattleStartState : IState
 
     public async UniTaskVoid BattleTypeCheck()
     {
-
-        // 연출 필요시 이곳에 추가
-        await UniTask.Delay(0);
-
+        // 전투 순회 연출 필요할 경우 여기에 추가
+        await UniTask.DelayFrame(0);
 
         manager.state.ChangeState(manager.stateGroup[BattleStateType.BattlePhase]);
     }

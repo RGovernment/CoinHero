@@ -6,10 +6,12 @@ using SF = UnityEngine.SerializeField;
 public class PlayerCombat : MonoBehaviour, ICombat
 {
     public Character Character { get; set; }
-    
+
+    [SF] private Transform baseCharaObj;
     [SF] private Animator animator;
     [SF] private BattleCoinUI coinUI;
     [SF] private CombatAnimatorManager animatorManager;
+    public Transform BaseCharaObj { get => baseCharaObj; set => baseCharaObj = value; }
     public CombatAnimatorManager AnimatorManager { get => animatorManager; set => animatorManager = value; }
     public BattleCoinUI CoinUI { get => coinUI; set => coinUI = value; }
     public Animator Animator { get => animator; set => animator = value; }

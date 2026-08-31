@@ -4,10 +4,11 @@ using SF = UnityEngine.SerializeField;
 
 public class CombatAnimatorManager : MonoBehaviour
 {
+    private static readonly int _7CustomHash = Animator.StringToHash("7_Custom");
     private static readonly int _6OtherHash = Animator.StringToHash("6_Other");
     private static readonly int _5DebuffHash = Animator.StringToHash("5_Debuff");
     private static readonly int _4DeathHash = Animator.StringToHash("4_Death");
-    private static readonly int _3DamageHash = Animator.StringToHash("3_Damage");
+    private static readonly int _3DamageHash = Animator.StringToHash("3_Damaged");
     private static readonly int _2AttackHash = Animator.StringToHash("2_Attack");
     private static readonly int _1MoveHash = Animator.StringToHash("1_Move");
 
@@ -56,6 +57,11 @@ public class CombatAnimatorManager : MonoBehaviour
         animator.SetTrigger(_6OtherHash);
     }
 
+    public void OnCustom()
+    {
+        animator.SetTrigger(_7CustomHash);
+    }
+
     public void OnAttacker()
     {
         animationTriggerAttacker?.TrySetResult();
@@ -63,7 +69,6 @@ public class CombatAnimatorManager : MonoBehaviour
 
     public void OnDefender()
     {
-        Debug.Log("작동함");
         animationTriggerDefender?.TrySetResult();
     }
 }

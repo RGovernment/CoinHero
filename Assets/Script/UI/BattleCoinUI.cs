@@ -59,7 +59,6 @@ public class BattleCoinUI : MonoBehaviour
         }
 
         int makeCount = card.FinalCoin();
-        Debug.Log(card.ToString());
 
         for (int i = 0; i < makeCount; i++) 
         {

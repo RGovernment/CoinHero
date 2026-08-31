@@ -31,7 +31,7 @@ public class BattlePhaseState : IState
         bool playerAble = manager.GetNowPlayerCards().TryDequeue(out Card playerCard);
         bool enemyAble = manager.GetNowEnemyCards().TryDequeue(out Card enemyCard);
 
-        EnemyCombat selectEnemy = manager.GetEnemyCombat()[manager.enemyActionOrderCount % manager.GetEnemyCombatCount()];
+        EnemyCombat selectEnemy = manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()];
 
         if (!playerAble || !enemyAble)
         {
@@ -156,30 +156,30 @@ public class BattlePhaseState : IState
                 }
             }
 
-            BattleActionLogic(winCombat, loseCombat, winCard, loseCard, CrashType.Crash);
+            await BattleActionLogic(winCombat, loseCombat, winCard, loseCard, CrashType.Crash);
         }
 
         if (playerCard.Type == CardType.Item && enemyCard.Type == CardType.Item)
         {
-            BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
-            BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
+            await BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
+            await BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
         }
         else if (playerCard.Type == CardType.Item || enemyCard.Type == CardType.Item)
         {
             if (playerCard.Type == CardType.Item)
             {
-                BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
-                BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
+                await BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
+                await BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
             }
             else
             {
-                BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
-                BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
+                await BattleActionLogic(enemy, player, enemyCard, playerCard, CrashType.OneWay);
+                await BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay);
             }
         }
     }
 
-    public void BattleActionLogic(ICombat user, ICombat target, Card card, Card targetCard, CrashType flag)
+    public async UniTask BattleActionLogic(ICombat user, ICombat target, Card card, Card targetCard, CrashType flag)
     {
         switch (card.Type)
         {
@@ -190,6 +190,17 @@ public class BattlePhaseState : IState
 
                 int damage = user.TotalValueByWin(card, APDiscount);
                 target.Character.TakeDamage(damage, user.Character);
+
+                user.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
+                target.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
+                user.AnimatorManager.OnAttack();
+                target.AnimatorManager.OnDamage();
+
+                await UniTask.WhenAll(
+                    user.AnimatorManager.animationTriggerAttacker.Task,
+                    target.AnimatorManager.animationTriggerDefender.Task
+                );
+
                 break;
 
             case CardType.Armor:
@@ -204,6 +215,12 @@ public class BattlePhaseState : IState
                     int SP = target.TotalValueByWin(targetCard, 0) / 2;
                     user.Character.TakeShieldPoint(SP);
                 }
+
+                user.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
+                user.AnimatorManager.OnCustom();
+
+                await user.AnimatorManager.animationTriggerDefender.Task;
+                
                 break;
 
             case CardType.Item:

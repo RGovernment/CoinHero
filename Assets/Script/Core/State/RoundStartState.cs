@@ -23,9 +23,36 @@ public class RoundStartState : IState
         {
             item.Character.OnDead += manager.EnemyRemove;
         }
+        CharaPosSet();
     }
 
     public void OnStay()
     {
+    }
+
+    public void CharaPosSet()
+    {
+        manager.GetPlayerCombat().transform.position = manager.playerSpawnPoint.position;
+        int enemyCount = manager.GetEnemyCombat().Count;
+        if (enemyCount == 1)
+            manager.GetEnemyCombat()[0].transform.position
+                = manager.enemySpawnPoint[0].position;
+        else if (enemyCount == 2)
+        {
+            manager.GetEnemyCombat()[0].transform.position
+                = manager.enemySpawnPoint[1].position;
+            manager.GetEnemyCombat()[1].transform.position
+                = manager.enemySpawnPoint[2].position;
+        }
+        else if (enemyCount == 3) 
+        {
+            for (int i = 0; i < enemyCount; i++)
+            {
+                manager.GetEnemyCombat()[i].transform.position 
+                    = manager.enemySpawnPoint[i].position;
+            }
+        }
+            
+        
     }
 }

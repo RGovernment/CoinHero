@@ -7,6 +7,7 @@ public interface ICombat
     public BattleCoinUI CoinUI { get; set; }
     public CombatAnimatorManager AnimatorManager { get; set; }
     public Animator Animator { get; set; }
+    public Transform BaseCharaObj { get; set; }
 
     /// <summary>
     /// 코인 출력, 세 코인 전부 

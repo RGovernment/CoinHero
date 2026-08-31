@@ -45,13 +45,13 @@ public class DrawPhaseState : IState
 
     public void EnemyCardOpen()
     {
-        if (manager.GetEnemyCombatCount() == 0)
+        if (manager.GetEnemyCombat().Count == 0)
         {
             return;
         }
 
         List<Card> dummy = manager.GetEnemyHandManager()
-            .CardSelect(manager.GetEnemyCombat()[manager.enemyActionOrderCount % manager.GetEnemyCombatCount()]
+            .CardSelect(manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()]
             .Character.CardList);
 
         manager.GetNowEnemyCards().Clear();

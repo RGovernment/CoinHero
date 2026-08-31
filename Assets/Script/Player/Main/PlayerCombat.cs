@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using SF = UnityEngine.SerializeField;
@@ -5,8 +6,13 @@ using SF = UnityEngine.SerializeField;
 public class PlayerCombat : MonoBehaviour, ICombat
 {
     public Character Character { get; set; }
+    
+    [SF] private Animator animator;
     [SF] private BattleCoinUI coinUI;
+    [SF] private CombatAnimatorManager animatorManager;
+    public CombatAnimatorManager AnimatorManager { get => animatorManager; set => animatorManager = value; }
     public BattleCoinUI CoinUI { get => coinUI; set => coinUI = value; }
+    public Animator Animator { get => animator; set => animator = value; }
 
     private void Awake()
     {
@@ -19,6 +25,7 @@ public class PlayerCombat : MonoBehaviour, ICombat
 
         Character = new Player(10, 50, cd);
         CoinUI.gameObject.SetActive(false);
+        animatorManager.Combat = this;
     }
 
     private void Start()

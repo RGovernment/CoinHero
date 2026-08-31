@@ -100,8 +100,14 @@
         "value": 1
       }
     ],
-    "Effect": [],
-    "Description": "짧은 단검."
+    "Effect": [
+      {
+        "EffectId": 203,
+        "Value": 1,
+        "Duration": 0
+      }
+    ],
+    "Description": "{ItemCounter}"
   },
   {
     "Name": "나무 방패",

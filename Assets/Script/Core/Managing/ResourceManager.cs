@@ -78,4 +78,16 @@ public class ResourceManager : MonoBehaviour
             CardImageData[id] = sprite;
         }
     }
+
+    private Card GetCardData(int id)
+    {
+        if(id >= 1000 && id < 5000)
+        {
+            return CardData[id];
+        }
+        else
+        {
+            return EnemyCardData[id];
+        }
+    }
 }

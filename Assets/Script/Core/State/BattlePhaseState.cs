@@ -7,7 +7,6 @@ public class BattlePhaseState : IState
 {
 
     private BattleManager manager;
-
     public BattlePhaseState(BattleManager manager)
     {
         this.manager = manager;
@@ -69,6 +68,9 @@ public class BattlePhaseState : IState
 
             while (true)
             {
+                
+                
+
                 bool[] playerCoins = player.CoinToss(playerCard);
                 bool[] enemyCoins = enemy.CoinToss(enemyCard);
 
@@ -95,13 +97,33 @@ public class BattlePhaseState : IState
 
                 if (playerResult == enemyResult)
                 {
-                    await UniTask.Delay(COIN_NEXT_TIMER);
+                    player.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
+                    enemy.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
+                    player.AnimatorManager.OnAttack();
+                    enemy.AnimatorManager.OnAttack();
+
+                    await UniTask.WhenAll(
+                        player.AnimatorManager.animationTriggerAttacker.Task,
+                        enemy.AnimatorManager.animationTriggerAttacker.Task
+                    );
+
                     continue;
                 }
                 else if (playerResult > enemyResult)
                 {
+                    player.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
+                    enemy.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
                     enemyCard.Coin--;
-                    await enemy.CoinUI.CoinBroken();
+                    player.AnimatorManager.OnAttack();
+                    
+                    await player.AnimatorManager.animationTriggerAttacker.Task;
+
+                    enemy.AnimatorManager.OnOther();
+
+                    await UniTask.WhenAll(
+                        enemy.AnimatorManager.animationTriggerDefender.Task,
+                        enemy.CoinUI.CoinBroken()
+                    );
 
                     if (enemyCard.Coin <= 0)
                     {
@@ -112,8 +134,18 @@ public class BattlePhaseState : IState
                 }
                 else
                 {
+                    player.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
+                    enemy.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
+
                     playerCard.Coin--;
-                    await player.CoinUI.CoinBroken();
+
+                    enemy.AnimatorManager.OnAttack();
+                    await enemy.AnimatorManager.animationTriggerAttacker.Task;
+                    player.AnimatorManager.OnOther();
+                    await UniTask.WhenAll(
+                        player.AnimatorManager.animationTriggerDefender.Task,
+                        player.CoinUI.CoinBroken()
+                    );
 
                     if (playerCard.Coin <= 0)
                     {

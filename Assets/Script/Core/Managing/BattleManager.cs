@@ -32,6 +32,7 @@ public class BattleManager : MonoBehaviour
     private Queue<Card> nowPlayerCards;
     private Queue<Card> nowEnemyCards;
 
+
     public int enemyActionOrderCount = 0;
 
     private void Awake()
@@ -72,6 +73,7 @@ public class BattleManager : MonoBehaviour
     {
         // 드로우 페이즈 애니메이션 도입 전까지 임시 딜레이
         await UniTask.DelayFrame(1);
+        playerCombat.Character.OnDead += PlayerDead;
         state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
     }
 
@@ -81,7 +83,6 @@ public class BattleManager : MonoBehaviour
         PlayerZone.OnCancelCard += handManager.HandActive;
         PlayerZone.OnCancelCard += handManager.UpdateHandPos;
         PlayerZone.OnSelectCardComplete += BattleStatusSet;
-        playerCombat.Character.OnDead += PlayerDead;
     }
     
 
@@ -91,7 +92,6 @@ public class BattleManager : MonoBehaviour
         PlayerZone.OnCancelCard -= handManager.HandActive;
         PlayerZone.OnCancelCard -= handManager.UpdateHandPos;
         PlayerZone.OnSelectCardComplete -= BattleStatusSet;
-        playerCombat.Character.OnDead -= PlayerDead;
     }
 
     public void SelectCard(CardData data)
@@ -106,7 +106,8 @@ public class BattleManager : MonoBehaviour
 
     public void PlayerDead(Character chara)
     {
-        // 사망 모션 작동 후 처리
+        playerCombat.AnimatorManager.OnDead().Forget();
+        playerCombat.Character.OnDead -= PlayerDead;
     }
 
     public void EnemyRemove(Character chara)
@@ -114,6 +115,9 @@ public class BattleManager : MonoBehaviour
         // 사망 모션 작동 후 처리
 
         int index = enemyCombat.FindIndex(x => x.Character.Id == chara.Id);
+
+        enemyCombat[index].AnimatorManager.OnDead().Forget();
+
         enemyCombat[index].Character.OnDead -= EnemyRemove;
         enemyCombat.RemoveAt(index);
     }

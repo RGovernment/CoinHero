@@ -58,5 +58,5 @@ public static class Enums
 
 
     // Json 파일로의 저장시 참고용
-    public enum EffectType { ValueUp, ValueDown, InstantHeal, InstantDamage, ExtraSlot, Burn }
+    public enum EffectType { ValueUp, ValueDown, InstantHeal, InstantDamage, ExtraSlot, Burn, ItemCounter }
 }

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using SF = UnityEngine.SerializeField;
@@ -5,8 +6,12 @@ using SF = UnityEngine.SerializeField;
 public class EnemyCombat : MonoBehaviour, ICombat
 {
     public Character Character { get; set; }
+    [SF] private Animator animator;
     [SF] private BattleCoinUI coinUI;
+    [SF] private CombatAnimatorManager animatorManager;
+    public CombatAnimatorManager AnimatorManager { get => animatorManager; set => animatorManager = value; }
     public BattleCoinUI CoinUI { get => coinUI; set => coinUI = value; }
+    public Animator Animator { get => animator; set => animator = value; }
 
     private void Awake()
     {
@@ -18,6 +23,8 @@ public class EnemyCombat : MonoBehaviour, ICombat
 
         Character = new Enemy(50, 20, cd);
         CoinUI.gameObject.SetActive(false);
+        animatorManager.Combat = this;
+
     }
 
     private void Start()
@@ -46,6 +53,14 @@ public class EnemyCombat : MonoBehaviour, ICombat
 
     public int APDiscountByLose(Card card)
     {
-        return card.Value + card.Coin;
+        int coinVal = 0;
+        if(card.Id >= 1000 && card.Id < 5000)
+            coinVal = ResourceManager.Instance.CardData[card.Id].Coin;
+
+        else if(card.Id >= 5000 && card.Id < 9000)
+            coinVal = ResourceManager.Instance.EnemyCardData[card.Id].Coin;
+        
+        
+        return card.Value + coinVal;
     }
 }

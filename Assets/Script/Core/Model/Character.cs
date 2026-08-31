@@ -12,7 +12,7 @@ public abstract class Character : IDamageable, IBuffable
     public int SP { get; private set; }
     public int Sanity { get; private set; }
 
-    public bool IsDaed { get => HP <= 0; }
+    public bool IsDead { get => HP <= 0; }
     public List<Card> CardList;
 
     // 인게임에서만 사용
@@ -116,7 +116,8 @@ public abstract class Character : IDamageable, IBuffable
         HP = Mathf.Clamp(HP - damage, 0, MaxHP);
         OnHPHit?.Invoke(damage, attacker);
         OnHPChanged?.Invoke(nowHP, HP);
-        OnDead?.Invoke(this);
+        if(IsDead)
+            OnDead?.Invoke(this);
     }
 
     /// <summary>

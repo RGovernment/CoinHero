@@ -140,6 +140,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             BattleManager.Instance.state.GetStateType() == 
             Enums.BattleStateType.PlayerChoosePhase)
         {
+            transform.localScale = Vector3.one * 1.1f; 
             transform.SetAsLastSibling();
             outline1.enabled = true;
             outline2.enabled = true;
@@ -153,6 +154,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             BattleManager.Instance.state.GetStateType() ==
             Enums.BattleStateType.PlayerChoosePhase)
         {
+            transform.localScale = Vector3.one;
             transform.SetSiblingIndex(posIndex);
             outline1.enabled = false;
             outline2.enabled = false;

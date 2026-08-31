@@ -56,5 +56,14 @@
     "Trigger": "OnTurnEnd",
     "Zone": "Slot",
     "Target": "TargetEnemy"
+  },
+  {
+    "Name": "아이템 무효화",
+    "Id": 203,
+    "Description": "아이템과 합을 겨룰 경우, 해당 아이템의 효과를 무효화한다.",
+    "Type": "ItemCounter",
+    "Trigger": "OnPlay",
+    "Zone": "Slot",
+    "Target": "TargetEnemy"
   }
 ]

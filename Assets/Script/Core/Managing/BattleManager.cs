@@ -81,7 +81,9 @@ public class BattleManager : MonoBehaviour
         PlayerZone.OnCancelCard += handManager.HandActive;
         PlayerZone.OnCancelCard += handManager.UpdateHandPos;
         PlayerZone.OnSelectCardComplete += BattleStatusSet;
+        playerCombat.Character.OnDead += PlayerDead;
     }
+    
 
     private void OnDisable()
     {
@@ -89,6 +91,7 @@ public class BattleManager : MonoBehaviour
         PlayerZone.OnCancelCard -= handManager.HandActive;
         PlayerZone.OnCancelCard -= handManager.UpdateHandPos;
         PlayerZone.OnSelectCardComplete -= BattleStatusSet;
+        playerCombat.Character.OnDead -= PlayerDead;
     }
 
     public void SelectCard(CardData data)
@@ -100,9 +103,19 @@ public class BattleManager : MonoBehaviour
     {
         state.ChangeState(stateGroup[BattleStateType.BattleStart]);
     }
+
+    public void PlayerDead(Character chara)
+    {
+        // 사망 모션 작동 후 처리
+    }
+
     public void EnemyRemove(Character chara)
     {
-        //enemyCombat.Remove(combat. combat);
+        // 사망 모션 작동 후 처리
+
+        int index = enemyCombat.FindIndex(x => x.Character.Id == chara.Id);
+        enemyCombat[index].Character.OnDead -= EnemyRemove;
+        enemyCombat.RemoveAt(index);
     }
 
     public HandManager GetHandManager()

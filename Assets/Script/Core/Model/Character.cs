@@ -61,6 +61,12 @@ public abstract class Character : IDamageable, IBuffable
     /// </summary>
     public event Action<int, int> OnSanityChanged;
 
+    /// <summary>
+    /// 캐릭터가 사망할 때 작동하는 함수
+    /// <para> Character : 사망한 캐릭터 </para>
+    /// </summary>
+    public event Action<Character> OnDead;
+
     public Character(int id, int maxHp, List<Card> data)
     {
         Id = id;
@@ -110,6 +116,7 @@ public abstract class Character : IDamageable, IBuffable
         HP = Mathf.Clamp(HP - damage, 0, MaxHP);
         OnHPHit?.Invoke(damage, attacker);
         OnHPChanged?.Invoke(nowHP, HP);
+        OnDead?.Invoke(this);
     }
 
     /// <summary>

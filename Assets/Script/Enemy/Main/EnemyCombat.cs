@@ -16,7 +16,7 @@ public class EnemyCombat : MonoBehaviour, ICombat
             cd.Add(item.Value);
         }
 
-        Character = new Enemy(50, 50, cd);
+        Character = new Enemy(50, 20, cd);
         CoinUI.gameObject.SetActive(false);
     }
 

@@ -100,12 +100,13 @@ public class SelectZone : MonoBehaviour
         Transform emptySlot = EmptySlot[nowSelectCount].transform;
         data.gameObject.SetActive(false);
         CardData slotObj = Instantiate(data, Canvas);
-        slotObj.cardData = data.cardData;
+        slotObj.Init(data.cardData);
         slotObj.transform
             .SetPositionAndRotation(data.transform.position, data.transform.rotation);
         slotObj.gameObject.tag = "Slot";
         await UniTask.DelayFrame(1);
         slotObj.gameObject.SetActive(true);
+        Debug.Log(slotObj.cardData);
         cardList.Enqueue(slotObj.cardData);
 
         Sequence seq = DOTween.Sequence();

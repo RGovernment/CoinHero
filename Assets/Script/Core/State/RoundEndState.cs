@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class RoundEndState : IState
 {
 
@@ -14,6 +16,7 @@ public class RoundEndState : IState
 
     public void OnStart()
     {
+        Debug.Log("RoundEndState start");
     }
 
     public void OnStay()

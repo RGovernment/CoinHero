@@ -17,9 +17,10 @@ public class DrawPhaseState : IState
     {
         // 드로우 단계 시작
         Debug.Log("DrawPhaseState start");
+        manager.GetPlayerZone().gameObject.SetActive(true);
+        manager.GetEnemyZone().gameObject.SetActive(true);
 
         // 1. 플레이어 카드 드로우
-        manager.GetHandManager().CreateAllCard(manager.GetPlayerCombat().Character.CardList, manager.GetPlayerCombat().Character);
         manager.GetHandManager().ShuffleAndSettingHand();
         manager.GetHandManager().HandActive();
         manager.GetHandManager().UpdateHandPos();
@@ -57,8 +58,10 @@ public class DrawPhaseState : IState
 
         foreach (var item in dummy)
         {
-            manager.GetNowEnemyCards().Enqueue(item);
-            BehindCardData bd = manager.GetEnemyHandManager().CardCreate(item);
+            Card card = item.Init(item);
+
+            manager.GetNowEnemyCards().Enqueue(card);
+            BehindCardData bd = manager.GetEnemyHandManager().CardCreate(card);
             bd.SetTypeIcon();
             manager.GetEnemyZone().SetCardToEnemyZone(bd);
         }

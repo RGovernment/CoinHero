@@ -74,6 +74,26 @@ public class Card
     /// </summary>
     public string Description { get; set; }
 
+    public Card Init(Card data)
+    {
+        Card card = new()
+        {
+            Coin = data.Coin,
+            CoinPoint = data.CoinPoint,
+            Value = data.Value,
+            Name = data.Name,
+            Id = data.Id,
+            Type = data.Type,
+            CurrentUpgradeLv = data.CurrentUpgradeLv,
+            MaxUpgradeLv = data.MaxUpgradeLv,
+            UpgradeData = data.UpgradeData,
+            Effect = data.Effect,
+            Description = data.Description
+
+        };
+        
+        return card;
+    }
     public int FinalValue()
     {
         int result = 0;
@@ -178,5 +198,13 @@ public class Card
             }
         }
         return finalValue;
+    }
+
+    public override string ToString()
+    {
+        string result = 
+            $"Name : {Name}\nValue : {Value}\nCoin : {Coin}\nCoinPoint : {CoinPoint}\n" +
+            $"Type : {Type}\nDescription : {Description}";
+        return result;
     }
 }

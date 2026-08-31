@@ -20,8 +20,30 @@ public class BattleCoinUI : MonoBehaviour
 
     private int nowCount = 0;
     private int nowVal = 0;
+    public void Awake()
+    {
+        coinGroup = new();
+    }
+
     public void CoinSet(Card card)
     {
+        if(coinGroup != null && coinGroup.Count > 0)
+        {
+            // 코인 그룹 내 코인들의 이벤트 정리 및 리스트 비우기
+            for (int i = coinGroup.Count - 1; i >= 0; i--)
+            {
+                CoinObject coin = coinGroup[i];
+
+                if (coin != null)
+                {
+                    coin.OnBrokenComplete -= RemoveCoinFromGroup;
+                    Destroy(coin);
+                }
+            }
+        }
+
+        coinGroup.Clear();
+
         nowCount = 0;
         this.card = card;
         nameText.text = card.Name;
@@ -37,6 +59,7 @@ public class BattleCoinUI : MonoBehaviour
         }
 
         int makeCount = card.FinalCoin();
+        Debug.Log(card.ToString());
 
         for (int i = 0; i < makeCount; i++) 
         {
@@ -114,12 +137,14 @@ public class BattleCoinUI : MonoBehaviour
     public void Release()
     {
         // 코인 그룹 내 코인들의 이벤트 정리 및 리스트 비우기
-        foreach (var coin in coinGroup)
+        for(int i = coinGroup.Count -1; i >= 0; i--)
         {
+            CoinObject coin = coinGroup[i];
+
             if (coin != null)
             {
                 coin.OnBrokenComplete -= RemoveCoinFromGroup;
-                // 필요시 coin.gameObject.SetActive(false) 또는 Destroy
+                Destroy(coin);
             }
         }
 

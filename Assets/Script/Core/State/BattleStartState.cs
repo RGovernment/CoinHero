@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using static Enums;
 
 public class BattleStartState : IState
@@ -17,8 +18,7 @@ public class BattleStartState : IState
 
     public void OnStart()
     {
-        manager.SetNowPlayerCards(manager.GetPlayerZone().GetCardList());
-
+        Debug.Log("BattleStartState start");
         manager.GetPlayerZone().gameObject.SetActive(false);
         manager.GetEnemyZone().gameObject.SetActive(false);
         manager.GetPlayerZone().BtnClose();

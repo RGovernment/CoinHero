@@ -5,13 +5,12 @@ public static class Enums
         TurnStart, 
         DrawPhase, 
         PlayerChoosePhase, 
-        PlayerComplete,
-        EnemyChoosePhase, 
         BattleStart,
         BattlePhase, 
         BattleEnd, 
         TurnEnd , 
-        RoundEnd }
+        RoundEnd 
+    }
 
     /// <summary>
     /// 카드 타입, 무기, 방어구, 아이템, 특수

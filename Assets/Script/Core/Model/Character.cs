@@ -11,6 +11,8 @@ public abstract class Character : IDamageable, IBuffable
     public int MaxHP { get; private set; }
     public int SP { get; private set; }
     public int Sanity { get; private set; }
+
+    public bool IsDaed { get => HP <= 0; }
     public List<Card> CardList;
 
     // 인게임에서만 사용

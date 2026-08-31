@@ -1,3 +1,6 @@
+using UnityEngine;
+using static Enums;
+
 public class TurnEndState : IState
 {
 
@@ -15,7 +18,12 @@ public class TurnEndState : IState
 
     public void OnStart()
     {
+        Debug.Log("TurnEndState start");
+        manager.GetPlayerZone().ResetCardZone();
+        manager.GetEnemyZone().ResetCardZone();
+        manager.GetHandManager().HandDrop();
         BattleUIDisable();
+        BattleEndCk();
     }
 
     public void OnStay()
@@ -28,5 +36,13 @@ public class TurnEndState : IState
             .CoinUI.Release();
         manager.GetEnemyCombat()[manager.enemyActionOrderCount % manager.GetEnemyCombatCount()]
             .CoinUI.Release();
+    }
+
+    public void BattleEndCk()
+    {
+        if(manager.GetPlayerCombat().Character.IsDaed || manager.GetEnemyCombat().Count <= 0)
+            manager.state.ChangeState(manager.stateGroup[BattleStateType.RoundEnd]);
+        else
+            manager.state.ChangeState(manager.stateGroup[BattleStateType.TurnStart]);
     }
 }

@@ -13,11 +13,12 @@ public class PlayerChoosePhaseState : IState
 
     public void OnEnd()
     {
+        manager.SetNowPlayerCards(manager.GetPlayerZone().GetCardList());
     }
 
     public void OnStart()
     {
-        Debug.Log("Player Choose Phase start");
+        Debug.Log("PlayerChoosePhase start");
     }
 
     public void OnStay()

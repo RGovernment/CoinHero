@@ -23,17 +23,17 @@ public static class Constants
     public static string SLOT_TAG = "Slot";
 
     public static string ATTACK_COLOR = "CC2424";
-    public static string SHIELD_COLOR = "6BA1FE";
+    public static string SHIELD_COLOR = "16E9FC";
     public static string HEAL_COLOR = "81F65A";
 
     public static int COIN_FLIP_TIMER = 500;
     public static int COIN_NEXT_TIMER = 300;
-    public static int BATTLE_END_DELAY = 500;
+    public static int BATTLE_END_DELAY = 1000;
     public static float MOVE_TIMER = 0.8f;
 
     public static int REBOUND_SANITY_COST = 5;
     public static int MAX_SANITY = 95;
-    public static int MIN_SANITY = 35;
+    public static int MIN_SANITY = 30;
 
     
 

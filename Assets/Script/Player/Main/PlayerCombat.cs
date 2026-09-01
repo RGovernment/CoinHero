@@ -13,6 +13,7 @@ public class PlayerCombat : MonoBehaviour, ICombat
     [SF] private Animator animator;
     [SF] private BattleCoinUI coinUI;
     [SF] private CombatAnimatorManager animatorManager;
+    [SF] private StatusUI statUI;
     public Transform BaseCharaObj { get => baseCharaObj; set => baseCharaObj = value; }
     public CombatAnimatorManager AnimatorManager { get => animatorManager; set => animatorManager = value; }
     public BattleCoinUI CoinUI { get => coinUI; set => coinUI = value; }
@@ -34,7 +35,8 @@ public class PlayerCombat : MonoBehaviour, ICombat
         Character = new Player(10, 50, cd);
         CoinUI.gameObject.SetActive(false);
         animatorManager.Combat = this;
-
+        statUI.combat = this;
+        statUI.Init(Character.HP, Character.SP, Character.Sanity);
         renders = animator.transform.GetComponentsInChildren<SpriteRenderer>();
     }
 

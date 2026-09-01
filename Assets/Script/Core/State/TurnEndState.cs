@@ -34,6 +34,9 @@ public class TurnEndState : IState
     {
     }
 
+    /// <summary>
+    /// 전투중 활성화된 UI 초기화
+    /// </summary>
     public void BattleUIDisable()
     {
         manager.GetPlayerCombat()
@@ -42,6 +45,9 @@ public class TurnEndState : IState
             .CoinUI.Release();
     }
 
+    /// <summary>
+    /// 전투가 끝났는지 확인하고, 아닐 경우 다음 턴, 맞을 경우 전투 종료
+    /// </summary>
     public void BattleEndCk()
     {
         if(manager.GetPlayerCombat().Character.IsDead || manager.GetEnemyCombat().Count <= 0)
@@ -51,6 +57,11 @@ public class TurnEndState : IState
         
             
     }
+
+    /// <summary>
+    /// 캐릭터가 원래 자리로 돌아가도록 하는 함수
+    /// </summary>
+    /// <returns></returns>
     public async UniTask CharaReturnBasePos()
     {
         Sequence seq = DOTween.Sequence();
@@ -80,9 +91,12 @@ public class TurnEndState : IState
         manager.state.ChangeState(manager.stateGroup[BattleStateType.TurnStart]);
     }
 
+    /// <summary>
+    /// Y축 180도 반전 회전
+    /// </summary>
+    /// <param name="transform">반전 시킬 객체</param>
     public void ToggleYRotation(Transform transform)
     {
-        // 1. 현재 로컬 오일러 각도를 가져옵니다.
         Vector3 currentEuler = transform.localEulerAngles;
 
         float currentY = currentEuler.y % 360f;

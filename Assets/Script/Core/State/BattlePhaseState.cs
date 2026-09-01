@@ -253,7 +253,7 @@ public class BattlePhaseState : IState
 
                 if (isAPOn) DamageSkinSpawner.Instance.TextSpawn(
                     target.BaseCharaObj.transform.position,
-                    $"<color=#{SHIELD_COLOR}>{APDiscount} 감소됨!</color>");
+                    $"<color=#{SHIELD_COLOR}>피해 {APDiscount} 경감됨!</color>");
 
                 await target.AnimatorManager.animationTriggerDefender.Task;
 

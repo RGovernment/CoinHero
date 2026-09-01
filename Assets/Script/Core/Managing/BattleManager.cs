@@ -166,7 +166,7 @@ public class BattleManager : MonoBehaviour
         if (before == BattleStateType.BattlePhase)
             state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
 
-        enemyCombat[index].AnimatorManager.OnDead().Forget();
+        await enemyCombat[index].AnimatorManager.OnDead();
 
         enemyCombat[index].Character.OnDead -= EnemyRemove;
         enemyCombat.RemoveAt(index);

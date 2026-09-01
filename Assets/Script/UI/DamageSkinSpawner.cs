@@ -7,6 +7,7 @@ public class DamageSkinSpawner : MonoBehaviour
     public static DamageSkinSpawner Instance;
 
     public DamageNumber skin;
+    public DamageNumber text;
     public RectTransform targetCanvas;
     private readonly StringBuilder sb = new(64);
     private Camera mainCam;
@@ -50,7 +51,7 @@ public class DamageSkinSpawner : MonoBehaviour
             out Vector2 localPoint
         );
 
-        skin.SpawnGUI(targetCanvas, localPoint, str);
+        text.SpawnGUI(targetCanvas, localPoint, str);
     }
 
 

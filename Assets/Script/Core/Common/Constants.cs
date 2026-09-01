@@ -22,6 +22,9 @@ public static class Constants
     public static string HAND_TAG = "Hand";
     public static string SLOT_TAG = "Slot";
 
+    public static string SHIELD_COLOR = "6BA1FE";
+    public static string HEAL_COLOR = "81F65A";
+
     public static int COIN_FLIP_TIMER = 500;
     public static int COIN_NEXT_TIMER = 300;
     public static int BATTLE_END_DELAY = 500;
@@ -30,5 +33,7 @@ public static class Constants
     public static int REBOUND_SANITY_COST = 5;
     public static int MAX_SANITY = 95;
     public static int MIN_SANITY = 35;
+
+    
 
 }

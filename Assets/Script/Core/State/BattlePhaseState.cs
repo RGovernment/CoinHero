@@ -182,10 +182,11 @@ public class BattlePhaseState : IState
         {
             case CardType.Weapon:
                 int APDiscount = 0;
+                bool isAPOn = false;
                 if (flag == CrashType.Crash && targetCard.Type == CardType.Armor)
                 {
                     APDiscount = target.APDiscountByLose(targetCard);
-                    
+                    isAPOn = true;
                 }
 
                 int damage = user.TotalValueByWin(card, APDiscount);
@@ -197,26 +198,32 @@ public class BattlePhaseState : IState
                 await user.AnimatorManager.animationTriggerAttacker.Task;
                 target.Character.TakeDamage(damage, user.Character);
                 target.AnimatorManager.OnDamage();
+                if (isAPOn) DamageSkinSpawner.Instance.TextSpawn(
+                    target.BaseCharaObj.transform.position,
+                    $"<color={SHIELD_COLOR}>{APDiscount} 방어됨!</color>");
                 await target.AnimatorManager.animationTriggerDefender.Task;
                 
                 break;
 
             case CardType.Armor:
+                int SP = 0;
                 if (flag == CrashType.Crash && targetCard.Type == CardType.Weapon)
                 {
-                    int SP = target.TotalValueByWin(targetCard, 0);
+                    SP = target.TotalValueByWin(card, 0);
                     user.Character.TakeShieldPoint(SP);
                     target.Character.TakeRebound(SP);
                 }
                 else
                 {
-                    int SP = target.TotalValueByWin(targetCard, 0) / 2;
+                    SP = target.TotalValueByWin(card, 0) / 2;
                     user.Character.TakeShieldPoint(SP);
                 }
 
                 user.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
                 user.AnimatorManager.OnCustom();
-
+                if (SP > 0) DamageSkinSpawner.Instance.TextSpawn(
+                    user.BaseCharaObj.transform.position,
+                    $"<color={SHIELD_COLOR}>실드 증가 {SP}</color>");
                 await user.AnimatorManager.animationTriggerDefender.Task;
                 
                 break;

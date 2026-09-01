@@ -24,7 +24,8 @@ public static class Constants
 
     public static int COIN_FLIP_TIMER = 500;
     public static int COIN_NEXT_TIMER = 300;
-    public static float MOVE_TIMER = 0.45f;
+    public static int BATTLE_END_DELAY = 500;
+    public static float MOVE_TIMER = 0.8f;
 
     public static int REBOUND_SANITY_COST = 5;
     public static int MAX_SANITY = 95;

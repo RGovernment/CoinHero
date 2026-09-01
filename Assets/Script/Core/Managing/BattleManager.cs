@@ -39,7 +39,7 @@ public class BattleManager : MonoBehaviour
     private Queue<Card> nowPlayerCards;
     private Queue<Card> nowEnemyCards;
 
-    public Transform enemyBeforePos;
+    public Vector3 enemyBeforePos;
     public int enemyActionOrderCount = 0;
 
     private void Awake()
@@ -116,7 +116,7 @@ public class BattleManager : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         PlayerCombat player = playerCombat;
         EnemyCombat enemy = enemyCombat[GetEnemyCombatOrderCount()];
-        enemyBeforePos = enemy.transform;
+        enemyBeforePos = enemy.transform.position;
         player.AnimatorManager.OnMove();
         enemy.AnimatorManager.OnMove();
         // 이동 연출

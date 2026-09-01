@@ -16,6 +16,8 @@ public class PlayerCombat : MonoBehaviour, ICombat
     public BattleCoinUI CoinUI { get => coinUI; set => coinUI = value; }
     public Animator Animator { get => animator; set => animator = value; }
 
+    private SpriteRenderer[] renders;
+
     private void Awake()
     {
         // 임시 데이터, 플레이어별 시작 카드 프리셋을 만들어둘 것
@@ -28,6 +30,18 @@ public class PlayerCombat : MonoBehaviour, ICombat
         Character = new Player(10, 50, cd);
         CoinUI.gameObject.SetActive(false);
         animatorManager.Combat = this;
+
+        renders = animator.transform.GetComponentsInChildren<SpriteRenderer>();
+    }
+
+    private void OnEnable()
+    {
+        Character.OnHPHit += DamageSkinSpawn;
+    }
+
+    private void OnDisable()
+    {
+        Character.OnHPHit -= DamageSkinSpawn;
     }
 
     private void Start()
@@ -51,11 +65,39 @@ public class PlayerCombat : MonoBehaviour, ICombat
     public int TotalValueByWin(Card card, int APDiscount = 0)
     {
         // 승리 시 밸류 + 남은 코인 * 코인 위력 리턴
-        return Mathf.Max(1, (card.Value  + card.Coin * card.CoinPoint) - APDiscount);
+        return Mathf.Max(1, (card.FinalValue()  + card.Coin * card.FinalCoinPoint()) - APDiscount);
     }
 
     public int APDiscountByLose(Card card)
     {
         return card.Value + card.Coin;
+    }
+
+    private void DamageSkinSpawn(int damage, Character chara) 
+    {
+        HitColor().Forget();
+        DamageSkinSpawner.Instance.DamageSkinSpawn(transform.position + new Vector3(0, 1f, 0), damage);
+    }
+
+    private async UniTask HitColor()
+    {
+        // 모든 자식 스프라이트 렌더러에 가비지 없이 변경된 속성을 동시 적용
+        for (int i = 0; i < renders.Length; i++)
+        {
+            if (renders[i] != null)
+            {
+                renders[i].color = Color.darkRed;
+            }
+        }
+
+        await UniTask.Delay(100);
+
+        for (int i = 0; i < renders.Length; i++)
+        {
+            if (renders[i] != null)
+            {
+                renders[i].color = Color.white;
+            }
+        }
     }
 }

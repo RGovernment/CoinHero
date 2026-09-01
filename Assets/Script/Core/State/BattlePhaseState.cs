@@ -68,9 +68,6 @@ public class BattlePhaseState : IState
 
             while (true)
             {
-                
-                
-
                 bool[] playerCoins = player.CoinToss(playerCard);
                 bool[] enemyCoins = enemy.CoinToss(enemyCard);
 
@@ -186,21 +183,22 @@ public class BattlePhaseState : IState
             case CardType.Weapon:
                 int APDiscount = 0;
                 if (flag == CrashType.Crash && targetCard.Type == CardType.Armor)
+                {
                     APDiscount = target.APDiscountByLose(targetCard);
+                    
+                }
 
                 int damage = user.TotalValueByWin(card, APDiscount);
-                target.Character.TakeDamage(damage, user.Character);
-
+                
                 user.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
                 target.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
+
                 user.AnimatorManager.OnAttack();
+                await user.AnimatorManager.animationTriggerAttacker.Task;
+                target.Character.TakeDamage(damage, user.Character);
                 target.AnimatorManager.OnDamage();
-
-                await UniTask.WhenAll(
-                    user.AnimatorManager.animationTriggerAttacker.Task,
-                    target.AnimatorManager.animationTriggerDefender.Task
-                );
-
+                await target.AnimatorManager.animationTriggerDefender.Task;
+                
                 break;
 
             case CardType.Armor:
@@ -226,5 +224,7 @@ public class BattlePhaseState : IState
             case CardType.Item:
                 break;
         }
+        // 자연스러운 전환을 위한 고정값 딜레이
+        await UniTask.Delay(BATTLE_END_DELAY);
     }
 }

@@ -65,11 +65,11 @@ public class TurnEndState : IState
             seq
             .Join(
                 player.transform.DOMove(
-                manager.playerBattlePoint.position, MOVE_TIMER)
+                manager.playerSpawnPoint.position, MOVE_TIMER)
             )
             .Join(
                 enemy
-                .transform.DOMove(manager.enemyBattlePoint.position, MOVE_TIMER)
+                .transform.DOMove(manager.enemyBeforePos, MOVE_TIMER)
             ).ToUniTask();
 
         ToggleYRotation(player.transform);

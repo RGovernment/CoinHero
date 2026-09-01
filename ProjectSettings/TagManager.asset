@@ -58,5 +58,8 @@ TagManager:
   - name: ToolTip
     uniqueID: 840111343
     locked: 0
+  - name: DamageSkin
+    uniqueID: 3909294067
+    locked: 0
   m_RenderingLayers:
   - Default

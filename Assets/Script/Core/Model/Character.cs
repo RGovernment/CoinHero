@@ -102,19 +102,22 @@ public abstract class Character : IDamageable, IBuffable
             OnSPChanged?.Invoke(nowAP, SP);
             return;
         }
+        else if (SP == 0)
+        {
+            // 조건문 무시
+        }
         else if (SP <= damage)
         {
+            damage -= SP;
             SP = 0;
             OnSPHit?.Invoke(SP, attacker);
             OnSPChanged?.Invoke(SP, 0);
-
-            damage -= SP;
-
         }
-
+        
         int nowHP = HP;
         HP = Mathf.Clamp(HP - damage, 0, MaxHP);
         OnHPHit?.Invoke(damage, attacker);
+        Debug.Log(damage);
         OnHPChanged?.Invoke(nowHP, HP);
         if(IsDead)
             OnDead?.Invoke(this);

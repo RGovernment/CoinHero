@@ -25,6 +25,7 @@ public class BattlePhaseState : IState
     {
         Debug.Log("BattlePhaseState Start");
         ExecuteBattleLoopAsync().Forget();
+
     }
 
     public void OnStay()

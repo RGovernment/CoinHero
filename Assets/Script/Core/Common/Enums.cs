@@ -9,7 +9,8 @@ public static class Enums
         BattlePhase, 
         BattleEnd, 
         TurnEnd , 
-        RoundEnd 
+        RoundEnd ,
+        DeadDelay
     }
 
     /// <summary>

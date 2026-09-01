@@ -11,6 +11,7 @@ public class RoundStartState : IState
 
     public void OnEnd()
     {
+        manager.GetPlayerCombat().Character.OnDead += manager.PlayerDead;
     }
 
     public void OnStart()
@@ -52,7 +53,5 @@ public class RoundStartState : IState
                     = manager.enemySpawnPoint[i].position;
             }
         }
-            
-        
     }
 }

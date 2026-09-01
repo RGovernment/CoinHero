@@ -16,16 +16,20 @@ public class TurnEndState : IState
 
     public void OnEnd()
     {
+        manager.GetPlayerCombat().Character.OnDead -= manager.PlayerDead;
         manager.enemyActionOrderCount++;
     }
 
     public void OnStart()
     {
         Debug.Log("TurnEndState start");
-        manager.GetPlayerCombat().Character.OnDead -= manager.PlayerDead;
+        
         manager.GetPlayerZone().ResetCardZone();
         manager.GetEnemyZone().ResetCardZone();
         manager.GetHandManager().HandDrop();
+
+        // 턴 종료 시의 디버프/버프 목록 처리 이후 캐릭터의 상태에 문제가 없을 경우(사망x 등)
+        // 실행하도록 추후 변경
         BattleUIDisable();
         BattleEndCk();
     }
@@ -54,8 +58,6 @@ public class TurnEndState : IState
             manager.state.ChangeState(manager.stateGroup[BattleStateType.RoundEnd]);
         else
             CharaReturnBasePos().Forget();
-        
-            
     }
 
     /// <summary>

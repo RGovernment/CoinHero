@@ -64,7 +64,8 @@ public class BattleManager : MonoBehaviour
             [BattleStateType.BattlePhase] = new BattlePhaseState(Instance),
             [BattleStateType.BattleEnd] = new BattleEndState(Instance),
             [BattleStateType.TurnEnd] = new TurnEndState(Instance),
-            [BattleStateType.RoundEnd] = new RoundEndState(Instance)
+            [BattleStateType.RoundEnd] = new RoundEndState(Instance),
+            [BattleStateType.RoundEnd] = new DeadDelayState(Instance)
         };
 
         state.ChangeState(stateGroup[BattleStateType.RoundStart]);
@@ -80,7 +81,6 @@ public class BattleManager : MonoBehaviour
     {
         // 드로우 페이즈 애니메이션 도입 전까지 임시 딜레이
         await UniTask.DelayFrame(1);
-        playerCombat.Character.OnDead += PlayerDead;
         state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
     }
 
@@ -146,9 +146,25 @@ public class BattleManager : MonoBehaviour
 
     public void EnemyRemove(Character chara)
     {
+        BattleStateType stateType = state.GetStateType();
+        state.ChangeState(stateGroup[BattleStateType.DeadDelay]);
+        RemoveDelay(stateType, chara).Forget();
+    }
+
+    public async UniTask RemoveDelay(BattleStateType before, Character chara)
+    {
         // 사망 모션 작동 후 처리
 
         int index = enemyCombat.FindIndex(x => x.Character.Id == chara.Id);
+
+        if (before == BattleStateType.TurnStart)
+            state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
+
+        if (before == BattleStateType.TurnEnd)
+            state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
+
+        if (before == BattleStateType.BattlePhase)
+            state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
 
         enemyCombat[index].AnimatorManager.OnDead().Forget();
 

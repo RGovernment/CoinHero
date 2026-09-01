@@ -42,10 +42,33 @@ public class DamageSkinSpawner : MonoBehaviour
 
         skin.SpawnGUI(targetCanvas, localPoint, sb.ToString());
     }
+
+    public void SPDamageSkinSpawn(Vector3 pos, int damage)
+    {
+        string damageStr = damage.ToString();
+        sb.Clear();
+        for (int i = 0; i < damageStr.Length; i++)
+        {
+            sb.Append($"<sprite=");
+            sb.Append(damageStr[i]);
+            sb.Append(" color=#");
+            sb.Append(SHIELD_COLOR);
+            sb.Append(">");
+        }
+
+        Vector2 screenPoint = Camera.main.WorldToScreenPoint(pos);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            targetCanvas,
+            screenPoint,
+            mainCam,
+            out Vector2 localPoint
+        );
+
+        skin.SpawnGUI(targetCanvas, localPoint, sb.ToString());
+    }
     public void HealSkinSpawn(Vector3 pos, int damage)
     {
         string damageStr = damage.ToString();
-        Debug.Log(damageStr);
         sb.Clear();
         for (int i = 0; i < damageStr.Length; i++)
         {

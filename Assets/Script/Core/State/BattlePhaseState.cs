@@ -41,11 +41,11 @@ public class BattlePhaseState : IState
         int ItemCounterId = ResourceManager.Instance
             .EffectDataByType[EffectType.ItemCounter].Id;
 
-        bool playerHasCounter = enemyCard.Type == CardType.Item &&
-                       (playerCard.Effect?.Any(x => x.EffectId == ItemCounterId) ?? false);
+        bool playerHasCounter = enemyCard?.Type == CardType.Item &&
+                       (playerCard?.Effect?.Any(x => x.EffectId == ItemCounterId) ?? false);
 
-        bool enemyHasCounter = playerCard.Type == CardType.Item &&
-                               (enemyCard.Effect?.Any(x => x.EffectId == ItemCounterId) ?? false);
+        bool enemyHasCounter = playerCard?.Type == CardType.Item &&
+                               (enemyCard?.Effect?.Any(x => x.EffectId == ItemCounterId) ?? false);
 
         if (!playerAble || !enemyAble)
         {
@@ -202,47 +202,59 @@ public class BattlePhaseState : IState
 
     public async UniTask BattleActionLogic(ICombat user, ICombat target, Card card, Card targetCard, CrashType flag)
     {
+        /// 일방 공격은 여기서 UI 생성
         if (flag == CrashType.OneWay) user.CoinUI.CoinSet(card); 
 
         switch (card.Type)
         {
+            // 공격자 카드 타입이 무기일 때
             case CardType.Weapon:
                 user.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
                 target.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
-
-                // 카드가 없는 일방 공격의 경우
-                if (targetCard == null)
-                {
-                    int oneWayDamage = user.TotalValueByWin(card);
-
-                    user.AnimatorManager.OnAttack();
-                    await user.AnimatorManager.animationTriggerAttacker.Task;
-                    target.Character.TakeDamage(oneWayDamage, user.Character);
-                    target.AnimatorManager.OnDamage();
-                    await target.AnimatorManager.animationTriggerDefender.Task;
-
-                    break;
-                }
-
+                int result = 0;
                 int APDiscount = 0;
                 bool isAPOn = false;
-                if (flag == CrashType.Crash && targetCard.Type == CardType.Armor)
+                if (flag == CrashType.Crash && targetCard != null && targetCard.Type == CardType.Armor)
                 {
                     APDiscount = target.APDiscountByLose(targetCard);
                     isAPOn = true;
                 }
 
-                int damage = user.TotalValueByWin(card, APDiscount);
+                // 일방 공격일 경우
+                if (flag == CrashType.OneWay)
+                {
+                    bool[] userCoins = target.CoinToss(card, user.Character.Sanity);
 
+                    int coinCount = userCoins.Length;
 
+                    user.CoinUI.CoinFlip();
+
+                    await UniTask.Delay(COIN_FLIP_TIMER);
+
+                    for (int i = 0; i < coinCount; i++)
+                    {
+                        user.CoinUI.CoinStop(userCoins[i]);
+                        await UniTask.Delay(COIN_NEXT_TIMER);
+                    }
+
+                    result = card.CalcCoinValue(userCoins);
+                    Debug.Log(result);
+                }
+                else
+                    result = user.TotalValueByWin(card, APDiscount);
 
                 user.AnimatorManager.OnAttack();
+
                 await user.AnimatorManager.animationTriggerAttacker.Task;
-                target.Character.TakeDamage(damage, user.Character);
+
+                target.Character.TakeDamage(result, user.Character);
+
                 target.AnimatorManager.OnDamage();
+
                 if (isAPOn) DamageSkinSpawner.Instance.TextSpawn(
                     target.BaseCharaObj.transform.position,
-                    $"<color=#{SHIELD_COLOR}>{APDiscount} 방어됨!</color>");
+                    $"<color=#{SHIELD_COLOR}>{APDiscount} 감소됨!</color>");
+
                 await target.AnimatorManager.animationTriggerDefender.Task;
 
                 break;
@@ -250,30 +262,44 @@ public class BattlePhaseState : IState
             case CardType.Armor:
                 user.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
                 int SP = 0;
-                // 카드 없는 일방 방어의 경우
-                if (targetCard == null)
-                {
-                    SP = target.TotalValueByWin(card, 0) / 2;
-                    user.Character.TakeShieldPoint(SP);
+                int armorResult = 0;
 
-                    break;
+                // 일방 공격일 경우
+                if (flag == CrashType.OneWay)
+                {
+                    bool[] userCoins = target.CoinToss(card, user.Character.Sanity);
+
+                    int coinCount = userCoins.Length;
+
+                    user.CoinUI.CoinFlip();
+
+                    await UniTask.Delay(COIN_FLIP_TIMER);
+
+                    for (int i = 0; i < coinCount; i++)
+                    {
+                        user.CoinUI.CoinStop(userCoins[i]);
+                        await UniTask.Delay(COIN_NEXT_TIMER);
+                    }
+
+                    armorResult = card.CalcCoinValue(userCoins);
                 }
                 else
+                    armorResult = user.TotalValueByWin(card, 0);
+
+                SP = flag == CrashType.Crash ? armorResult : armorResult / 2;
+                user.Character.TakeShieldPoint(SP);
+
+                if(flag == CrashType.Crash)
                 {
-                    if (flag == CrashType.Crash && targetCard.Type == CardType.Weapon)
-                    {
-                        SP = target.TotalValueByWin(card, 0);
-                        user.Character.TakeShieldPoint(SP);
-                        target.Character.TakeRebound(SP);
-                    }
-                    else
-                    {
-                        SP = target.TotalValueByWin(card, 0) / 2;
-                        user.Character.TakeShieldPoint(SP);
-                    }
+                    int reboundDamage = target.Character.TakeRebound(SP);
+                    DamageSkinSpawner.Instance.TextSpawn(
+                    target.BaseCharaObj.transform.position,
+                    $"<color=#{ATTACK_COLOR}>정신력 {reboundDamage}감소!</color>");
                 }
-                
+                    
+
                 user.AnimatorManager.OnCustom();
+
                 if (SP > 0) DamageSkinSpawner.Instance.TextSpawn(
                     user.BaseCharaObj.transform.position,
                     $"<color=#{SHIELD_COLOR}>실드 증가 {SP}</color>");
@@ -307,6 +333,8 @@ public class BattlePhaseState : IState
 
         // 자연스러운 전환을 위한 고정값 딜레이
         await UniTask.Delay(BATTLE_END_DELAY);
+        // 일방 공격일 경우의 UI 초기화
+        if(flag == CrashType.OneWay) user.CoinUI.Release();
     }
 
     public async  UniTask InstantEffectCk(EffectType type, ICombat user, ICombat target,

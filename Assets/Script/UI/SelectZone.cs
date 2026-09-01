@@ -96,7 +96,7 @@ public class SelectZone : MonoBehaviour
     public async UniTaskVoid SetCardToZone(CardData data)
     {
         if (nowSelectCount >= GetSelectZoneCount()) return;
-        nowSelectCount++;
+        
         Transform emptySlot = EmptySlot[nowSelectCount].transform;
         data.gameObject.SetActive(false);
         CardData slotObj = Instantiate(data, Canvas);
@@ -113,6 +113,7 @@ public class SelectZone : MonoBehaviour
 
         Vector3 scale = EmptySlot[nowSelectCount].transform.localScale;
         slotObj.gameObject.SetActive(true);
+        nowSelectCount++;
         await seq
             .Join(slotObj.transform.DOMove(emptySlot.position, 0.15f))
             .Append(slotObj.transform.DORotate(Vector3.zero, 0.05f))

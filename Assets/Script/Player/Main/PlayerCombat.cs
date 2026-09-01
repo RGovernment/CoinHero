@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 using SF = UnityEngine.SerializeField;
 
 public class PlayerCombat : MonoBehaviour, ICombat
@@ -40,12 +41,14 @@ public class PlayerCombat : MonoBehaviour, ICombat
     private void OnEnable()
     {
         Character.OnHPHit += DamageSkinSpawn;
+        Character.OnSPHit += SPDamageSkinSpawn;
         Character.OnHPHeal += HealSkinSpawn;
     }
 
     private void OnDisable()
     {
         Character.OnHPHit -= DamageSkinSpawn;
+        Character.OnSPHit -= SPDamageSkinSpawn;
         Character.OnHPHeal -= HealSkinSpawn;
     }
 
@@ -85,16 +88,28 @@ public class PlayerCombat : MonoBehaviour, ICombat
             .DamageSkinSpawn(transform.position + new Vector3(0, 1f, 0), damage);
     }
 
+    private void SPDamageSkinSpawn(int damage, Character chara)
+    {
+        HitColor(false).Forget();
+        DamageSkinSpawner.Instance
+            .SPDamageSkinSpawn(transform.position + new Vector3(0, 1f, 0), damage);
+    }
+
     private void HealSkinSpawn(int heal, Character chara)
     {
         DamageSkinSpawner.Instance
             .HealSkinSpawn(transform.position + new Vector3(0, 1f, 0), heal);
     }
 
-    private async UniTask HitColor()
+    private async UniTask HitColor(bool isHP = true)
     {
-        hitMat.SetColor(ColorProperty, Color.darkRed);
+        if (isHP)
+            hitMat.SetColor(ColorProperty, Color.darkRed);
 
+        else if (ColorUtility.TryParseHtmlString($"#{SHIELD_COLOR}", out Color shield))
+            hitMat.SetColor(ColorProperty, shield);
+        
+        
         for (int i = 0; i < renders.Length; i++)
         {
             if (renders[i] != null)

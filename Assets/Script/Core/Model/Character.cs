@@ -116,10 +116,11 @@ public abstract class Character : IDamageable, IBuffable
         }
         else if (SP <= damage)
         {
+            int nowSp = SP;
             damage -= SP;
             SP = 0;
-            OnSPHit?.Invoke(SP, attacker);
-            OnSPChanged?.Invoke(SP, 0);
+            OnSPHit?.Invoke(nowSp, attacker);
+            OnSPChanged?.Invoke(nowSp, 0);
         }
         
         int nowHP = HP;
@@ -150,7 +151,7 @@ public abstract class Character : IDamageable, IBuffable
     /// <summary>
     /// 상대가 방어에 성공했을 경우 반동 데미지를 받는 함수
     /// </summary>
-    public void TakeRebound(int AP)
+    public int TakeRebound(int AP)
     {
         int reboundDamage = 0;
 
@@ -164,6 +165,8 @@ public abstract class Character : IDamageable, IBuffable
         Sanity = Mathf.Clamp(Sanity - reboundDamage, MIN_SANITY, MAX_SANITY);
 
         OnSanityChanged?.Invoke(nowSanity, Sanity);
+
+        return reboundDamage;
     }
 
     public void TakeShieldPoint(int getSP)

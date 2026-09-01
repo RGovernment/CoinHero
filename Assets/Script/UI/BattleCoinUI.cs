@@ -77,6 +77,7 @@ public class BattleCoinUI : MonoBehaviour
     public void CoinFlip()
     {
         nowVal = card.Value;
+        valueText.text = card.Value.ToString();
         foreach (var item in coinGroup)
         {
             item.Spin();

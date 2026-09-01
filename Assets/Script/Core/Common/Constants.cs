@@ -22,6 +22,7 @@ public static class Constants
     public static string HAND_TAG = "Hand";
     public static string SLOT_TAG = "Slot";
 
+    public static string ATTACK_COLOR = "CC2424";
     public static string SHIELD_COLOR = "6BA1FE";
     public static string HEAL_COLOR = "81F65A";
 

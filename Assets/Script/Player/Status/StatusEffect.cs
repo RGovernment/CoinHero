@@ -55,6 +55,12 @@ public abstract class StatusEffect
     /// <returns>계산된 대미지</returns>
     public virtual int OnModifyTakeDamage(int baseDamage) => baseDamage;
 
+    /// <summary>
+    /// 힐을 받을 때 발동
+    /// </summary>
+    /// <param name="baseDamage">원본 대미지</param>
+    /// <returns>계산된 대미지</returns>
+    public virtual int OnModifyTakeHeal(int baseDamage) => baseDamage;
 
     /// <summary>
     /// richText로 변환된 설명을 반환하는 함수

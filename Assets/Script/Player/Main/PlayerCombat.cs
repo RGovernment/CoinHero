@@ -5,6 +5,7 @@ using SF = UnityEngine.SerializeField;
 
 public class PlayerCombat : MonoBehaviour, ICombat
 {
+    private static readonly int ColorProperty = Shader.PropertyToID("_Color");
     public Character Character { get; set; }
 
     [SF] private Transform baseCharaObj;
@@ -17,11 +18,13 @@ public class PlayerCombat : MonoBehaviour, ICombat
     public Animator Animator { get => animator; set => animator = value; }
 
     private SpriteRenderer[] renders;
+    private MaterialPropertyBlock hitMat;
 
     private void Awake()
     {
         // 임시 데이터, 플레이어별 시작 카드 프리셋을 만들어둘 것
         List<Card> cd = new();
+        hitMat = new();
         foreach (var item in ResourceManager.Instance.CardData)
         {
             cd.Add(item.Value);
@@ -37,11 +40,13 @@ public class PlayerCombat : MonoBehaviour, ICombat
     private void OnEnable()
     {
         Character.OnHPHit += DamageSkinSpawn;
+        Character.OnHPHeal += HealSkinSpawn;
     }
 
     private void OnDisable()
     {
         Character.OnHPHit -= DamageSkinSpawn;
+        Character.OnHPHeal -= HealSkinSpawn;
     }
 
     private void Start()
@@ -76,28 +81,36 @@ public class PlayerCombat : MonoBehaviour, ICombat
     private void DamageSkinSpawn(int damage, Character chara) 
     {
         HitColor().Forget();
-        DamageSkinSpawner.Instance.DamageSkinSpawn(transform.position + new Vector3(0, 1f, 0), damage);
+        DamageSkinSpawner.Instance
+            .DamageSkinSpawn(transform.position + new Vector3(0, 1f, 0), damage);
+    }
+
+    private void HealSkinSpawn(int heal, Character chara)
+    {
+        DamageSkinSpawner.Instance
+            .HealSkinSpawn(transform.position + new Vector3(0, 1f, 0), heal);
     }
 
     private async UniTask HitColor()
     {
-        // 모든 자식 스프라이트 렌더러에 가비지 없이 변경된 속성을 동시 적용
+        hitMat.SetColor(ColorProperty, Color.darkRed);
+
         for (int i = 0; i < renders.Length; i++)
         {
             if (renders[i] != null)
-            {
-                renders[i].color = Color.darkRed;
-            }
+                renders[i].SetPropertyBlock(hitMat);
+            
         }
 
         await UniTask.Delay(100);
 
+        hitMat.Clear();
+
         for (int i = 0; i < renders.Length; i++)
         {
             if (renders[i] != null)
-            {
-                renders[i].color = Color.white;
-            }
+                renders[i].SetPropertyBlock(hitMat);
+            
         }
     }
 }

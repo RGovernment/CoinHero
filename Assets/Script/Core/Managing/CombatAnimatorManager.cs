@@ -17,6 +17,7 @@ public class CombatAnimatorManager : MonoBehaviour
 
     public UniTaskCompletionSource animationTriggerAttacker;
     public UniTaskCompletionSource animationTriggerDefender;
+    public UniTaskCompletionSource animationTriggerItem;
     private UniTaskCompletionSource deadTrigger;
 
     public void Start()
@@ -70,5 +71,10 @@ public class CombatAnimatorManager : MonoBehaviour
     public void OnDefender()
     {
         animationTriggerDefender?.TrySetResult();
+    }
+
+    public void OnItem()
+    {
+        animationTriggerItem?.TrySetResult();
     }
 }

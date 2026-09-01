@@ -96,7 +96,7 @@ public class SelectZone : MonoBehaviour
     public async UniTaskVoid SetCardToZone(CardData data)
     {
         if (nowSelectCount >= GetSelectZoneCount()) return;
-
+        nowSelectCount++;
         Transform emptySlot = EmptySlot[nowSelectCount].transform;
         data.gameObject.SetActive(false);
         CardData slotObj = Instantiate(data, Canvas);
@@ -124,8 +124,6 @@ public class SelectZone : MonoBehaviour
 
         if (!CancelBtn.gameObject.activeSelf)
             CancelBtn.gameObject.SetActive(true);
-
-        nowSelectCount++;
 
         OnSelectCard?.Invoke();
     }

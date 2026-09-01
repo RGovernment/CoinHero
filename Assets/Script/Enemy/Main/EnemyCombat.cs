@@ -34,11 +34,13 @@ public class EnemyCombat : MonoBehaviour, ICombat
     private void OnEnable()
     {
         Character.OnHPHit += DamageSkinSpawn;
+        Character.OnHPHeal += HealSkinSpawn;
     }
 
     private void OnDisable()
     {
         Character.OnHPHit -= DamageSkinSpawn;
+        Character.OnHPHeal -= HealSkinSpawn;
     }
     private void Start()
     {
@@ -82,7 +84,11 @@ public class EnemyCombat : MonoBehaviour, ICombat
         HitColor().Forget();
         DamageSkinSpawner.Instance.DamageSkinSpawn(transform.position + new Vector3(0, 1f, 0), damage);
     }
-
+    private void HealSkinSpawn(int heal, Character chara)
+    {
+        DamageSkinSpawner.Instance
+            .HealSkinSpawn(transform.position + new Vector3(0, 1f, 0), heal);
+    }
     private async UniTask HitColor()
     {
         // 모든 자식 스프라이트 렌더러에 가비지 없이 변경된 속성을 동시 적용

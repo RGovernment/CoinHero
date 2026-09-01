@@ -33,6 +33,14 @@ public abstract class Character : IDamageable, IBuffable
     /// </summary>
     public event Action<int, Character> OnHPHit;
 
+
+    /// <summary>
+    /// HP가 회복될 때 작동하는 함수
+    /// <para>int : 받은 치료량 </para>
+    /// <para>Character : 힐을 한 캐릭터 객체</para>
+    /// </summary>
+    public event Action<int, Character> OnHPHeal;
+
     /// <summary>
     /// SP가 변경될 때 작동하는 함수
     /// <para>int1 : 현재 실드 포인트</para>
@@ -117,10 +125,26 @@ public abstract class Character : IDamageable, IBuffable
         int nowHP = HP;
         HP = Mathf.Clamp(HP - damage, 0, MaxHP);
         OnHPHit?.Invoke(damage, attacker);
-        Debug.Log(damage);
         OnHPChanged?.Invoke(nowHP, HP);
         if(IsDead)
             OnDead?.Invoke(this);
+    }
+
+    public void TakeHeal(int heal, Character healer)
+    {
+        int finalHeal = heal;
+
+        foreach (var item in StatusEffectList)
+        {
+            finalHeal = item.OnModifyTakeHeal(finalHeal);
+        }
+
+        heal = finalHeal;
+        int nowHp = HP;
+        HP = Mathf.Min(HP + heal, MaxHP);
+
+        OnHPHeal?.Invoke(finalHeal, healer);
+        OnHPChanged?.Invoke(nowHp, HP);
     }
 
     /// <summary>

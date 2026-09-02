@@ -89,6 +89,7 @@ public class BattleCoinUI : MonoBehaviour
 
     public void CoinStop(bool front)
     {
+        if (coinGroup.Count <= 0) return;
         nowVal += front ? card.FinalCoinPoint() : 0;
         coinGroup[nowCount].Stop(front);
 

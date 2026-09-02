@@ -7,6 +7,7 @@ using static Constants;
 public abstract class Character : IDamageable, IBuffable
 {
     public int Id { get; private set; }
+    public string Name { get; private set; }
     public int HP { get; private set; }
     public int MaxHP { get; private set; }
     public int SP { get; private set; }
@@ -75,9 +76,10 @@ public abstract class Character : IDamageable, IBuffable
     /// </summary>
     public event Action<Character> OnDead;
 
-    public Character(int id, int maxHp, List<Card> data)
+    public Character(int id, string name ,int maxHp, List<Card> data)
     {
         Id = id;
+        Name = name;
         MaxHP = maxHp;
         HP = MaxHP;
         CardList = data;

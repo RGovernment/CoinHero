@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Threading;
 using Unity.VisualScripting.Antlr3.Runtime;
@@ -17,15 +18,15 @@ public class BattlePhaseState : IState
 
     public void OnEnd()
     {
+        manager.battlePhaseToken.Dispose();
     }
 
     public void OnStart()
     {
-        using var cts = new CancellationTokenSource();
-        manager.battlePhaseToken = cts.Token;
+        manager.battlePhaseToken = new CancellationTokenSource();
+        CancellationToken token = manager.battlePhaseToken.Token;
         Debug.Log("BattlePhaseState Start");
-        ExecuteBattleLoopAsync(manager.battlePhaseToken).Forget();
-
+        ExecuteBattleLoopAsync(token).Forget();
     }
 
     public void OnStay()
@@ -90,8 +91,8 @@ public class BattlePhaseState : IState
 
     public async UniTask OneWayAction(ICombat attacker, Card attackerCard, ICombat defender, CancellationToken cts)
     {
-        
-        await BattleActionLogic(attacker, defender, attackerCard, null, CrashType.OneWay, cts);
+        if(!attacker.Character.IsDead)
+            await BattleActionLogic(attacker, defender, attackerCard, null, CrashType.OneWay, cts);
 
         attacker.CoinUI.Release();
     }
@@ -203,7 +204,9 @@ public class BattlePhaseState : IState
         {
             await BattleActionLogic
                 (player, enemy, playerCard, enemyCard, CrashType.OneWay, cts);
-            await BattleActionLogic
+            cts.ThrowIfCancellationRequested();
+            if (!enemy.Character.IsDead)
+                await BattleActionLogic
                 (enemy, player, enemyCard, playerCard, CrashType.OneWay, cts);
         }
         else if (playerCard.Type == CardType.Item || enemyCard.Type == CardType.Item)
@@ -212,7 +215,8 @@ public class BattlePhaseState : IState
             {
                 await BattleActionLogic
                     (player, enemy, playerCard, enemyCard, CrashType.OneWay, cts);
-                if(!enemy.Character.IsDead)
+                cts.ThrowIfCancellationRequested();
+                if (!enemy.Character.IsDead) 
                     await BattleActionLogic
                         (enemy, player, enemyCard, playerCard, CrashType.OneWay, cts);
             }
@@ -220,8 +224,10 @@ public class BattlePhaseState : IState
             {
                 await BattleActionLogic
                     (enemy, player, enemyCard, playerCard, CrashType.OneWay, cts);
-                if(!player.Character.IsDead)
-                    await BattleActionLogic(player, enemy, playerCard, enemyCard, CrashType.OneWay, cts);
+                cts.ThrowIfCancellationRequested();
+                if (!player.Character.IsDead)
+                    await BattleActionLogic
+                        (player, enemy, playerCard, enemyCard, CrashType.OneWay, cts);
             }
         }
     }
@@ -230,7 +236,9 @@ public class BattlePhaseState : IState
         CancellationToken cts)
     {
         /// 일방 공격은 여기서 UI 생성
-        if (flag == CrashType.OneWay) user.CoinUI.CoinSet(card); 
+        if (flag == CrashType.OneWay)
+            user.CoinUI.CoinSet(card);
+        
 
         switch (card.Type)
         {
@@ -356,11 +364,13 @@ public class BattlePhaseState : IState
                 }
                 break;
         }
-
+        if (flag == CrashType.OneWay)
+        {
+            Debug.Log("초기화됨");
+            user.CoinUI.Release();
+        }
         // 자연스러운 전환을 위한 고정값 딜레이
         await UniTask.Delay(BATTLE_END_DELAY);
-        // 일방 공격일 경우의 UI 초기화
-        if(flag == CrashType.OneWay) user.CoinUI.Release();
     }
 
     public async  UniTask InstantEffectCk(EffectType type, ICombat user, ICombat target,
@@ -371,7 +381,6 @@ public class BattlePhaseState : IState
         switch (type)
         {
             case EffectType.InstantDamage :
-
                 if (target == null) break;
 
                 bool[] userCoins = target.CoinToss(card, user.Character.Sanity);
@@ -396,12 +405,13 @@ public class BattlePhaseState : IState
             case EffectType.InstantHeal :
                 bool[] healCoins = user.CoinToss(card, user.Character.Sanity);
                 int healCoinCount = healCoins.Length;
-
+                
                 user.CoinUI.CoinFlip();
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
-
+                
                 for (int i = 0; i < healCoinCount; i++)
                 {
+                    Debug.Log("회복 실행됨");
                     user.CoinUI.CoinStop(healCoins[i]);
                     await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                 }
@@ -450,12 +460,14 @@ public class BattlePhaseState : IState
             case EffectType.InstantHeal:
                 bool[] healCoins = user.CoinToss(card, user.Character.Sanity);
                 int healCoinCount = healCoins.Length;
+                Debug.Log(healCoinCount);
 
                 user.CoinUI.CoinFlip();
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
 
                 for (int i = 0; i < healCoinCount; i++)
                 {
+                    Debug.Log("회복 실행됨");
                     user.CoinUI.CoinStop(healCoins[i]);
                     await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                 }

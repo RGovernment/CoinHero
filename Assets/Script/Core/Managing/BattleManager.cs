@@ -53,7 +53,7 @@ public class BattleManager : MonoBehaviour
 
     public bool EnemyDeadTurn;
 
-    public CancellationToken battlePhaseToken;
+    public CancellationTokenSource battlePhaseToken;
 
     private void Awake()
     {
@@ -161,7 +161,7 @@ public class BattleManager : MonoBehaviour
     public void EnemyRemove(Character chara)
     {
         BattleStateType stateType = state.GetStateType();
-        state.ChangeState(stateGroup[BattleStateType.DeadDelay]);
+        
         RemoveDelay(stateType, chara).Forget();
     }
 
@@ -173,6 +173,8 @@ public class BattleManager : MonoBehaviour
 
         await enemyCombat[index].AnimatorManager.OnDead();
 
+        battlePhaseToken?.Cancel();
+        state.ChangeState(stateGroup[BattleStateType.DeadDelay]);
         EnemyCombat temp = enemyCombat[index];
         temp.Character.OnDead -= EnemyRemove;
         enemyCombat.RemoveAt(index);
@@ -180,8 +182,6 @@ public class BattleManager : MonoBehaviour
 
         if (before == BattleStateType.TurnStart)
             state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
-        
-            
         
         if (before == BattleStateType.TurnEnd)
         {

@@ -19,7 +19,7 @@ public class DrawPhaseState : IState
         Debug.Log("DrawPhaseState start");
         manager.GetPlayerZone().gameObject.SetActive(true);
         manager.GetEnemyZone().gameObject.SetActive(true);
-
+        manager.GetHandManager().isDrawTime = true;
         // 1. 플레이어 카드 드로우
         manager.GetHandManager().ShuffleAndSettingHand();
         manager.GetHandManager().HandActive();
@@ -27,9 +27,9 @@ public class DrawPhaseState : IState
 
         // 2. 적 카드 오픈 및 큐 적재
         EnemyCardOpen();
-
+        
         // 선택 단계로 상태 전환
-        manager.state.ChangeState(manager.stateGroup[BattleStateType.PlayerChoosePhase]);
+        DrawFinishWait().Forget();
     }
 
     public void OnEnd()
@@ -41,6 +41,13 @@ public class DrawPhaseState : IState
 
     public void OnStay()
     {
+    }
+
+    public async UniTask DrawFinishWait()
+    {
+        await manager.GetHandManager().cardDrawTrigger.Task;
+        manager.GetHandManager().isDrawTime = false;
+        manager.state.ChangeState(manager.stateGroup[BattleStateType.PlayerChoosePhase]);
     }
 
     public void EnemyCardOpen()

@@ -40,6 +40,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [Header("카드 이미지 전환용")]
     public CanvasGroup canvasGroup;
     public RectTransform rect;
+    public GameObject cardBehind;
+    public GameObject labelImage;
 
     public bool isPopup = false;
     public int posIndex = -1;

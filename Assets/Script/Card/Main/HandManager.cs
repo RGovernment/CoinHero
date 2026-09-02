@@ -1,8 +1,11 @@
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using SF = UnityEngine.SerializeField;
 using static Constants;
+using SF = UnityEngine.SerializeField;
 
 public class HandManager : MonoBehaviour
 {
@@ -42,6 +45,10 @@ public class HandManager : MonoBehaviour
     /// </summary>
     private List<CardData> discardCards;
 
+    public UniTaskCompletionSource cardDrawTrigger;
+
+    public bool isDrawTime;
+
     public void CreateAllCard(List<Card> data,Character user)
     {
         allCards = new List<CardData>();
@@ -74,6 +81,10 @@ public class HandManager : MonoBehaviour
             item.gameObject.SetActive(false);
             item.transform.SetParent(baseHolderPos);
             item.transform.position = baseHolderPos.position;
+            item.cardBehind.SetActive(true);
+            item.labelImage.SetActive(false);
+            item.typeIcon.gameObject.SetActive(false);
+            item.starSlot.SetActive(false);
         }
 
         if (handCards.Count > 0)
@@ -85,6 +96,7 @@ public class HandManager : MonoBehaviour
 
     public void ShuffleAndSettingHand()
     {
+        cardDrawTrigger = new();
         if (deckCards.Count < 5 && discardCards.Count > 0)
         {
             discardCards.Shuffle();
@@ -108,17 +120,24 @@ public class HandManager : MonoBehaviour
     public void UpdateHandPos()
     {
         if (handCards == null) return;
+
         int activeCardCount = 0;
         int cardCount = handCards.Count;
+
         foreach (var item in handCards)
         {
             if (item.gameObject.activeSelf)
                 activeCardCount++;
-            
+
         }
-        
+
         if (cardCount == 0) return;
 
+        DrawAnimation(activeCardCount, cardCount).Forget();
+    }
+
+    private async UniTask DrawAnimation(int activeCardCount, int cardCount)
+    {
         // 카드 총 간격이 칸 간격 보다 적으면 간격대로, 많으면 폭 내에서 존재하도록 재계산 
         float totalWidth = (activeCardCount - 1) * cardSpacing;
         if (totalWidth > maxHandWidth)
@@ -132,6 +151,7 @@ public class HandManager : MonoBehaviour
         // 시작점 계산
         float startX = -totalWidth / 2f;
         int activeIdx = 0;
+        Sequence mainSequence = DOTween.Sequence();
 
         for (int i = 0; i < cardCount; i++)
         {
@@ -151,22 +171,86 @@ public class HandManager : MonoBehaviour
             float zRotation = normalizedPosition * -rotationStrength;
 
             RectTransform rect = handCards[i].rect;
-
+            rect.gameObject.SetActive(true);
+            Sequence seq = DOTween.Sequence();
+            int lockIndex = i;
+            float jumpPower = 300;
+            float turnTime = 0.25f;
+            float turnDrawTime = 0.2f;
+            float handTime = 0.03f;
+            float nowX = rect.localPosition.x;
+            float nowY = rect.localPosition.y;
             if (rect != null)
             {
-                // 부모 변경
-                rect.SetParent(cardHolderPos, false);
+                if (isDrawTime)
+                {
+                    rect.localRotation = Quaternion.Euler(0, 180f, 0);
+                    // 부모 변경
+                    rect.SetParent(cardHolderPos, false);
+                    rect.SetAsFirstSibling();
+#pragma warning disable CS4014
+                    seq
+                        .Join(rect.DOLocalRotate(
+                            new Vector3(0, 90, 0), turnTime / 2)
+                        .SetEase(Ease.Linear)
+                        .OnComplete(() => {
+                            handCards[lockIndex].typeIcon.gameObject.SetActive(true);
+                            handCards[lockIndex].labelImage.SetActive(true);
+                            handCards[lockIndex].starSlot.SetActive(true);
+                            handCards[lockIndex].cardBehind.SetActive(false);
+                        })
+                        )
+                        .Insert(0.05f, rect.DOLocalRotate(
+                            new Vector3(0, 0, 0), turnTime / 2)
+                        .SetEase(Ease.Linear))
+                        .Join(rect.DOLocalMove(
+                            new Vector3(nowX, nowY + jumpPower, 0), turnTime)
+                        .SetEase(Ease.Linear)
+                        )
+                        .Insert(turnTime,
+                            rect.DOLocalRotateQuaternion(
+                            Quaternion.Euler(0, 0, zRotation), turnDrawTime)
+                        .SetEase(Ease.OutQuad)
+                        )
+                        .Insert(turnTime,
+                            rect.DOLocalMove(
+                            new Vector3(xOffset, yOffset, 0), turnDrawTime)
+                        .SetEase(Ease.OutQuad)
+                        .OnComplete(() => {
+                            rect.SetSiblingIndex(activeIdx);
+                        })
+                        );
+                    /*rect.localPosition = new Vector3(xOffset, yOffset, 0);
+                    rect.localRotation = Quaternion.Euler(0, 0, zRotation);*/
 
-                rect.localPosition = new Vector3(xOffset, yOffset, 0);
-                rect.localRotation = Quaternion.Euler(0, 0, zRotation);
 
-                rect.SetSiblingIndex(activeIdx);
+                }
+                else
+                {
+                    seq.Join(
+                            rect.DOLocalRotateQuaternion(
+                            Quaternion.Euler(0, 0, zRotation), handTime)
+                        .SetEase(Ease.OutQuad)
+                        )
+                        .Join(
+                            rect.DOLocalMove(
+                            new Vector3(xOffset, yOffset, 0), handTime)
+                        .SetEase(Ease.OutQuad)
+                        );
+                }
+
+                //rect.SetSiblingIndex(activeIdx);
                 rect.tag = HAND_TAG;
             }
-            rect.gameObject.SetActive(true);
-
+            if(isDrawTime)
+                mainSequence.Insert(turnTime / 2 * activeIdx, seq);
+            else
+                mainSequence.Insert(handTime / 2 * activeIdx, seq);
             activeIdx++;
         }
+        await mainSequence.Play().ToUniTask();
+
+        cardDrawTrigger?.TrySetResult();
     }
 
     public void HandActive()

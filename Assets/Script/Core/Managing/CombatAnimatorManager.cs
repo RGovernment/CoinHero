@@ -4,6 +4,7 @@ using SF = UnityEngine.SerializeField;
 
 public class CombatAnimatorManager : MonoBehaviour
 {
+    private static readonly int IsDeathHash = Animator.StringToHash("isDeath");
     private static readonly int _7CustomHash = Animator.StringToHash("7_Custom");
     private static readonly int _6OtherHash = Animator.StringToHash("6_Other");
     private static readonly int _5DebuffHash = Animator.StringToHash("5_Debuff");
@@ -49,7 +50,8 @@ public class CombatAnimatorManager : MonoBehaviour
     public async UniTask OnDead()
     {
         deadTrigger = new();
-        animator.SetBool(_4DeathHash, true);
+        animator.SetTrigger(_4DeathHash);
+        animator.SetBool(IsDeathHash, true);
         await deadTrigger.Task;
     }
 

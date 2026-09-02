@@ -32,7 +32,7 @@ public class PlayerCombat : MonoBehaviour, ICombat
             cd.Add(item.Value);
         }
 
-        Character = new Player(10, "플레이어", 50, cd);
+        Character = new Player(10, "플레이어", 25, cd);
         CoinUI.gameObject.SetActive(false);
         animatorManager.Combat = this;
         statUI.combat = this;

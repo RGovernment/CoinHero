@@ -1,4 +1,4 @@
-using NUnit.Framework.Internal;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 
@@ -33,3 +33,4 @@ public class CardDataString : Editor
         if (GUILayout.Button("effect 데이터 출력")) component.JsonWrite();
     }
 }
+#endif

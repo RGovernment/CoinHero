@@ -17,6 +17,8 @@ public class TurnStartState : IState
 
     public void OnStart()
     {
+        manager.GetPlayerZone().ResetCardZone();
+        manager.GetEnemyZone().ResetCardZone();
         manager.GetPlayerZone().CardZoneOpen();
         manager.GetEnemyZone().CardZoneOpen();
 

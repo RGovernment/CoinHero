@@ -69,6 +69,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         itemImage.sprite = ResourceManager.Instance.CardImageData[cardData.Id];
 
     }
+
     public void Init(Card cardData)
     {
         this.cardData = cardData.Init(cardData);
@@ -104,6 +105,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         // 선택시
         else if (!isPopup && Mouse.current.leftButton.wasReleasedThisFrame)
         {
+            transform.localScale = Vector3.one;
+            transform.SetSiblingIndex(posIndex);
             outline1.enabled = false;
             outline2.enabled = false;
             BattleManager.Instance.SelectCard(this);

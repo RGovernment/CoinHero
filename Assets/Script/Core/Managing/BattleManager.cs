@@ -50,9 +50,7 @@ public class BattleManager : MonoBehaviour
 
     public Vector3 enemyBeforePos;
     public int enemyActionOrderCount = 0;
-
     public bool EnemyDeadTurn;
-
     public CancellationTokenSource battlePhaseToken;
 
     private void Awake()
@@ -156,49 +154,6 @@ public class BattleManager : MonoBehaviour
         playerCombat.AnimatorManager.OnDead().Forget();
         playerCombat.Character.OnDead -= PlayerDead;
         state.ChangeState(stateGroup[BattleStateType.RoundEnd]);
-    }
-
-    public void EnemyRemove(Character chara)
-    {
-        BattleStateType stateType = state.GetStateType();
-        
-        RemoveDelay(stateType, chara).Forget();
-    }
-
-    public async UniTask RemoveDelay(BattleStateType before, Character chara)
-    {
-        // 사망 모션 작동 후 처리
-
-        int index = enemyCombat.FindIndex(x => x.Character.Id == chara.Id);
-
-        await enemyCombat[index].AnimatorManager.OnDead();
-
-        battlePhaseToken?.Cancel();
-        state.ChangeState(stateGroup[BattleStateType.DeadDelay]);
-        EnemyCombat temp = enemyCombat[index];
-        temp.Character.OnDead -= EnemyRemove;
-        enemyCombat.RemoveAt(index);
-        Destroy(temp.gameObject);
-
-        if (before == BattleStateType.TurnStart)
-            state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
-        
-        if (before == BattleStateType.TurnEnd)
-        {
-            if (enemyCombat.Count <= 0)
-                state.ChangeState(stateGroup[BattleStateType.RoundEnd]);
-            else
-                state.ChangeState(stateGroup[BattleStateType.TurnEnd]);
-            
-        }
-            
-        if (before == BattleStateType.BattlePhase)
-        {
-            nowEnemyCards.Clear();
-            EnemyDeadTurn = true;
-            state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
-        }
-            
     }
 
     public HandManager GetHandManager()

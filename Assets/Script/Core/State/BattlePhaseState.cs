@@ -6,11 +6,12 @@ using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using static Constants;
 using static Enums;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
+
 public class BattlePhaseState : IState
 {
 
     private BattleManager manager;
+
     public BattlePhaseState(BattleManager manager)
     {
         this.manager = manager;
@@ -35,12 +36,18 @@ public class BattlePhaseState : IState
 
     private async UniTask ExecuteBattleLoopAsync(CancellationToken cts)
     {
+        // 적이 사망 한 경우 카드 풀을 제거함
+        if (manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()].Character.IsDead &&
+            manager.GetNowEnemyCards().Count > 0)
+            manager.GetNowEnemyCards().Clear();
+
+        // 공격 가능 상태 판별
         bool playerAble = manager.GetNowPlayerCards().TryDequeue(out Card playerCard);
         bool enemyAble = manager.GetNowEnemyCards().TryDequeue(out Card enemyCard);
-
+        
+        // 적이 사망하여 일방공격 상태일 경우, 아이템을 제외한 모든 카드 무효
         if (playerAble && manager.EnemyDeadTurn && playerCard.Type == CardType.Item)
         {
-            manager.GetPlayerCombat().CoinUI.Release();
             await OneWayAction(manager.GetPlayerCombat(), playerCard, null, cts);
 
             manager.state.ChangeState(manager.stateGroup[BattleStateType.BattleEnd]);
@@ -48,7 +55,6 @@ public class BattlePhaseState : IState
         }
         else if(manager.EnemyDeadTurn)
         {
-            manager.GetPlayerCombat().CoinUI.Release();
             manager.state.ChangeState(manager.stateGroup[BattleStateType.BattleEnd]);
             return;
         }
@@ -64,7 +70,18 @@ public class BattlePhaseState : IState
         bool enemyHasCounter = playerCard?.Type == CardType.Item &&
                                (enemyCard?.Effect?.Any(x => x.EffectId == ItemCounterId) ?? false);
 
-        if (!playerAble || !enemyAble)
+                // 적이나 아군이 아이템 무효화 효과를 쓸 경우
+        if (playerHasCounter)
+        {
+            await OneWayAction(manager.GetPlayerCombat(), playerCard, selectEnemy, cts);
+        }
+        // 적이나 아군이 아이템 무효화 효과를 쓸 경우
+        else if (enemyHasCounter)
+        {
+            await OneWayAction(selectEnemy, enemyCard, manager.GetPlayerCombat(), cts);
+        }
+        // 한쪽이 카드를 사용하지 않았을 경우 / 일방 행동
+        else if (!playerAble || !enemyAble)
         {
             ICombat attacker = playerAble ? manager.GetPlayerCombat() : selectEnemy;
             ICombat defender = playerAble ? selectEnemy : manager.GetPlayerCombat();
@@ -72,23 +89,22 @@ public class BattlePhaseState : IState
 
             await OneWayAction(attacker, card, defender, cts);
         }
-        else if (playerHasCounter)
-        {
-            await OneWayAction(manager.GetPlayerCombat(), playerCard, selectEnemy, cts);
-        }
-        else if (enemyHasCounter)
-        {
-            await OneWayAction(selectEnemy, enemyCard, manager.GetPlayerCombat(), cts);
-        }
+        // 합
         else
-        {
             await ClashAction(manager.GetPlayerCombat(), playerCard, selectEnemy, enemyCard, cts);
-        }
         
-
+        // 행동 종료 후 1회 전투 종료
         manager.state.ChangeState(manager.stateGroup[BattleStateType.BattleEnd]);
     }
 
+    /// <summary>
+    /// 일방 공격의 경우 사용됨 
+    /// </summary>
+    /// <param name="attacker"></param>
+    /// <param name="attackerCard"></param>
+    /// <param name="defender"></param>
+    /// <param name="cts"></param>
+    /// <returns></returns>
     public async UniTask OneWayAction(ICombat attacker, Card attackerCard, ICombat defender, CancellationToken cts)
     {
         if(!attacker.Character.IsDead)
@@ -97,8 +113,18 @@ public class BattlePhaseState : IState
         attacker.CoinUI.Release();
     }
 
+    /// <summary>
+    /// 합 할 경우 사용됨
+    /// </summary>
+    /// <param name="player"></param>
+    /// <param name="playerCard"></param>
+    /// <param name="enemy"></param>
+    /// <param name="enemyCard"></param>
+    /// <param name="cts"></param>
+    /// <returns></returns>
     public async UniTask ClashAction(PlayerCombat player, Card playerCard, EnemyCombat enemy, Card enemyCard, CancellationToken cts)
     {
+        // 해당 카드가 합이 가능한 카드일 경우
         if ((playerCard.Type == CardType.Weapon || playerCard.Type == CardType.Armor) &&
             (enemyCard.Type == CardType.Weapon || enemyCard.Type == CardType.Armor))
         {
@@ -108,6 +134,7 @@ public class BattlePhaseState : IState
             player.CoinUI.CoinSet(playerCard);
             enemy.CoinUI.CoinSet(enemyCard);
 
+            // 코인 토스 후 승리 결정
             while (true)
             {
                 bool[] playerCoins = player.CoinToss(playerCard, player.Character.Sanity);
@@ -119,7 +146,7 @@ public class BattlePhaseState : IState
                 enemy.CoinUI.CoinFlip();
 
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
-
+                // 코인 표시
                 for (int i = 0; i < coinCount; i++)
                 {
                     if (i < playerCoins.Length) player.CoinUI.CoinStop(playerCoins[i]);
@@ -134,6 +161,7 @@ public class BattlePhaseState : IState
                 manager.GetBattleUISound().clip = manager.atkSound;
                 manager.GetBattleUISound().Play();
 
+                // 위력이 동등했을 경우 재굴림
                 if (playerResult == enemyResult)
                 {
                     player.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
@@ -148,6 +176,7 @@ public class BattlePhaseState : IState
 
                     continue;
                 }
+                // 플레이어가 우세했을 경우 적 코인 파괴
                 else if (playerResult > enemyResult)
                 {
                     player.AnimatorManager.animationTriggerAttacker = new UniTaskCompletionSource();
@@ -171,6 +200,7 @@ public class BattlePhaseState : IState
                         break;
                     }
                 }
+                // 적이 우세했을 경우 플레이어 코인 파괴
                 else
                 {
                     player.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
@@ -199,26 +229,33 @@ public class BattlePhaseState : IState
 
             await BattleActionLogic(winCombat, loseCombat, winCard, loseCard, CrashType.Crash, cts);
         }
-
+        // 플레이어와 적이 모두 아이템을 사용했을 경우
         if (playerCard.Type == CardType.Item && enemyCard.Type == CardType.Item)
         {
+            // 플레이어 우선 사용
             await BattleActionLogic
                 (player, enemy, playerCard, enemyCard, CrashType.OneWay, cts);
             cts.ThrowIfCancellationRequested();
             if (!enemy.Character.IsDead)
                 await BattleActionLogic
                 (enemy, player, enemyCard, playerCard, CrashType.OneWay, cts);
+            else
+                manager.EnemyDeadTurn = true;
         }
+        // 한쪽만 아이템을 사용했을 경우
         else if (playerCard.Type == CardType.Item || enemyCard.Type == CardType.Item)
         {
+            // 아이템을 사용한 쪽 우선 행동
             if (playerCard.Type == CardType.Item)
             {
                 await BattleActionLogic
                     (player, enemy, playerCard, enemyCard, CrashType.OneWay, cts);
                 cts.ThrowIfCancellationRequested();
-                if (!enemy.Character.IsDead) 
+                if (!enemy.Character.IsDead)
                     await BattleActionLogic
                         (enemy, player, enemyCard, playerCard, CrashType.OneWay, cts);
+                else
+                    manager.EnemyDeadTurn = true;
             }
             else
             {
@@ -232,6 +269,16 @@ public class BattlePhaseState : IState
         }
     }
 
+    /// <summary>
+    /// 공격 및 아이템 사용 처리
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="target"></param>
+    /// <param name="card"></param>
+    /// <param name="targetCard"></param>
+    /// <param name="flag"></param>
+    /// <param name="cts"></param>
+    /// <returns></returns>
     public async UniTask BattleActionLogic(ICombat user, ICombat target, Card card, Card targetCard, CrashType flag,
         CancellationToken cts)
     {
@@ -280,19 +327,18 @@ public class BattlePhaseState : IState
                 user.AnimatorManager.OnAttack();
 
                 await user.AnimatorManager.animationTriggerAttacker.Task.AttachExternalCancellation(cts);
-
-                target.Character.TakeDamage(result, user.Character);
-
                 target.AnimatorManager.OnDamage();
+                target.Character.TakeDamage(result, user.Character);
 
                 if (isAPOn) DamageSkinSpawner.Instance.TextSpawn(
                     target.BaseCharaObj.transform.position,
                     $"<color=#{SHIELD_COLOR}>피해 {APDiscount} 경감됨!</color>");
 
                 await target.AnimatorManager.animationTriggerDefender.Task.AttachExternalCancellation(cts);
-
+                if(target.Character.IsDead)
+                    manager.EnemyDeadTurn = true;
                 break;
-
+                // 방어일 경우
             case CardType.Armor:
                 user.AnimatorManager.animationTriggerDefender = new UniTaskCompletionSource();
                 int SP = 0;
@@ -341,7 +387,7 @@ public class BattlePhaseState : IState
                 await user.AnimatorManager.animationTriggerDefender.Task.AttachExternalCancellation(cts);
                 
                 break;
-
+                // 아이템을 사용했을 경우
             case CardType.Item:
                 // 일방 사용일 경우
                 if(targetCard == null)
@@ -377,7 +423,7 @@ public class BattlePhaseState : IState
          Card card, CancellationToken cts)
     {
         user.AnimatorManager.animationTriggerItem = new UniTaskCompletionSource();
-        // 타겟이 null일 경우에 대한 조건 체크 넣을 것
+        // 타겟이 필요한 행동은 타겟이 null일 경우에 대한 조건 체크 넣을 것
         switch (type)
         {
             case EffectType.InstantDamage :

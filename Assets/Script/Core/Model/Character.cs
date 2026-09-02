@@ -124,7 +124,7 @@ public abstract class Character : IDamageable, IBuffable
             OnSPHit?.Invoke(nowSp, attacker);
             OnSPChanged?.Invoke(nowSp, 0);
         }
-        
+
         int nowHP = HP;
         HP = Mathf.Clamp(HP - damage, 0, MaxHP);
         OnHPHit?.Invoke(damage, attacker);

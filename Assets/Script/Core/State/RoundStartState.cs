@@ -20,10 +20,6 @@ public class RoundStartState : IState
         // 이번턴에 플레이어가 사용할 덱 초기화 
         manager.GetHandManager().CreateAllCard(manager.GetPlayerCombat().Character.CardList, manager.GetPlayerCombat().Character);
 
-        foreach (var item in manager.GetEnemyCombat())
-        {
-            item.Character.OnDead += manager.EnemyRemove;
-        }
         CharaPosSet();
     }
 

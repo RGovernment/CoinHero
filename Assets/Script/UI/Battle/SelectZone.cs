@@ -45,6 +45,8 @@ public class SelectZone : MonoBehaviour
 
     public void ResetCardZone()
     {
+        if (cardList == null) return;
+
         foreach (var slot in EmptySlot)
         {
             for (int i = slot.transform.childCount - 1; i >= 0; i--)

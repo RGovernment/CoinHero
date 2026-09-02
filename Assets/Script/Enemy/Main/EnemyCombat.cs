@@ -32,7 +32,7 @@ public class EnemyCombat : MonoBehaviour, ICombat
             cd.Add(item.Value);
         }
 
-        Character = new Enemy(50, $"Dummy_{name}" , 20, cd);
+        Character = new Enemy(50, $"Dummy_{name}" , 10, cd);
         CoinUI.gameObject.SetActive(false);
         animatorManager.Combat = this;
         statUI.combat = this;
@@ -44,6 +44,7 @@ public class EnemyCombat : MonoBehaviour, ICombat
         Character.OnHPHit += DamageSkinSpawn;
         Character.OnSPHit += SPDamageSkinSpawn;
         Character.OnHPHeal += HealSkinSpawn;
+        Character.OnDead += EnemyDead;
     }
 
     private void OnDisable()
@@ -51,11 +52,23 @@ public class EnemyCombat : MonoBehaviour, ICombat
         Character.OnHPHit -= DamageSkinSpawn;
         Character.OnSPHit -= SPDamageSkinSpawn;
         Character.OnHPHeal -= HealSkinSpawn;
+        Character.OnDead -= EnemyDead;
     }
 
     private void Start()
     {
         BattleManager.Instance.RegisterEnemy(this);
+    }
+
+    public void EnemyDead(Character chara)
+    {
+        RemoveDelay(chara).Forget();
+    }
+
+    public async UniTask RemoveDelay(Character chara)
+    {
+        await AnimatorManager.OnDead();
+        AnimatorManager.OnDefender();
     }
 
     public bool[] CoinToss(Card card, int SanitySet = -1)
@@ -134,7 +147,12 @@ public class EnemyCombat : MonoBehaviour, ICombat
         {
             if (renders[i] != null)
                 renders[i].SetPropertyBlock(hitMat);
-
         }
+    }
+
+    public void DestroySelf()
+    {
+        Character.OnDead -= EnemyDead;
+        Destroy(gameObject);
     }
 }

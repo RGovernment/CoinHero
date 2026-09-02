@@ -1,15 +1,15 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System.Linq;
 using UnityEngine;
-using static Enums;
 using static Constants;
+using static Enums;
 using static Utility;
 
 public class TurnEndState : IState
 {
 
     private BattleManager manager;
-
     public TurnEndState(BattleManager manager)
     {
         this.manager = manager;
@@ -18,26 +18,40 @@ public class TurnEndState : IState
     public void OnEnd()
     {
         if (!manager.EnemyDeadTurn)
+        {
             manager.enemyActionOrderCount++;
+        }
+
+        // 사망 인원이 처리됐으므로 플래그 비활성화
         manager.EnemyDeadTurn = false;
+
         manager.GetPlayerCombat().Character.OnDead -= manager.PlayerDead;
     }
 
     public void OnStart()
     {
         Debug.Log("TurnEndState start");
-        if(manager.state.GetStateType(false) != BattleStateType.DeadDelay)
+        if(!manager.EnemyDeadTurn && 
+            manager.state.GetStateType(false) != BattleStateType.DeadDelay)
         {
-            manager.GetPlayerZone().ResetCardZone();
-            manager.GetEnemyZone().ResetCardZone();
             manager.GetHandManager().HandDrop();
 
             // 턴 종료 시의 디버프/버프 목록 처리 추가
-
-
         }
 
         BattleUIDisable();
+        
+        for (int i = manager.GetEnemyCombat().Count - 1; i >= 0; i--)
+        {
+            EnemyCombat data = manager.GetEnemyCombat()[i];
+            if (data.Character.IsDead)
+            {
+                data.CoinUI.Release();
+                manager.GetEnemyCombat().Remove(data);
+                data.DestroySelf();
+            }
+        }
+
         BattleEndCk();
     }
 
@@ -52,9 +66,7 @@ public class TurnEndState : IState
     {
         manager.GetPlayerCombat()
             .CoinUI.Release();
-        if(manager.GetEnemyCombat().Count > 0 &&
-            (manager.state.GetStateType(false) != BattleStateType.DeadDelay || 
-            manager.EnemyDeadTurn != true))
+        if(manager.GetEnemyCombat().Count > 0 && !manager.EnemyDeadTurn)
             manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()]
                 .CoinUI.Release();
     }
@@ -95,9 +107,7 @@ public class TurnEndState : IState
         }
 
         // 적 전멸시 스킵
-        if (manager.GetEnemyCombat().Count > 0 ||
-            manager.state.GetStateType(false) != BattleStateType.DeadDelay ||
-            manager.EnemyDeadTurn != true)
+        if (manager.GetEnemyCombat().Count > 0 && !manager.EnemyDeadTurn)
         {
             enemy = manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()];
             ToggleYRotation(enemy.transform);
@@ -118,15 +128,12 @@ public class TurnEndState : IState
         }
 
         // 
-        if(manager.GetEnemyCombat().Count > 0 ||
-           manager.state.GetStateType(false) != BattleStateType.DeadDelay ||
-            manager.EnemyDeadTurn != true)
+        if(manager.GetEnemyCombat().Count > 0 && !manager.EnemyDeadTurn)
         {
             ToggleYRotation(enemy.transform);
 
             enemy.AnimatorManager.OnIdle();
         }
-        
 
         manager.state.ChangeState(manager.stateGroup[BattleStateType.TurnStart]);
     }

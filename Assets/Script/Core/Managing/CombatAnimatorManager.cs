@@ -77,4 +77,9 @@ public class CombatAnimatorManager : MonoBehaviour
     {
         animationTriggerItem?.TrySetResult();
     }
+
+    public void OnDeadEnd()
+    {
+        deadTrigger.TrySetResult();
+    }
 }

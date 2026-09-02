@@ -3,6 +3,7 @@ using DG.Tweening;
 using UnityEngine;
 using static Enums;
 using static Constants;
+using static Utility;
 
 public class TurnEndState : IState
 {
@@ -16,20 +17,26 @@ public class TurnEndState : IState
 
     public void OnEnd()
     {
+        if (!manager.EnemyDeadTurn)
+            manager.enemyActionOrderCount++;
+        manager.EnemyDeadTurn = false;
         manager.GetPlayerCombat().Character.OnDead -= manager.PlayerDead;
-        manager.enemyActionOrderCount++;
     }
 
     public void OnStart()
     {
         Debug.Log("TurnEndState start");
-        
-        manager.GetPlayerZone().ResetCardZone();
-        manager.GetEnemyZone().ResetCardZone();
-        manager.GetHandManager().HandDrop();
+        if(manager.state.GetStateType(false) != BattleStateType.DeadDelay)
+        {
+            manager.GetPlayerZone().ResetCardZone();
+            manager.GetEnemyZone().ResetCardZone();
+            manager.GetHandManager().HandDrop();
 
-        // 턴 종료 시의 디버프/버프 목록 처리 이후 캐릭터의 상태에 문제가 없을 경우(사망x 등)
-        // 실행하도록 추후 변경
+            // 턴 종료 시의 디버프/버프 목록 처리 추가
+
+
+        }
+
         BattleUIDisable();
         BattleEndCk();
     }
@@ -45,8 +52,11 @@ public class TurnEndState : IState
     {
         manager.GetPlayerCombat()
             .CoinUI.Release();
-        manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()]
-            .CoinUI.Release();
+        if(manager.GetEnemyCombat().Count > 0 &&
+            (manager.state.GetStateType(false) != BattleStateType.DeadDelay || 
+            manager.EnemyDeadTurn != true))
+            manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()]
+                .CoinUI.Release();
     }
 
     /// <summary>
@@ -59,54 +69,65 @@ public class TurnEndState : IState
         else
             CharaReturnBasePos().Forget();
     }
-
+    #pragma warning disable CS4014
     /// <summary>
     /// 캐릭터가 원래 자리로 돌아가도록 하는 함수
     /// </summary>
     /// <returns></returns>
     public async UniTask CharaReturnBasePos()
     {
-        Sequence seq = DOTween.Sequence();
+        Sequence seq = DOTween.Sequence().Pause();
+
         PlayerCombat player = manager.GetPlayerCombat();
-        EnemyCombat enemy = manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()];
-        ToggleYRotation(player.transform);
-        ToggleYRotation(enemy.transform);
-        player.AnimatorManager.OnMove();
-        enemy.AnimatorManager.OnMove();
-        // 이동 연출
-        await
+        EnemyCombat enemy = null;
+
+        // 플레이어 사망 시 스킵
+        if (!player.Character.IsDead)
+        {
+            // 플레이어 이동
+            ToggleYRotation(player.transform);
+            player.AnimatorManager.OnMove();
             seq
-            .Join(
-                player.transform.DOMove(
-                manager.playerSpawnPoint.position, MOVE_TIMER)
-            )
-            .Join(
+              .Join(
+                  player.transform.DOMove(
+                  manager.playerSpawnPoint.position, MOVE_TIMER)
+              );
+        }
+
+        // 적 전멸시 스킵
+        if (manager.GetEnemyCombat().Count > 0 ||
+            manager.state.GetStateType(false) != BattleStateType.DeadDelay ||
+            manager.EnemyDeadTurn != true)
+        {
+            enemy = manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()];
+            ToggleYRotation(enemy.transform);
+            enemy.AnimatorManager.OnMove();
+            seq.Join(
                 enemy
                 .transform.DOMove(manager.enemyBeforePos, MOVE_TIMER)
-            ).ToUniTask();
+            );
+        }
+        
+        // 이동 연출
+        await seq.Play().ToUniTask();
 
-        ToggleYRotation(player.transform);
-        ToggleYRotation(enemy.transform);
-        player.AnimatorManager.OnIdle();
-        enemy.AnimatorManager.OnIdle();
+        if (!player.Character.IsDead)
+        {
+            ToggleYRotation(player.transform);
+            player.AnimatorManager.OnIdle();
+        }
+
+        // 
+        if(manager.GetEnemyCombat().Count > 0 ||
+           manager.state.GetStateType(false) != BattleStateType.DeadDelay ||
+            manager.EnemyDeadTurn != true)
+        {
+            ToggleYRotation(enemy.transform);
+
+            enemy.AnimatorManager.OnIdle();
+        }
+        
 
         manager.state.ChangeState(manager.stateGroup[BattleStateType.TurnStart]);
-    }
-
-    /// <summary>
-    /// Y축 180도 반전 회전
-    /// </summary>
-    /// <param name="transform">반전 시킬 객체</param>
-    public void ToggleYRotation(Transform transform)
-    {
-        Vector3 currentEuler = transform.localEulerAngles;
-
-        float currentY = currentEuler.y % 360f;
-        if (currentY < 0) currentY += 360f;
-
-        float targetY = (currentY + 180f) % 360f;
-
-        currentEuler.y = targetY;
-        transform.localEulerAngles = currentEuler;
     }
 }

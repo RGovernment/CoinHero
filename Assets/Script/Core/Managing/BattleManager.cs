@@ -3,9 +3,11 @@ using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 using static Constants;
 using static Enums;
+using static Utility;
 using SF = UnityEngine.SerializeField;
 
 public class BattleManager : MonoBehaviour
@@ -42,6 +44,10 @@ public class BattleManager : MonoBehaviour
     public Vector3 enemyBeforePos;
     public int enemyActionOrderCount = 0;
 
+    public bool EnemyDeadTurn;
+
+    public CancellationToken battlePhaseToken;
+
     private void Awake()
     {
         Instance = this;
@@ -65,11 +71,10 @@ public class BattleManager : MonoBehaviour
             [BattleStateType.BattleEnd] = new BattleEndState(Instance),
             [BattleStateType.TurnEnd] = new TurnEndState(Instance),
             [BattleStateType.RoundEnd] = new RoundEndState(Instance),
-            [BattleStateType.RoundEnd] = new DeadDelayState(Instance)
+            [BattleStateType.DeadDelay] = new DeadDelayState(Instance)
         };
 
         state.ChangeState(stateGroup[BattleStateType.RoundStart]);
-        state.ChangeState(stateGroup[BattleStateType.TurnStart]);
     }
 
     private void Update()
@@ -142,6 +147,7 @@ public class BattleManager : MonoBehaviour
     {
         playerCombat.AnimatorManager.OnDead().Forget();
         playerCombat.Character.OnDead -= PlayerDead;
+        state.ChangeState(stateGroup[BattleStateType.RoundEnd]);
     }
 
     public void EnemyRemove(Character chara)
@@ -157,19 +163,34 @@ public class BattleManager : MonoBehaviour
 
         int index = enemyCombat.FindIndex(x => x.Character.Id == chara.Id);
 
-        if (before == BattleStateType.TurnStart)
-            state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
-
-        if (before == BattleStateType.TurnEnd)
-            state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
-
-        if (before == BattleStateType.BattlePhase)
-            state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
-
         await enemyCombat[index].AnimatorManager.OnDead();
 
-        enemyCombat[index].Character.OnDead -= EnemyRemove;
+        EnemyCombat temp = enemyCombat[index];
+        temp.Character.OnDead -= EnemyRemove;
         enemyCombat.RemoveAt(index);
+        Destroy(temp.gameObject);
+
+        if (before == BattleStateType.TurnStart)
+            state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
+        
+            
+        
+        if (before == BattleStateType.TurnEnd)
+        {
+            if (enemyCombat.Count <= 0)
+                state.ChangeState(stateGroup[BattleStateType.RoundEnd]);
+            else
+                state.ChangeState(stateGroup[BattleStateType.TurnEnd]);
+            
+        }
+            
+        if (before == BattleStateType.BattlePhase)
+        {
+            nowEnemyCards.Clear();
+            EnemyDeadTurn = true;
+            state.ChangeState(stateGroup[BattleStateType.BattleEnd]);
+        }
+            
     }
 
     public HandManager GetHandManager()
@@ -240,5 +261,10 @@ public class BattleManager : MonoBehaviour
     public void RegisterEnemy(EnemyCombat enemy)
     {
         enemyCombat.Add(enemy);
+    }
+
+    public void TurnStart()
+    {
+        state.ChangeState(stateGroup[BattleStateType.TurnStart]);
     }
 }

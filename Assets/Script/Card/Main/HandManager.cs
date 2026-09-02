@@ -75,9 +75,12 @@ public class HandManager : MonoBehaviour
             item.transform.SetParent(baseHolderPos);
             item.transform.position = baseHolderPos.position;
         }
-        
-        discardCards.AddRange(handCards);
-        handCards.Clear();
+
+        if (handCards.Count > 0)
+        {
+            discardCards.AddRange(handCards);
+            handCards.Clear();
+        }
     }
 
     public void ShuffleAndSettingHand()

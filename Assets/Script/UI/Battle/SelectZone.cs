@@ -57,7 +57,6 @@ public class SelectZone : MonoBehaviour
         CancelBtn.gameObject.SetActive(false);
 
         OnCancelCard?.Invoke();
-        
     }
 
     public void TurnEnd()
@@ -106,7 +105,6 @@ public class SelectZone : MonoBehaviour
         slotObj.gameObject.tag = "Slot";
         await UniTask.DelayFrame(1);
         slotObj.gameObject.SetActive(true);
-        Debug.Log(slotObj.cardData);
         cardList.Enqueue(slotObj.cardData);
 
         Sequence seq = DOTween.Sequence();

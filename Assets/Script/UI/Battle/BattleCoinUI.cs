@@ -27,7 +27,9 @@ public class BattleCoinUI : MonoBehaviour
 
     public void CoinSet(Card card)
     {
-        if(coinGroup != null && coinGroup.Count > 0)
+        if (this == null || iconImage == null) return;
+
+        if (coinGroup != null && coinGroup.Count > 0)
         {
             // 코인 그룹 내 코인들의 이벤트 정리 및 리스트 비우기
             for (int i = coinGroup.Count - 1; i >= 0; i--)

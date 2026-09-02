@@ -3,8 +3,12 @@ using static Enums;
 public class StateMachine
 {
     private IState nowState;
+    private IState beforeState;
 
-
+    /// <summary>
+    /// 상태를 전환하는 함수
+    /// </summary>
+    /// <param name="nextState"></param>
     public void ChangeState(IState nextState)
     {
         if (nowState == null)
@@ -15,6 +19,7 @@ public class StateMachine
         }
 
         nowState.OnEnd();
+        beforeState = nowState;
         nowState = nextState;
         nextState.OnStart();
     }
@@ -24,30 +29,40 @@ public class StateMachine
         nowState?.OnStay();
     }
 
-    public BattleStateType GetStateType()
+    /// <summary>
+    /// 현재 / 이전 상태가 무엇이었는지 가져오는 함수
+    /// </summary>
+    /// <param name="now">현재 = true / 이전 = false</param>
+    /// <returns>호출된 지점의 상태값</returns>
+    public BattleStateType GetStateType(bool now = true)
     {
-        if (nowState is RoundStartState)
+        IState callState = now ? nowState : beforeState;
+
+        if (callState is RoundStartState)
             return BattleStateType.RoundStart;
 
-        else if (nowState is TurnStartState)
+        else if (callState is TurnStartState)
             return BattleStateType.TurnStart;
 
-        else if (nowState is DrawPhaseState)
+        else if (callState is DrawPhaseState)
             return BattleStateType.DrawPhase;
-        else if (nowState is PlayerChoosePhaseState)
+        else if (callState is PlayerChoosePhaseState)
             return BattleStateType.PlayerChoosePhase;
 
-        else if (nowState is BattleStartState)
+        else if (callState is BattleStartState)
             return BattleStateType.BattleStart;
-        else if(nowState is BattlePhaseState)
+        else if (callState is BattlePhaseState)
             return BattleStateType.BattlePhase;
-        else if (nowState is BattleEndState)
+        else if (callState is BattleEndState)
             return BattleStateType.BattleEnd;
 
-        else if (nowState is TurnEndState)
+        else if (callState is TurnEndState)
             return BattleStateType.TurnEnd;
 
-        else
+        else if (callState is RoundEndState)
             return BattleStateType.RoundEnd;
+
+        else
+            return BattleStateType.DeadDelay;
     }
 }

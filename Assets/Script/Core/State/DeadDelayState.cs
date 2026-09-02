@@ -10,6 +10,7 @@ public class DeadDelayState : IState
 
     public void OnEnd()
     {
+        Debug.Log("DeadDelayState Start");
     }
 
     public void OnStart()

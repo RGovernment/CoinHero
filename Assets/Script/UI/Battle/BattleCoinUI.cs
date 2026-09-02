@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,15 +20,38 @@ public class BattleCoinUI : MonoBehaviour
 
     private int nowCount = 0;
     private int nowVal = 0;
-    public void CoinSet(Transform chara, Card card)
+    public void Awake()
     {
+        coinGroup = new();
+    }
+
+    public void CoinSet(Card card)
+    {
+        if (this == null || iconImage == null) return;
+
+        if (coinGroup != null && coinGroup.Count > 0)
+        {
+            // 코인 그룹 내 코인들의 이벤트 정리 및 리스트 비우기
+            for (int i = coinGroup.Count - 1; i >= 0; i--)
+            {
+                CoinObject coin = coinGroup[i];
+
+                if (coin != null)
+                {
+                    coin.OnBrokenComplete -= RemoveCoinFromGroup;
+                    Destroy(coin);
+                }
+            }
+        }
+
+        coinGroup.Clear();
+
         nowCount = 0;
         this.card = card;
         nameText.text = card.Name;
         valueText.text = card.Value.ToString();
         nowVal = card.Value;
         iconImage.sprite = ResourceManager.Instance.CardImageData[card.Id];
-        transform.SetParent(chara);
 
         gameObject.SetActive(true);
 
@@ -55,6 +79,7 @@ public class BattleCoinUI : MonoBehaviour
     public void CoinFlip()
     {
         nowVal = card.Value;
+        valueText.text = card.Value.ToString();
         foreach (var item in coinGroup)
         {
             item.Spin();
@@ -64,6 +89,7 @@ public class BattleCoinUI : MonoBehaviour
 
     public void CoinStop(bool front)
     {
+        if (coinGroup.Count <= 0) return;
         nowVal += front ? card.FinalCoinPoint() : 0;
         coinGroup[nowCount].Stop(front);
 
@@ -76,29 +102,55 @@ public class BattleCoinUI : MonoBehaviour
         nowCount = 0;
     }
 
-    public async UniTask CoinBroken()
+
+
+    public async UniTask CoinBroken(CancellationToken cancellationToken = default)
     {
         CoinObject obj = coinGroup[^1];
-        
-
         var utcs = new UniTaskCompletionSource();
 
-        Action<CoinObject> onComplete = null;
-        onComplete = (coin) =>
+        void OnCompleteHandler(CoinObject coin)
         {
-            obj.OnBrokenComplete -= onComplete;
-            coinGroup.Remove(coin);
-            utcs.TrySetResult(); // 대기 중인 await를 풀어줍니다.
-        };
+            obj.OnBrokenComplete -= OnCompleteHandler;
+            if (coinGroup.Contains(coin))
+            {
+                coinGroup.Remove(coin);
+            }
+            utcs.TrySetResult();
+        }
 
-        obj.OnBrokenComplete += onComplete;
+
+        obj.OnBrokenComplete += OnCompleteHandler;
         obj.Broken();
 
-        await utcs.Task;
+        using (cancellationToken.Register(() =>
+        {
+            obj.OnBrokenComplete -= OnCompleteHandler;
+            utcs.TrySetCanceled();
+        }))
+        {
+            bool isCanceled = await utcs.Task.SuppressCancellationThrow();
+            if (isCanceled)
+            {
+                obj.OnBrokenComplete -= OnCompleteHandler;
+            }
+        }
     }
 
     public void Release()
     {
+        // 코인 그룹 내 코인들의 이벤트 정리 및 리스트 비우기
+        for(int i = coinGroup.Count -1; i >= 0; i--)
+        {
+            CoinObject coin = coinGroup[i];
+
+            if (coin != null)
+            {
+                coin.OnBrokenComplete -= RemoveCoinFromGroup;
+                Destroy(coin);
+            }
+        }
+
         coinGroup.Clear();
         gameObject.SetActive(false);
     }

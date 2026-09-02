@@ -100,8 +100,14 @@
         "value": 1
       }
     ],
-    "Effect": [],
-    "Description": "짧은 단검."
+    "Effect": [
+      {
+        "EffectId": 203,
+        "Value": 1,
+        "Duration": 0
+      }
+    ],
+    "Description": "{ItemCounter}"
   },
   {
     "Name": "나무 방패",
@@ -185,7 +191,7 @@
         "Duration": 0
       }
     ],
-    "Description": "사용자에게 {InstantHeal} : [Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
+    "Description": "{InstantHeal} : [Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
   },
   {
     "Name": "횃불",
@@ -217,7 +223,7 @@
         "Duration": 0
       }
     ],
-    "Description": "대상에게 {InstantDamage} : [Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
+    "Description": "{InstantDamage} : [Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
   }
 
 ]

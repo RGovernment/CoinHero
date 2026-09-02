@@ -32,11 +32,15 @@ public class SelectZone : MonoBehaviour
         return count;
     }
 
+    private void Awake()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void Start()
     {
         cardList = new();
         ResetCardZone();
-        gameObject.SetActive(false);
     }
 
     public void ResetCardZone()
@@ -53,7 +57,6 @@ public class SelectZone : MonoBehaviour
         CancelBtn.gameObject.SetActive(false);
 
         OnCancelCard?.Invoke();
-        
     }
 
     public void TurnEnd()
@@ -74,6 +77,7 @@ public class SelectZone : MonoBehaviour
         {
             EmptySlot[i].SetActive(true);
         }
+
         gameObject.SetActive(true);
         TurnEndBtn.gameObject.SetActive(true);
     }
@@ -91,11 +95,11 @@ public class SelectZone : MonoBehaviour
     public async UniTaskVoid SetCardToZone(CardData data)
     {
         if (nowSelectCount >= GetSelectZoneCount()) return;
-
+        
         Transform emptySlot = EmptySlot[nowSelectCount].transform;
         data.gameObject.SetActive(false);
         CardData slotObj = Instantiate(data, Canvas);
-        slotObj.cardData = data.cardData;
+        slotObj.Init(data.cardData);
         slotObj.transform
             .SetPositionAndRotation(data.transform.position, data.transform.rotation);
         slotObj.gameObject.tag = "Slot";
@@ -107,6 +111,7 @@ public class SelectZone : MonoBehaviour
 
         Vector3 scale = EmptySlot[nowSelectCount].transform.localScale;
         slotObj.gameObject.SetActive(true);
+        nowSelectCount++;
         await seq
             .Join(slotObj.transform.DOMove(emptySlot.position, 0.15f))
             .Append(slotObj.transform.DORotate(Vector3.zero, 0.05f))
@@ -118,8 +123,6 @@ public class SelectZone : MonoBehaviour
 
         if (!CancelBtn.gameObject.activeSelf)
             CancelBtn.gameObject.SetActive(true);
-
-        nowSelectCount++;
 
         OnSelectCard?.Invoke();
     }

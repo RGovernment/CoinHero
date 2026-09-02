@@ -69,6 +69,11 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         itemImage.sprite = ResourceManager.Instance.CardImageData[cardData.Id];
 
     }
+    public void Init(Card cardData)
+    {
+        this.cardData = cardData.Init(cardData);
+    }
+
 
     public async UniTaskVoid OpenInfo()
     {
@@ -131,8 +136,11 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!isPopup && CompareTag("Hand"))
+        if (!isPopup && CompareTag("Hand") && 
+            BattleManager.Instance.state.GetStateType() == 
+            Enums.BattleStateType.PlayerChoosePhase)
         {
+            transform.localScale = Vector3.one * 1.1f; 
             transform.SetAsLastSibling();
             outline1.enabled = true;
             outline2.enabled = true;
@@ -142,8 +150,11 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!isPopup && CompareTag("Hand"))
+        if (!isPopup && CompareTag("Hand") &&
+            BattleManager.Instance.state.GetStateType() ==
+            Enums.BattleStateType.PlayerChoosePhase)
         {
+            transform.localScale = Vector3.one;
             transform.SetSiblingIndex(posIndex);
             outline1.enabled = false;
             outline2.enabled = false;

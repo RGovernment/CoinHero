@@ -1,10 +1,9 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Resources;
 using System.Collections.Generic;
 
 using UnityEngine;
 using static Constants;
+using static Enums;
 using System.Linq;
 
 public class ResourceManager : MonoBehaviour
@@ -15,6 +14,9 @@ public class ResourceManager : MonoBehaviour
     public Dictionary<int, Sprite> CardImageData { get; private set; }
 
     public Dictionary<int, StatusEffectData> EffectData { get; private set; }
+
+    public Dictionary<EffectType, StatusEffectData> EffectDataByType { get; private set; }
+
     private void Awake()
     {
         if(Instance == null)
@@ -31,7 +33,7 @@ public class ResourceManager : MonoBehaviour
         EffectData = new();
         EnemyCardData = new();
         CardImageData = new();
-
+        EffectDataByType = new();
         ResourceLoad();
         CardImageLoad();
     }
@@ -45,7 +47,7 @@ public class ResourceManager : MonoBehaviour
         string playerCardJson 
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + PLAYER_CARD_DATA).text;
         string enemyCardJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + Enemy_CARD_DATA).text;
+            = Resources.Load<TextAsset>(ASSET_DATA_PATH + ENEMY_CARD_DATA).text;
         string statusEffectJson
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + STATUS_EFFECT_DATA).text;
 
@@ -60,6 +62,7 @@ public class ResourceManager : MonoBehaviour
         CardData = cardList.ToDictionary(x => x.Id);
         EnemyCardData = enemyCardList.ToDictionary(x => x.Id);
         EffectData = effectList.ToDictionary(x => x.Id);
+        EffectDataByType = effectList.ToDictionary(x => x.Type);
     }
 
     private void CardImageLoad()
@@ -76,6 +79,18 @@ public class ResourceManager : MonoBehaviour
             int id = item.Value.Id;
             Sprite sprite = Resources.Load<Sprite>(CARD_IMAGE_PATH + $"Card_{id}");
             CardImageData[id] = sprite;
+        }
+    }
+
+    private Card GetCardData(int id)
+    {
+        if(id >= 1000 && id < 5000)
+        {
+            return CardData[id];
+        }
+        else
+        {
+            return EnemyCardData[id];
         }
     }
 }

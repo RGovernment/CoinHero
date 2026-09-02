@@ -2,14 +2,18 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static Constants;
 
 public abstract class Character : IDamageable, IBuffable
 {
     public int Id { get; private set; }
+    public string Name { get; private set; }
     public int HP { get; private set; }
     public int MaxHP { get; private set; }
     public int SP { get; private set; }
     public int Sanity { get; private set; }
+
+    public bool IsDead { get => HP <= 0; }
     public List<Card> CardList;
 
     // 인게임에서만 사용
@@ -17,11 +21,11 @@ public abstract class Character : IDamageable, IBuffable
     public List<StatusEffect> StatusEffectList;
 
     /// <summary>
-    /// AP가 피해를 입을때 작동하는 함수
+    /// SP가 피해를 입을때 작동하는 함수
     /// <para>int : 입은 피해 </para>
     /// <para>Character : 피해를 입힌 캐릭터 객체</para>
     /// </summary>
-    public event Action<int, Character> OnAPHit;
+    public event Action<int, Character> OnSPHit;
     
     /// <summary>
     /// HP가 피해를 입을때 작동하는 함수
@@ -30,30 +34,52 @@ public abstract class Character : IDamageable, IBuffable
     /// </summary>
     public event Action<int, Character> OnHPHit;
 
-    /// <summary>
-    /// AP가 변경될 때 작동하는 함수
-    /// <para>int1 : 현재 아머 포인트</para>
-    /// <para>int2 : 변경된 아머 포인트</para>
-    /// </summary>
-    public event Action<int, int> OnAPChanged;
 
     /// <summary>
-    /// HP가 변경될 때 작동하는 함수
-    /// <para>int1 : 현재 체력</para>
-    /// <para>int2 : 최대 체력</para>
+    /// HP가 회복될 때 작동하는 함수
+    /// <para>int : 받은 치료량 </para>
+    /// <para>Character : 힐을 한 캐릭터 객체</para>
     /// </summary>
-    public event Action<int, int> OnHPChanged;
+    public event Action<int, Character> OnHPHeal;
+
+    /// <summary>
+    /// SP가 변경될 때 작동하는 함수
+    /// <para>int1 : 현재 실드 포인트</para>
+    /// <para>int2 : 변경된 실드 포인트</para>
+    /// </summary>
+    public event Action<int, int> OnSPChanged;
 
     /// <summary>
     /// HP가 변경될 때 작동하는 함수
     /// <para>int1 : 현재 체력</para>
     /// <para>int2 : 변경된 체력</para>
     /// </summary>
+    public event Action<int, int> OnHPChanged;
+
+    /// <summary>
+    /// MaxHP가 변경될 때 작동하는 함수
+    /// <para>int1 : 현재 체력</para>
+    /// <para>int2 : 변경된 체력</para>
+    /// </summary>
     public event Action<int, int> OnMaxHPChanged;
 
-    public Character(int id, int maxHp, List<Card> data)
+    /// <summary>
+    /// Sanity가 변경될 때 작동하는 함수
+    /// <para>int1 : 현재 정신력</para>
+    /// <para>int2 : 변경된 정신력</para>
+    /// </summary>
+    public event Action<int, int> OnSanityChanged;
+
+    /// <summary>
+    /// 캐릭터가 사망할 때 작동하는 함수
+    /// <para> Character : 사망한 캐릭터 </para>
+    /// </summary>
+    public event Action<Character> OnDead;
+
+    public Character(int id, string name ,int maxHp, List<Card> data)
     {
         Id = id;
+        Name = name;
         MaxHP = maxHp;
         HP = MaxHP;
         CardList = data;
@@ -82,35 +108,86 @@ public abstract class Character : IDamageable, IBuffable
             int nowAP = SP;
             SP = Mathf.Max(0, SP - damage);
 
-            OnAPHit?.Invoke(damage, attacker);
-            OnAPChanged?.Invoke(nowAP, SP);
+            OnSPHit?.Invoke(damage, attacker);
+            OnSPChanged?.Invoke(nowAP, SP);
             return;
+        }
+        else if (SP == 0)
+        {
+            // 조건문 무시
         }
         else if (SP <= damage)
         {
-            SP = 0;
-            OnAPHit?.Invoke(SP, attacker);
-            OnAPChanged?.Invoke(SP, 0);
-
+            int nowSp = SP;
             damage -= SP;
-
+            SP = 0;
+            OnSPHit?.Invoke(nowSp, attacker);
+            OnSPChanged?.Invoke(nowSp, 0);
         }
-
+        
         int nowHP = HP;
         HP = Mathf.Clamp(HP - damage, 0, MaxHP);
         OnHPHit?.Invoke(damage, attacker);
-        OnHPChanged?.Invoke(HP, MaxHP);
+        OnHPChanged?.Invoke(nowHP, HP);
+        if(IsDead)
+            OnDead?.Invoke(this);
+    }
+
+    public void TakeHeal(int heal, Character healer)
+    {
+        int finalHeal = heal;
+
+        foreach (var item in StatusEffectList)
+        {
+            finalHeal = item.OnModifyTakeHeal(finalHeal);
+        }
+
+        heal = finalHeal;
+        int nowHp = HP;
+        HP = Mathf.Min(HP + heal, MaxHP);
+
+        OnHPHeal?.Invoke(finalHeal, healer);
+        OnHPChanged?.Invoke(nowHp, HP);
+    }
+
+    /// <summary>
+    /// 상대가 방어에 성공했을 경우 반동 데미지를 받는 함수
+    /// </summary>
+    public int TakeRebound(int AP)
+    {
+        int reboundDamage = 0;
+
+        if (AP < 10)
+            reboundDamage = REBOUND_SANITY_COST;
+        else
+            reboundDamage = REBOUND_SANITY_COST + (AP / 10);
+        
+        int nowSanity = Sanity;
+
+        Sanity = Mathf.Clamp(Sanity - reboundDamage, MIN_SANITY, MAX_SANITY);
+
+        OnSanityChanged?.Invoke(nowSanity, Sanity);
+
+        return reboundDamage;
+    }
+
+    public void TakeShieldPoint(int getSP)
+    {
+        int nowSP = SP;
+        SP += getSP;
+        
+        OnSPChanged?.Invoke(nowSP, SP);
     }
 
     public void SetMaxHP(int changeMaxHp)
     {
         MaxHP = changeMaxHp;
-        OnHPChanged?.Invoke(HP, MaxHP);
+        OnMaxHPChanged?.Invoke(MaxHP, changeMaxHp);
     }
 
     public void SetSanity(int changeSanity)
     {
-        Sanity = Mathf.Clamp(changeSanity, 0, 100);
+        Sanity = Mathf.Clamp(changeSanity, MIN_SANITY, MAX_SANITY);
     }
 
     public void TakeEffect(StatusEffect effect)

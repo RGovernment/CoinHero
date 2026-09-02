@@ -11,6 +11,7 @@ public class HandManager : MonoBehaviour
     [SF] private CardData baseCardObj;
     [SF] private Transform baseHolderPos;
     [SF] private RectTransform cardHolderPos;
+
     [SF] private Button closeBtn;
     [Header("드래그 앤 드롭 용 더미 객체")]
     [SF] private CardData ClickCard;
@@ -65,8 +66,21 @@ public class HandManager : MonoBehaviour
 
     public void HandDrop()
     {
-        discardCards.AddRange(handCards);
-        handCards.Clear();
+        // 카드 돌아가는 애니메이션 추가
+
+
+        foreach (var item in handCards)
+        {
+            item.gameObject.SetActive(false);
+            item.transform.SetParent(baseHolderPos);
+            item.transform.position = baseHolderPos.position;
+        }
+
+        if (handCards.Count > 0)
+        {
+            discardCards.AddRange(handCards);
+            handCards.Clear();
+        }
     }
 
     public void ShuffleAndSettingHand()
@@ -78,6 +92,9 @@ public class HandManager : MonoBehaviour
             discardCards.Clear();
         }
         int count = 0;
+
+
+
         while (handCards.Count < 5 && deckCards.Count > 0)
         {
             deckCards[0].transform.SetParent(cardHolderPos);

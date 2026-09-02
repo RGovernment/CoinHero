@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class RoundEndState : IState
 {
 
@@ -10,13 +12,21 @@ public class RoundEndState : IState
 
     public void OnEnd()
     {
+        
     }
 
     public void OnStart()
     {
+        Debug.Log("RoundEndState start");
+        WinCk();
     }
 
     public void OnStay()
     {
+    }
+
+    public void WinCk()
+    {
+        manager.RoundEnd(!manager.GetPlayerCombat().Character.IsDead);
     }
 }

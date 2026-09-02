@@ -5,12 +5,13 @@ public static class Enums
         TurnStart, 
         DrawPhase, 
         PlayerChoosePhase, 
-        PlayerComplete,
-        EnemyChoosePhase, 
+        BattleStart,
         BattlePhase, 
         BattleEnd, 
         TurnEnd , 
-        RoundEnd }
+        RoundEnd ,
+        DeadDelay
+    }
 
     /// <summary>
     /// 카드 타입, 무기, 방어구, 아이템, 특수
@@ -58,5 +59,5 @@ public static class Enums
 
 
     // Json 파일로의 저장시 참고용
-    public enum EffectType { ValueUp, ValueDown, InstantHeal, InstantDamage, ExtraSlot, Burn }
+    public enum EffectType { ValueUp, ValueDown, InstantHeal, InstantDamage, ExtraSlot, Burn, ItemCounter }
 }

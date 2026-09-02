@@ -7,7 +7,7 @@ public static class Constants
 
     public static string STATUS_EFFECT_DATA = "StatusEffectData";
     public static string PLAYER_CARD_DATA = "PlayerCardData";
-    public static string Enemy_CARD_DATA = "EnemyCardData";
+    public static string ENEMY_CARD_DATA = "EnemyCardData";
     
 
     public static string VALUE = "Value";
@@ -22,6 +22,19 @@ public static class Constants
     public static string HAND_TAG = "Hand";
     public static string SLOT_TAG = "Slot";
 
-    public static int CoinFlipTimer = 500;
-    public static int CoinNextTimer = 300;
+    public static string ATTACK_COLOR = "CC2424";
+    public static string SHIELD_COLOR = "16E9FC";
+    public static string HEAL_COLOR = "81F65A";
+
+    public static int COIN_FLIP_TIMER = 500;
+    public static int COIN_NEXT_TIMER = 300;
+    public static int BATTLE_END_DELAY = 1000;
+    public static float MOVE_TIMER = 0.8f;
+
+    public static int REBOUND_SANITY_COST = 5;
+    public static int MAX_SANITY = 95;
+    public static int MIN_SANITY = 30;
+
+    
+
 }

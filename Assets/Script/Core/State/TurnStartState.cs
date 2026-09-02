@@ -1,3 +1,6 @@
+using System.Text;
+using UnityEngine;
+
 public class TurnStartState : IState
 {
 
@@ -14,6 +17,12 @@ public class TurnStartState : IState
 
     public void OnStart()
     {
+        manager.GetPlayerZone().CardZoneOpen();
+        manager.GetEnemyZone().CardZoneOpen();
+
+        Debug.Log("TurnStartState start");
+
+        manager.DrawPhaseDelay().Forget();
     }
 
     public void OnStay()

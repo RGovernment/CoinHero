@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Constants;
 using static Enums;
 using static Utility;
@@ -13,6 +15,11 @@ using SF = UnityEngine.SerializeField;
 public class BattleManager : MonoBehaviour
 {
     public static BattleManager Instance { get; set; }
+
+    [Header("패널 관련")]
+    [SF] private GameObject StartPanel;
+    [SF] private GameObject EndPanel;
+    [SF] private TextMeshProUGUI endPanelText;
 
     [Header("덱/패 관련")]
     [SF] private HandManager handManager;
@@ -58,6 +65,7 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        StartPanel.SetActive(true);
         state = new();
 
         stateGroup = new Dictionary<BattleStateType, IState>()
@@ -265,6 +273,23 @@ public class BattleManager : MonoBehaviour
 
     public void TurnStart()
     {
+        StartPanel.SetActive(false);
+
         state.ChangeState(stateGroup[BattleStateType.TurnStart]);
+    }
+
+    public void RoundEnd(bool isWin)
+    {
+        EndPanel.SetActive(true);
+        endPanelText.text = isWin ? "승리!" : "패배"; 
+    }
+
+    /// <summary>
+    /// 임시
+    /// </summary>
+    public void RonudNext()
+    {
+        // 임시로 타이틀로 돌아감
+        SceneManager.LoadScene(0);
     }
 }

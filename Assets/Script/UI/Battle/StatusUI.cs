@@ -41,6 +41,12 @@ public class StatusUI : MonoBehaviour
         combat.Character.OnSPChanged -= SetSPUI;
     }
 
+    private void OnDestroy()
+    {
+        if (arrowTween != null && arrowTween.IsActive())
+            arrowTween.Kill();
+    }
+
     /// <summary>
     /// 연동 세팅
     /// </summary>
@@ -177,7 +183,9 @@ public class StatusUI : MonoBehaviour
     public void ArrowImageDeActive()
     {
         Vector2 ancher = ArrowImage.rectTransform.anchoredPosition;
-        arrowTween.Kill();
+        if (arrowTween != null && arrowTween.IsActive())
+            arrowTween.Kill();
+        
         ArrowImage.gameObject.SetActive(false);
         ArrowImage.rectTransform.anchoredPosition = new Vector2(ancher.x, 1.1f);
     }

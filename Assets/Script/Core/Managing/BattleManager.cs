@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Constants;
 using static Enums;
-using static Utility;
+
 using SF = UnityEngine.SerializeField;
 
 public class BattleManager : MonoBehaviour

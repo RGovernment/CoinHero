@@ -69,56 +69,81 @@ public class HandManager : MonoBehaviour
         allCards.Shuffle();
         deckCards.AddRange(allCards);
     }
-
+#pragma warning disable CS4014
     public async UniTask HandDrop()
     {
         // 카드 돌아가는 애니메이션 추가
         Sequence mainSeq = DOTween.Sequence();
-        float jumpPower = 300;
-        float turnTime = 0.25f;
-        float turnDrawTime = 0.2f;
-        float handTime = 0.03f;
+        float jumpPower = HAND_DROP_JUMP_POWER;
+        float turnTime = HAND_DROP_TURN_TIME;
+        float turnDropTime = HAND_DROP_TIME;
+        float scale = HAND_DROP_SCALE;
 
+        int count = 0;
 
         foreach (var item in handCards)
         {
+            // 비활성화된 객체는 바로 복귀
             if(!item.gameObject.activeSelf)
             {
                 item.transform.SetParent(baseHolderPos);
-                item.transform.position = baseHolderPos.position;
+                item.transform.localPosition = Vector3.zero;
                 item.cardBehind.SetActive(true);
                 item.labelImage.SetActive(false);
                 item.typeIcon.gameObject.SetActive(false);
                 item.starSlot.SetActive(false);
                 continue;
             }
+
             float nowX = item.rect.localPosition.x;
             float nowY = item.rect.localPosition.y;
-
+            Vector3 nowScale = item.rect.localScale;
             Sequence inSeq = DOTween.Sequence();
             item.transform.SetParent(baseHolderPos);
-            item.transform.position = baseHolderPos.position;
-
-            inSeq.Join(item.rect.DOLocalRotate(
+            inSeq
+                // 회전 중 위로 이동
+                .Join(item.rect.DOLocalMove(
+                            new Vector3(nowX, nowY + jumpPower, 0), turnTime)
+                        .SetEase(Ease.Linear)
+                        )
+                // 회전 반
+                .Join(item.rect.DOLocalRotate(
                             new Vector3(0, 90, 0), turnTime / 2)
                         .SetEase(Ease.Linear)
-                        .OnComplete(() => {
-                            handCards[lockIndex].typeIcon.gameObject.SetActive(true);
-                            handCards[lockIndex].labelImage.SetActive(true);
-                            handCards[lockIndex].starSlot.SetActive(true);
-                            handCards[lockIndex].cardBehind.SetActive(false);
-                        })
-                        )
-                        .Insert(0.05f, rect.DOLocalRotate(
-                            new Vector3(0, 0, 0), turnTime / 2)
+                        .OnComplete(() =>
+                        {
+                            item.cardBehind.SetActive(true);
+                            item.labelImage.SetActive(false);
+                            item.typeIcon.gameObject.SetActive(false);
+                            item.starSlot.SetActive(false);
+                        }))
+                // 회전 나머지 반
+                .Insert(turnTime / 2, item.rect.DOLocalRotate(
+                            Vector3.zero, turnTime / 2)
                         .SetEase(Ease.Linear))
+                // 축소
+                .Insert(turnTime, item.rect.DOScale(
+                            nowScale * scale, turnDropTime)
+                        .SetEase(Ease.Linear))
+                .Insert(turnTime, item.canvasGroup.DOFade(
+                            0.3f, turnDropTime)
+                        .SetEase(Ease.Linear))
+                .Insert(turnTime, item.rect.DOLocalMove(
+                            Vector3.zero, turnDropTime)
+                        .SetEase(Ease.Linear)
+                        .OnComplete(()=>
+                        {
+                            item.gameObject.SetActive(false);
+                            item.rect.localScale = Vector3.one;
+                            item.canvasGroup.alpha = 1;
+                        }));
 
-            item.cardBehind.SetActive(true);
-            item.labelImage.SetActive(false);
-            item.typeIcon.gameObject.SetActive(false);
-            item.starSlot.SetActive(false);
+            mainSeq.Insert(HAND_DROP_GAP * count, inSeq);
+            count++;
         }
-        item.gameObject.SetActive(false);
+
+        await mainSeq.Play();
+
         if (handCards.Count > 0)
         {
             discardCards.AddRange(handCards);
@@ -126,6 +151,9 @@ public class HandManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 카드 셔플 및 핸드 설정
+    /// </summary>
     public void ShuffleAndSettingHand()
     {
         cardDrawTrigger = new();
@@ -149,6 +177,9 @@ public class HandManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 핸드 위치 정렬 및 애니메이션 실행
+    /// </summary>
     public void UpdateHandPos()
     {
         if (handCards == null) return;
@@ -168,6 +199,12 @@ public class HandManager : MonoBehaviour
         DrawAnimation(activeCardCount, cardCount).Forget();
     }
 
+    /// <summary>
+    /// 드로우 용 애니메이션
+    /// </summary>
+    /// <param name="activeCardCount"></param>
+    /// <param name="cardCount"></param>
+    /// <returns></returns>
     private async UniTask DrawAnimation(int activeCardCount, int cardCount)
     {
         // 카드 총 간격이 칸 간격 보다 적으면 간격대로, 많으면 폭 내에서 존재하도록 재계산 
@@ -206,10 +243,11 @@ public class HandManager : MonoBehaviour
             rect.gameObject.SetActive(true);
             Sequence seq = DOTween.Sequence();
             int lockIndex = i;
-            float jumpPower = 300;
-            float turnTime = 0.25f;
-            float turnDrawTime = 0.2f;
-            float handTime = 0.03f;
+            float jumpPower = DRAW_JUMP_POWER; ;
+            float turnTime = DRAW_TURN_TIME;
+            float turnDrawTime = DRAW_TIME;
+            float handTime = HAND_SORT_TIME;
+
             float nowX = rect.localPosition.x;
             float nowY = rect.localPosition.y;
             if (rect != null)
@@ -220,7 +258,7 @@ public class HandManager : MonoBehaviour
                     // 부모 변경
                     rect.SetParent(cardHolderPos, false);
                     rect.SetAsFirstSibling();
-#pragma warning disable CS4014
+
                     seq
                         .Join(rect.DOLocalRotate(
                             new Vector3(0, 90, 0), turnTime / 2)
@@ -232,7 +270,7 @@ public class HandManager : MonoBehaviour
                             handCards[lockIndex].cardBehind.SetActive(false);
                         })
                         )
-                        .Insert(0.05f, rect.DOLocalRotate(
+                        .Insert(turnTime / 2, rect.DOLocalRotate(
                             new Vector3(0, 0, 0), turnTime / 2)
                         .SetEase(Ease.Linear))
                         .Join(rect.DOLocalMove(
@@ -252,10 +290,6 @@ public class HandManager : MonoBehaviour
                             rect.SetSiblingIndex(activeIdx);
                         })
                         );
-                    /*rect.localPosition = new Vector3(xOffset, yOffset, 0);
-                    rect.localRotation = Quaternion.Euler(0, 0, zRotation);*/
-
-
                 }
                 else
                 {
@@ -271,7 +305,6 @@ public class HandManager : MonoBehaviour
                         );
                 }
 
-                //rect.SetSiblingIndex(activeIdx);
                 rect.tag = HAND_TAG;
             }
             if(isDrawTime)

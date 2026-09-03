@@ -26,10 +26,25 @@ public static class Constants
     public static string SHIELD_COLOR = "16E9FC";
     public static string HEAL_COLOR = "81F65A";
 
+    // 전투 연출 타이머 용 상수
     public static int COIN_FLIP_TIMER = 500;
     public static int COIN_NEXT_TIMER = 300;
     public static int BATTLE_END_DELAY = 1000;
     public static float MOVE_TIMER = 0.8f;
+
+    // 패 버릴 때 필요한 상수
+    public static float HAND_DROP_JUMP_POWER = 150f;
+    public static float HAND_DROP_TURN_TIME = 0.2f;
+    public static float HAND_DROP_TIME = 0.1f;
+    public static float HAND_DROP_SCALE = 0.3f;
+    public static float HAND_DROP_GAP = 0.05f;
+
+    // 드로우할 때 타이머
+    public static float DRAW_JUMP_POWER = 300f;
+    public static float DRAW_TURN_TIME = 0.25f;
+    public static float DRAW_TIME = 0.2f;
+    public static float HAND_SORT_TIME = 0.015f;
+    public static float DRAW_GAP = 0.2f;
 
     public static int REBOUND_SANITY_COST = 5;
     public static int MAX_SANITY = 95;

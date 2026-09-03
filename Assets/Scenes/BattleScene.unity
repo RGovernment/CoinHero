@@ -12503,8 +12503,10 @@ MonoBehaviour:
   cardTempStack: {fileID: 962777172}
   deckContent: {fileID: 1697093726}
   deckViewPort: {fileID: 1775079661}
+  deckScroll: {fileID: 1403432671}
   discardContent: {fileID: 198078214}
   discardViewPort: {fileID: 52222198}
+  discardScroll: {fileID: 1948388617}
   FadeTime: 0.3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

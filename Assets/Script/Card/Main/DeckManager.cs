@@ -20,11 +20,12 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [Header("내부 / 덱")]
     [SF] private RectTransform deckContent;
     [SF] private RectTransform deckViewPort;
+    [SF] private ScrollRect deckScroll;
 
     [Header("내부 / 버려진 카드")]
     [SF] private RectTransform discardContent;
     [SF] private RectTransform discardViewPort;
-
+    [SF] private ScrollRect discardScroll;
     private List<CardData> deckCards;
 
     [SF] private float FadeTime;
@@ -69,7 +70,6 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         deckCard.labelImage.gameObject.SetActive(true);
         deckCard.starSlot.SetActive(true);
         deckCard.typeIcon.gameObject.SetActive(true);
-
         deckCard.gameObject.tag = INVEN_TAG;
         deckCards.Add(deckCard);
     }
@@ -101,6 +101,7 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             // 버려진 카드는 버려진 카드 덱으로
             if (discardCard.Any(data => data.cardData.Id == item.cardData.Id))
             {
+                item.scroll = discardScroll;
                 item.canvasGroup.alpha = 0;
                 item.gameObject.SetActive(true);
                 item.transform.SetParent(discardContent);
@@ -111,7 +112,7 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 item.canvasGroup.alpha = 1;
                 continue;
             }
-
+            item.scroll = deckScroll;
             item.canvasGroup.alpha = 0;
             item.gameObject.SetActive(true);
             item.transform.SetParent(deckContent);

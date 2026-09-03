@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using static Constants;
 using static Enums;
 
-public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IScrollHandler
+public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public Card cardData;
     
@@ -45,6 +45,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public RectTransform rect;
     public GameObject cardBehind;
     public Image labelImage;
+
+    public ScrollRect scroll;
 
     public bool isPopup = false;
     public int posIndex = -1;
@@ -211,7 +213,11 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
             
     }
-    public void OnScroll(PointerEventData eventData)
+
+    public void OnScroll(BaseEventData eventData)
     {
+        PointerEventData data = eventData as PointerEventData;
+        if(scroll != null)
+            scroll.OnScroll(data);
     }
 }

@@ -217,6 +217,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnScroll(BaseEventData eventData)
     {
         PointerEventData data = eventData as PointerEventData;
+
         if(scroll != null)
             scroll.OnScroll(data);
     }

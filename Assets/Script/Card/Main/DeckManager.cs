@@ -71,6 +71,7 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         deckCard.starSlot.SetActive(true);
         deckCard.typeIcon.gameObject.SetActive(true);
         deckCard.gameObject.tag = INVEN_TAG;
+        deckCard.description.raycastTarget = true;
         deckCards.Add(deckCard);
     }
 

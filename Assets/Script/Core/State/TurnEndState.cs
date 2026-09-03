@@ -17,8 +17,11 @@ public class TurnEndState : IState
 
     public void OnEnd()
     {
+        
         if (!manager.EnemyDeadTurn)
         {
+            manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()]
+            .StatUI.ArrowImageDeActive();
             manager.enemyActionOrderCount++;
         }
 
@@ -31,13 +34,8 @@ public class TurnEndState : IState
     public void OnStart()
     {
         Debug.Log("TurnEndState start");
-        if(!manager.EnemyDeadTurn && 
-            manager.state.GetStateType(false) != BattleStateType.DeadDelay)
-        {
-            manager.GetHandManager().HandDrop();
 
-            // 턴 종료 시의 디버프/버프 목록 처리 추가
-        }
+        // 턴 종료 시의 디버프/버프 목록 처리 추가
 
         BattleUIDisable();
         
@@ -81,7 +79,7 @@ public class TurnEndState : IState
         else
             CharaReturnBasePos().Forget();
     }
-    #pragma warning disable CS4014
+#pragma warning disable CS4014
     /// <summary>
     /// 캐릭터가 원래 자리로 돌아가도록 하는 함수
     /// </summary>
@@ -117,7 +115,7 @@ public class TurnEndState : IState
                 .transform.DOMove(manager.enemyBeforePos, MOVE_TIMER)
             );
         }
-        
+
         // 이동 연출
         await seq.Play().ToUniTask();
 
@@ -128,13 +126,14 @@ public class TurnEndState : IState
         }
 
         // 
-        if(manager.GetEnemyCombat().Count > 0 && !manager.EnemyDeadTurn)
+        if (manager.GetEnemyCombat().Count > 0 && !manager.EnemyDeadTurn)
         {
             ToggleYRotation(enemy.transform);
 
             enemy.AnimatorManager.OnIdle();
         }
 
+        await manager.GetHandManager().HandDrop();
         manager.state.ChangeState(manager.stateGroup[BattleStateType.TurnStart]);
     }
 }

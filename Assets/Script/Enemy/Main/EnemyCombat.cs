@@ -19,6 +19,7 @@ public class EnemyCombat : MonoBehaviour, ICombat
     public CombatAnimatorManager AnimatorManager { get => animatorManager; set => animatorManager = value; }
     public BattleCoinUI CoinUI { get => coinUI; set => coinUI = value; }
     public Animator Animator { get => animator; set => animator = value; }
+    public StatusUI StatUI { get => statUI; }
 
     private SpriteRenderer[] renders;
     private MaterialPropertyBlock hitMat;

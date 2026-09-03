@@ -16,8 +16,7 @@ public class HandManager : MonoBehaviour
     [SF] private RectTransform cardHolderPos;
 
     [SF] private Button closeBtn;
-    [Header("드래그 앤 드롭 용 더미 객체")]
-    [SF] private CardData ClickCard;
+
     [Header("카드 배치 부채꼴 설정")]
     public float maxHandWidth => cardHolderPos.sizeDelta.x; // 최대 가로 폭
     public float cardSpacing = 150f;    // 카드 간격
@@ -71,22 +70,55 @@ public class HandManager : MonoBehaviour
         deckCards.AddRange(allCards);
     }
 
-    public void HandDrop()
+    public async UniTask HandDrop()
     {
         // 카드 돌아가는 애니메이션 추가
+        Sequence mainSeq = DOTween.Sequence();
+        float jumpPower = 300;
+        float turnTime = 0.25f;
+        float turnDrawTime = 0.2f;
+        float handTime = 0.03f;
 
 
         foreach (var item in handCards)
         {
-            item.gameObject.SetActive(false);
+            if(!item.gameObject.activeSelf)
+            {
+                item.transform.SetParent(baseHolderPos);
+                item.transform.position = baseHolderPos.position;
+                item.cardBehind.SetActive(true);
+                item.labelImage.SetActive(false);
+                item.typeIcon.gameObject.SetActive(false);
+                item.starSlot.SetActive(false);
+                continue;
+            }
+            float nowX = item.rect.localPosition.x;
+            float nowY = item.rect.localPosition.y;
+
+            Sequence inSeq = DOTween.Sequence();
             item.transform.SetParent(baseHolderPos);
             item.transform.position = baseHolderPos.position;
+
+            inSeq.Join(item.rect.DOLocalRotate(
+                            new Vector3(0, 90, 0), turnTime / 2)
+                        .SetEase(Ease.Linear)
+                        .OnComplete(() => {
+                            handCards[lockIndex].typeIcon.gameObject.SetActive(true);
+                            handCards[lockIndex].labelImage.SetActive(true);
+                            handCards[lockIndex].starSlot.SetActive(true);
+                            handCards[lockIndex].cardBehind.SetActive(false);
+                        })
+                        )
+                        .Insert(0.05f, rect.DOLocalRotate(
+                            new Vector3(0, 0, 0), turnTime / 2)
+                        .SetEase(Ease.Linear))
+
             item.cardBehind.SetActive(true);
             item.labelImage.SetActive(false);
             item.typeIcon.gameObject.SetActive(false);
             item.starSlot.SetActive(false);
         }
-
+        item.gameObject.SetActive(false);
         if (handCards.Count > 0)
         {
             discardCards.AddRange(handCards);

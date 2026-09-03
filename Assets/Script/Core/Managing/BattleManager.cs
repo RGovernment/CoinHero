@@ -90,7 +90,6 @@ public class BattleManager : MonoBehaviour
 
     public async UniTaskVoid DrawPhaseDelay()
     {
-        // 드로우 페이즈 애니메이션 도입 전까지 임시 딜레이
         await UniTask.DelayFrame(1);
         state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
     }

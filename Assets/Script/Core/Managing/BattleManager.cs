@@ -172,6 +172,11 @@ public class BattleManager : MonoBehaviour
 
     public int GetEnemyCombatOrderCount()
     {
+        if (enemyCombat.Count == 0)
+        {
+            Debug.LogError("GetEnemyCombatOrderCount() 호출 시점에 살아있는 적이 없습니다.");
+            return -1;
+        }
         return enemyActionOrderCount % enemyCombat.Count;
     }
 

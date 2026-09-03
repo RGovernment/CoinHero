@@ -240,7 +240,7 @@ public class HandManager : MonoBehaviour
             float zRotation = normalizedPosition * -rotationStrength;
 
             RectTransform rect = handCards[i].rect;
-            rect.gameObject.SetActive(true);
+            
             Sequence seq = DOTween.Sequence();
             int lockIndex = i;
             float jumpPower = DRAW_JUMP_POWER; ;
@@ -252,6 +252,9 @@ public class HandManager : MonoBehaviour
             float nowY = rect.localPosition.y;
             if (rect != null)
             {
+                if(!rect.gameObject.activeSelf)
+                    rect.gameObject.SetActive(true);
+
                 if (isDrawTime)
                 {
                     rect.localRotation = Quaternion.Euler(0, 180f, 0);

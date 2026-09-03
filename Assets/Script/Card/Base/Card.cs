@@ -86,14 +86,15 @@ public class Card
             Type = data.Type,
             CurrentUpgradeLv = data.CurrentUpgradeLv,
             MaxUpgradeLv = data.MaxUpgradeLv,
-            UpgradeData = data.UpgradeData,
-            Effect = data.Effect,
+            UpgradeData = data.UpgradeData != null ? new List<CardUpgradeStat>(data.UpgradeData) : null,
+            Effect = data.Effect != null ? new List<CardEffectData>(data.Effect) : null,
             Description = data.Description
 
         };
-        
+
         return card;
     }
+
     public int FinalValue()
     {
         int result = 0;

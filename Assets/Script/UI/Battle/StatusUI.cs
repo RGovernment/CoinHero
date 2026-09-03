@@ -171,10 +171,10 @@ public class StatusUI : MonoBehaviour
                 ArrowImage.color = color;
         }
         ArrowImage.gameObject.SetActive(true);
-        ArrowImage.rectTransform
-            .DOAnchorPosY(1.2f, 0.3f)
-            .SetLoops(-1, LoopType.Yoyo)
-            .SetEase(Ease.Linear);
+        arrowTween = ArrowImage.rectTransform
+                        .DOAnchorPosY(1.2f, 0.3f)
+                        .SetLoops(-1, LoopType.Yoyo)
+                        .SetEase(Ease.Linear);
     }
 
     /// <summary>

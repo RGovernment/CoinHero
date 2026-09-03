@@ -22,6 +22,7 @@ public static class Constants
     public static string HAND_TAG = "Hand";
     public static string SLOT_TAG = "Slot";
 
+    public static string HIT_COLOR = "CC2424";
     public static string ATTACK_COLOR = "CC2424";
     public static string SHIELD_COLOR = "16E9FC";
     public static string HEAL_COLOR = "81F65A";
@@ -50,6 +51,8 @@ public static class Constants
     public static int MAX_SANITY = 95;
     public static int MIN_SANITY = 30;
 
-    
+    // 카드 아이디 관련
+    public static int PLAYER_CARD_ID_START = 1000;
+    public static int ENEMY_CARD_START = 5000;
 
 }

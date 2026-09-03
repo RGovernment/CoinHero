@@ -82,15 +82,13 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    private Card GetCardData(int id)
+    public Card GetCardData(int id)
     {
-        if(id >= 1000 && id < 5000)
-        {
+        if(id >= PLAYER_CARD_ID_START && id < ENEMY_CARD_START)
             return CardData[id];
-        }
+        
         else
-        {
             return EnemyCardData[id];
-        }
+        
     }
 }

@@ -12,6 +12,7 @@ using SF = UnityEngine.SerializeField;
 public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SF] private HandManager handManager;
+    [SF] private CardData CardBaseByDeck;
     [SF] private Button deckIcon;
     [SF] private CanvasGroup deckCanvasGroup;
     [SF] private GameObject deckOutLine;
@@ -24,7 +25,6 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [Header("내부 / 버려진 카드")]
     [SF] private RectTransform discardContent;
     [SF] private RectTransform discardViewPort;
-
 
     private List<CardData> deckCards;
 
@@ -64,12 +64,13 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void NewDeckCardAdd(CardData card)
     {
         CardData deckCard = Instantiate(card, cardTempStack.transform);
-        deckCard.gameObject.SetActive(false);
+  
         deckCard.Init(card.cardData);
         deckCard.cardBehind.SetActive(false);
         deckCard.labelImage.SetActive(true);
         deckCard.starSlot.SetActive(true);
         deckCard.typeIcon.gameObject.SetActive(true);
+        deckCard.layoutElement.enabled = true;
 
         deckCard.gameObject.tag = INVEN_TAG;
         deckCards.Add(deckCard);
@@ -82,8 +83,7 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         {
             foreach (var item in allCard)
             {
-                CardData deckCard = Instantiate(item, cardTempStack.transform);
-                NewDeckCardAdd(deckCard);
+                NewDeckCardAdd(item);
             }
         }
 
@@ -99,10 +99,10 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         {
             item.rect.localScale = Vector3.one * INVEN_CARD_SCALE;
             item.rect.Rotate(Vector3.zero);
+            
             // 버려진 카드는 버려진 카드 덱으로
             if (discardCard.Any(data => data.cardData.Id == item.cardData.Id))
             {
-                
                 item.canvasGroup.alpha = 0;
                 item.gameObject.SetActive(true);
                 item.transform.SetParent(discardContent);
@@ -113,6 +113,7 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
                 item.canvasGroup.alpha = 1;
                 continue;
             }
+
             item.canvasGroup.alpha = 0;
             item.gameObject.SetActive(true);
             item.transform.SetParent(deckContent);

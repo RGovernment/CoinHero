@@ -1140,7 +1140,7 @@ GameObject:
   - component: {fileID: 4026677380075356205}
   - component: {fileID: 4163006363088332236}
   m_Layer: 5
-  m_Name: CardBase
+  m_Name: CardBaseByDeck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

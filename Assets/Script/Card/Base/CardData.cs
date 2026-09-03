@@ -1,13 +1,13 @@
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
-using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static Constants;
+using static Enums;
 
 public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -45,10 +45,14 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public GameObject cardBehind;
     public GameObject labelImage;
 
+    [Header("기타")]
+    public LayoutElement layoutElement;
+
     public bool isPopup = false;
     public int posIndex = -1;
 
     private Vector3 beforeLocalPos;
+    private Vector3 beforeScale;
     private Quaternion beforeLocalRotate;
     
     private void OnEnable()
@@ -72,7 +76,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         typeIcon.sprite = typeIconSprite[typeInt];
         if(ResourceManager.Instance.CardImageData.TryGetValue(cardData.Id,out Sprite sp))
             itemImage.sprite = sp;
-
+        description.raycastTarget = false;
     }
 
     public void Init(Card cardData)
@@ -83,20 +87,17 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public async UniTaskVoid OpenInfo()
     {
-        if (!CompareTag(HAND_TAG) || !CompareTag(INVEN_TAG)) return;
+        if (!CompareTag(HAND_TAG) && !CompareTag(INVEN_TAG)) return;
 
-        if (CompareTag(INVEN_TAG))
+        if (!isPopup && 
+            CompareTag(INVEN_TAG) && 
+            Mouse.current.leftButton.wasReleasedThisFrame)
         {
-            //인벤일 경우 처리
-            return;
-        }
-
-        // 확대시
-        if (!isPopup && Mouse.current.rightButton.wasReleasedThisFrame)
-        {
-            isPopup = true;
-            beforeLocalPos = rect.localPosition;
             beforeLocalRotate = rect.localRotation;
+            beforeScale = rect.localScale;
+
+            description.raycastTarget = true; 
+            isPopup = true;
 
             Sequence seq = DOTween.Sequence();
             CloseBtn.gameObject.SetActive(true);
@@ -104,18 +105,38 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             outline1.enabled = false;
             outline2.enabled = false;
             await seq
-                .Join(rect.DOLocalMove(rect.localPosition + new Vector3(0, baseRect.sizeDelta.y, 0), 0.15f))
-                .Join(rect.DOScale(Vector3.one * 1.25f, 0.15f))
-                .Join(rect.DORotate(Vector3.zero, 0.15f)).ToUniTask();
+            .Join(rect.DOScale(Vector3.one * CARD_EXPAND_SCALE, CARD_EXPAND_TIMER))
+            .Join(rect.DORotate(Vector3.zero, CARD_EXPAND_TIMER)).ToUniTask();
 
-            transform.SetParent(parentTransform);
-
-            
             CloseBtn.onClick.RemoveAllListeners();
             CloseBtn.onClick.AddListener(CloseBtnToEvent);
+
+            layoutElement.ignoreLayout = true;
+            return;
+        }
+
+        // 확대시
+        if (!isPopup && Mouse.current.rightButton.wasReleasedThisFrame)
+        {
+            description.raycastTarget = true;
+            isPopup = true;
+            beforeLocalPos = rect.localPosition;
+            beforeLocalRotate = rect.localRotation;
+
+            Sequence seq = DOTween.Sequence();
+
+            outline1.enabled = false;
+            outline2.enabled = false;
+            await seq
+                .Join(rect.DOLocalMove(rect.localPosition + new Vector3(0, baseRect.sizeDelta.y, 0), CARD_EXPAND_TIMER))
+                .Join(rect.DOScale(Vector3.one * CARD_EXPAND_SCALE, CARD_EXPAND_TIMER))
+                .Join(rect.DORotate(Vector3.zero, CARD_EXPAND_TIMER)).ToUniTask();
+
+            transform.SetParent(parentTransform);
         }
         // 선택시
-        else if (!isPopup && Mouse.current.leftButton.wasReleasedThisFrame)
+        else if (!isPopup && Mouse.current.leftButton.wasReleasedThisFrame && 
+            BattleManager.Instance.state.GetStateType() == BattleStateType.PlayerChoosePhase)
         {
             transform.localScale = Vector3.one;
             transform.SetSiblingIndex(posIndex);
@@ -128,20 +149,34 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         OpenInfo().Forget();
     }
-
+#pragma warning disable CS4014
     public async UniTaskVoid CloseBtnActive()
     {
         Sequence seq = DOTween.Sequence();
-        CloseBtn.onClick.RemoveAllListeners();
-        transform.SetParent(handTransform);
-        transform.SetSiblingIndex(posIndex);
-        await seq
-            .Join(rect.DOLocalMove(beforeLocalPos, 0.15f))
-            .Join(rect.DOScale(Vector3.one, 0.15f))
-            .Join(rect.DOLocalRotate(beforeLocalRotate.eulerAngles, 0.15f)).ToUniTask();
+        
+        if(CompareTag(HAND_TAG))
+        {
+            transform.SetSiblingIndex(posIndex);
+            CloseBtn.onClick.RemoveAllListeners();
+            transform.SetParent(handTransform);
+            seq.Join(rect.DOLocalMove(beforeLocalPos, CARD_EXPAND_TIMER));
+            seq.Join(rect.DOScale(Vector3.one, CARD_EXPAND_TIMER));
+        }    
+            
+        if (CompareTag(INVEN_TAG))
+            seq.Join(rect.DOScale(beforeScale, CARD_EXPAND_TIMER));
+        
+            
+        
+        seq.Join(rect.DOLocalRotate(beforeLocalRotate.eulerAngles, CARD_EXPAND_TIMER));
+
+        await seq.Play().ToUniTask();
+        if (CompareTag(INVEN_TAG))
+            layoutElement.ignoreLayout = false;
         
         CloseBtn.gameObject.SetActive(false);
         isPopup = false;
+        description.raycastTarget = false;
     }
 
     public void CloseBtnToEvent()
@@ -153,7 +188,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (CompareTag(INVEN_TAG)) 
         {
-            transform.localScale = Vector3.one * 1.1f;
+            beforeScale = transform.localScale;
+            transform.localScale = transform.localScale * 1.1f;
             outline1.enabled = true;
             outline2.enabled = true;
 
@@ -176,10 +212,12 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (CompareTag(INVEN_TAG))
         {
-            transform.localScale = Vector3.one;
             outline1.enabled = false;
             outline2.enabled = false;
-
+            if (isPopup)
+                CloseBtnActive().Forget();
+            else
+                transform.localScale = beforeScale;
             return;
         }
 

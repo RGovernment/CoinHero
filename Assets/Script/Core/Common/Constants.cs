@@ -45,17 +45,22 @@ public static class Constants
     public static float HAND_SORT_TIME = 0.015f;
     public static float DRAW_GAP = 0.2f;
 
+    // 전투 관련 상수
     public static int REBOUND_SANITY_COST = 5;
     public static int MAX_SANITY = 95;
     public static int MIN_SANITY = 30;
 
-    // 카드 아이디 관련
+    // 카드 관련
     public static int PLAYER_CARD_ID_START = 1000;
     public static int ENEMY_CARD_ID_START = 5000;
+    public static float CARD_EXPAND_TIMER = 0.15f;
+    public static float CARD_EXPAND_SCALE = 1.25f;
 
     //인벤토리 관련
-    public static float INVEN_CARD_SCALE = 0.9f;
-    public static float ROTATE_MIN_ANGlE = -5;
-    public static float ROTATE_MAX_ANGlE = 5;
+    public static float INVEN_CARD_SCALE = 0.85f;
+    public static float ROTATE_MIN_ANGlE = -4;
+    public static float ROTATE_MAX_ANGlE = 4;
+
+    
 
 }

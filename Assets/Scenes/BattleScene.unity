@@ -2182,7 +2182,6 @@ Transform:
   - {fileID: 1146669298}
   - {fileID: 839415032}
   - {fileID: 687067513}
-  - {fileID: 1338245744}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &309339704
@@ -4809,7 +4808,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 649572509}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -8858,37 +8857,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1330924407}
   m_CullTransparentMesh: 1
---- !u!1 &1338245743
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1338245744}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1338245744
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1338245743}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 309339703}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1376988339
 GameObject:
   m_ObjectHideFlags: 0
@@ -12535,8 +12503,10 @@ MonoBehaviour:
   cardTempStack: {fileID: 962777172}
   deckContent: {fileID: 1697093726}
   deckViewPort: {fileID: 1775079661}
+  deckCloseBtn: {fileID: 0}
   discardContent: {fileID: 198078214}
   discardViewPort: {fileID: 52222198}
+  discardCloseBtn: {fileID: 0}
   FadeTime: 0.3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -12554,7 +12524,7 @@ SceneRoots:
   - {fileID: 1479735250}
   - {fileID: 243913581}
   - {fileID: 707877897}
-  - {fileID: 805088969}
   - {fileID: 139033119}
   - {fileID: 602304723}
   - {fileID: 2425940807732412700}
+  - {fileID: 805088969}

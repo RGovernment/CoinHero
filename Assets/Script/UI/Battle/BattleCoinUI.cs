@@ -106,6 +106,12 @@ public class BattleCoinUI : MonoBehaviour
 
     public async UniTask CoinBroken(CancellationToken cancellationToken = default)
     {
+        if (coinGroup == null || coinGroup.Count == 0)
+        {
+            Debug.LogWarning("CoinBroken() 호출 시 coinGroup이 비어있습니다.");
+            return;
+        }
+
         CoinObject obj = coinGroup[^1];
         var utcs = new UniTaskCompletionSource();
 

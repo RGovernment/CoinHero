@@ -10,12 +10,11 @@ public class EnemyHandManager : MonoBehaviour
     {
         List<Card> result = new();
 
-        // 차후 우선순위 지정, 지금 당장은 그냥 순서대로 3개 뽑기
-        int count = 0;
-        while (result.Count < 3)
+        // 차후 우선순위 지정, 지금 당장은 그냥 순서대로 최대 3개 뽑기
+        int pickCount = Mathf.Min(3, card.Count);
+        for (int i = 0; i < pickCount; i++)
         {
-            result.Add(card[count]);
-            count++;
+            result.Add(card[i]);
         }
 
         return result;

@@ -1245,7 +1245,8 @@ MonoBehaviour:
   canvasGroup: {fileID: 4374369634310941383}
   rect: {fileID: 1145788312270933771}
   cardBehind: {fileID: 1939885831692280950}
-  labelImage: {fileID: 337226878263774710}
+  labelImage: {fileID: 7056670865245032191}
+  scroll: {fileID: 0}
   isPopup: 0
   posIndex: -1
 --- !u!225 &4374369634310941383
@@ -1281,6 +1282,22 @@ MonoBehaviour:
           m_TargetAssemblyTypeName: CardData, Assembly-CSharp
           m_MethodName: OpenInfoEvent
           m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 7
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2054587120764609412}
+          m_TargetAssemblyTypeName: CardData, Assembly-CSharp
+          m_MethodName: OnScroll
+          m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

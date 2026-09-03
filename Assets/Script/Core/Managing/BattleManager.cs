@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Constants;
 using static Enums;
-using static Utility;
+
 using SF = UnityEngine.SerializeField;
 
 public class BattleManager : MonoBehaviour
@@ -90,7 +90,6 @@ public class BattleManager : MonoBehaviour
 
     public async UniTaskVoid DrawPhaseDelay()
     {
-        // 드로우 페이즈 애니메이션 도입 전까지 임시 딜레이
         await UniTask.DelayFrame(1);
         state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
     }
@@ -173,6 +172,11 @@ public class BattleManager : MonoBehaviour
 
     public int GetEnemyCombatOrderCount()
     {
+        if (enemyCombat.Count == 0)
+        {
+            Debug.LogError("GetEnemyCombatOrderCount() 호출 시점에 살아있는 적이 없습니다.");
+            return -1;
+        }
         return enemyActionOrderCount % enemyCombat.Count;
     }
 

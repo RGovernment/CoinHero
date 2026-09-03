@@ -10,7 +10,7 @@ public interface ICombat
     public Transform BaseCharaObj { get; set; }
 
     /// <summary>
-    /// 코인 출력, 세 코인 전부 
+    /// 코인 출력, 코인 전부 
     /// </summary>
     /// <returns>코인 값</returns>
     public bool[] CoinToss(Card card, int SanitySet = -1);

@@ -52,15 +52,17 @@ public class DrawPhaseState : IState
 
     public void EnemyCardOpen()
     {
-        if (manager.GetEnemyCombat().Count == 0)
-        {
-            return;
-        }
-
+        if (manager.GetEnemyCombat().Count == 0) return;
+        
         List<Card> dummy = manager.GetEnemyHandManager()
             .CardSelect(manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()]
             .Character.CardList);
 
+        // 지시 화살표 활성화
+        manager.GetEnemyCombat()[manager.GetEnemyCombatOrderCount()]
+            .StatUI.ArrowImageActive();
+
+        // 카드 초기화
         manager.GetNowEnemyCards().Clear();
 
         foreach (var item in dummy)

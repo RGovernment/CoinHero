@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Hand
   - Slot
+  - Inven
   layers:
   - Default
   - TransparentFX
@@ -55,11 +56,17 @@ TagManager:
   - name: CoinCanvas
     uniqueID: 2049403087
     locked: 0
-  - name: ToolTip
-    uniqueID: 840111343
-    locked: 0
   - name: DamageSkin
     uniqueID: 3909294067
+    locked: 0
+  - name: StatusUI
+    uniqueID: 1343726559
+    locked: 0
+  - name: DeckInven
+    uniqueID: 735339829
+    locked: 0
+  - name: ToolTip
+    uniqueID: 840111343
     locked: 0
   m_RenderingLayers:
   - Default

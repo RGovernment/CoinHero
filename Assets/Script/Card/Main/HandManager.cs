@@ -95,7 +95,7 @@ public class HandManager : MonoBehaviour
                 item.transform.SetParent(baseHolderPos);
                 item.transform.localPosition = Vector3.zero;
                 item.cardBehind.SetActive(true);
-                item.labelImage.SetActive(false);
+                item.labelImage.gameObject.SetActive(false);
                 item.typeIcon.gameObject.SetActive(false);
                 item.starSlot.SetActive(false);
                 continue;
@@ -119,7 +119,7 @@ public class HandManager : MonoBehaviour
                         .OnComplete(() =>
                         {
                             item.cardBehind.SetActive(true);
-                            item.labelImage.SetActive(false);
+                            item.labelImage.gameObject.SetActive(false);
                             item.typeIcon.gameObject.SetActive(false);
                             item.starSlot.SetActive(false);
                         }))
@@ -274,7 +274,7 @@ public class HandManager : MonoBehaviour
                         .SetEase(Ease.Linear)
                         .OnComplete(() => {
                             handCards[lockIndex].typeIcon.gameObject.SetActive(true);
-                            handCards[lockIndex].labelImage.SetActive(true);
+                            handCards[lockIndex].labelImage.gameObject.SetActive(true);
                             handCards[lockIndex].starSlot.SetActive(true);
                             handCards[lockIndex].cardBehind.SetActive(false);
                         })
@@ -315,6 +315,7 @@ public class HandManager : MonoBehaviour
                 }
 
                 rect.tag = HAND_TAG;
+                handCards[lockIndex].description.raycastTarget = false;
             }
             if(isDrawTime)
                 mainSequence.Insert(turnTime / 2 * activeIdx, seq);

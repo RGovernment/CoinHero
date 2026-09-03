@@ -12,7 +12,6 @@ using SF = UnityEngine.SerializeField;
 public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SF] private HandManager handManager;
-    [SF] private CardData CardBaseByDeck;
     [SF] private Button deckIcon;
     [SF] private CanvasGroup deckCanvasGroup;
     [SF] private GameObject deckOutLine;
@@ -67,10 +66,9 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
   
         deckCard.Init(card.cardData);
         deckCard.cardBehind.SetActive(false);
-        deckCard.labelImage.SetActive(true);
+        deckCard.labelImage.gameObject.SetActive(true);
         deckCard.starSlot.SetActive(true);
         deckCard.typeIcon.gameObject.SetActive(true);
-        deckCard.layoutElement.enabled = true;
 
         deckCard.gameObject.tag = INVEN_TAG;
         deckCards.Add(deckCard);

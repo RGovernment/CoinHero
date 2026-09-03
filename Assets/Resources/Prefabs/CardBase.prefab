@@ -1138,7 +1138,6 @@ GameObject:
   - component: {fileID: 9152583294695575198}
   - component: {fileID: 2718085849926109445}
   - component: {fileID: 4026677380075356205}
-  - component: {fileID: 4163006363088332236}
   m_Layer: 5
   m_Name: CardBase
   m_TagString: Untagged
@@ -1246,8 +1245,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 4374369634310941383}
   rect: {fileID: 1145788312270933771}
   cardBehind: {fileID: 1939885831692280950}
-  labelImage: {fileID: 337226878263774710}
-  layoutElement: {fileID: 4163006363088332236}
+  labelImage: {fileID: 7056670865245032191}
   isPopup: 0
   posIndex: -1
 --- !u!225 &4374369634310941383
@@ -1321,26 +1319,6 @@ MonoBehaviour:
   m_EffectColor: {r: 0.2235294, g: 0.50980395, b: 0.3381158, a: 0.20392157}
   m_EffectDistance: {x: 8, y: 8}
   m_UseGraphicAlpha: 1
---- !u!114 &4163006363088332236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7203546931576098317}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: -1
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!1 &7286808671600749676
 GameObject:
   m_ObjectHideFlags: 0

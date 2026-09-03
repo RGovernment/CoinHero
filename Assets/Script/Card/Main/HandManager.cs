@@ -46,6 +46,12 @@ public class HandManager : MonoBehaviour
 
     public UniTaskCompletionSource cardDrawTrigger;
 
+    /// <summary>
+    /// 덱 상황이 변경될 때
+    /// List1 : 전체 덱
+    /// List2 : 현재 버려진 카드
+    /// </summary>
+    public event Action<List<CardData>, List<CardData>> OnDeckReload;
     public bool isDrawTime;
 
     public void CreateAllCard(List<Card> data,Character user)
@@ -317,7 +323,7 @@ public class HandManager : MonoBehaviour
             activeIdx++;
         }
         await mainSequence.Play().ToUniTask();
-
+        OnDeckReload?.Invoke(allCards, discardCards);
         cardDrawTrigger?.TrySetResult();
     }
 
@@ -327,5 +333,15 @@ public class HandManager : MonoBehaviour
         {
             item.gameObject.SetActive(true);
         }
+    }
+
+    public List<CardData> GetAllCards()
+    {
+        return allCards;
+    }
+
+    public List<CardData> GetDiscardCards()
+    {
+        return discardCards;
     }
 }

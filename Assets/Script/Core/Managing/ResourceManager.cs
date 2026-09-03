@@ -84,7 +84,7 @@ public class ResourceManager : MonoBehaviour
 
     public Card GetCardData(int id)
     {
-        if(id >= PLAYER_CARD_ID_START && id < ENEMY_CARD_START)
+        if(id >= PLAYER_CARD_ID_START && id < ENEMY_CARD_ID_START)
             return CardData[id];
         
         else

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public static class Constants
 {
     public static string ASSET_DATA_PATH = "Data/";
@@ -9,7 +7,6 @@ public static class Constants
     public static string PLAYER_CARD_DATA = "PlayerCardData";
     public static string ENEMY_CARD_DATA = "EnemyCardData";
     
-
     public static string VALUE = "Value";
     public static string DURATION = "Duration";
     public static string COIN_POINT = "CoinPoint";
@@ -21,6 +18,7 @@ public static class Constants
     public static string ENEMY_TAG = "Enemy";
     public static string HAND_TAG = "Hand";
     public static string SLOT_TAG = "Slot";
+    public static string INVEN_TAG = "Inven";
 
     public static string HIT_COLOR = "CC2424";
     public static string ATTACK_COLOR = "CC2424";
@@ -53,6 +51,11 @@ public static class Constants
 
     // 카드 아이디 관련
     public static int PLAYER_CARD_ID_START = 1000;
-    public static int ENEMY_CARD_START = 5000;
+    public static int ENEMY_CARD_ID_START = 5000;
+
+    //인벤토리 관련
+    public static float INVEN_CARD_SCALE = 0.9f;
+    public static float ROTATE_MIN_ANGlE = -5;
+    public static float ROTATE_MAX_ANGlE = 5;
 
 }

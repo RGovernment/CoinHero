@@ -1,11 +1,13 @@
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
+using System.Runtime.InteropServices.WindowsRuntime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static Constants;
 
 public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -68,7 +70,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         coinValueText.text = coinPoint.ToString();
         coinCountText.text = $"x{coin}";
         typeIcon.sprite = typeIconSprite[typeInt];
-        itemImage.sprite = ResourceManager.Instance.CardImageData[cardData.Id];
+        if(ResourceManager.Instance.CardImageData.TryGetValue(cardData.Id,out Sprite sp))
+            itemImage.sprite = sp;
 
     }
 
@@ -80,7 +83,14 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public async UniTaskVoid OpenInfo()
     {
-        if (!CompareTag("Hand")) return;
+        if (!CompareTag(HAND_TAG) || !CompareTag(INVEN_TAG)) return;
+
+        if (CompareTag(INVEN_TAG))
+        {
+            //인벤일 경우 처리
+            return;
+        }
+
         // 확대시
         if (!isPopup && Mouse.current.rightButton.wasReleasedThisFrame)
         {
@@ -141,7 +151,16 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (!isPopup && CompareTag("Hand") && 
+        if (CompareTag(INVEN_TAG)) 
+        {
+            transform.localScale = Vector3.one * 1.1f;
+            outline1.enabled = true;
+            outline2.enabled = true;
+
+            return;
+        }
+
+        if (!isPopup && (CompareTag(HAND_TAG)) && 
             BattleManager.Instance.state.GetStateType() == 
             Enums.BattleStateType.PlayerChoosePhase)
         {
@@ -155,7 +174,16 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (!isPopup && CompareTag("Hand") &&
+        if (CompareTag(INVEN_TAG))
+        {
+            transform.localScale = Vector3.one;
+            outline1.enabled = false;
+            outline2.enabled = false;
+
+            return;
+        }
+
+        if (!isPopup && CompareTag(HAND_TAG) &&
             BattleManager.Instance.state.GetStateType() ==
             Enums.BattleStateType.PlayerChoosePhase)
         {

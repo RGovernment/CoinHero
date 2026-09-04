@@ -140,7 +140,7 @@ public class HandManager : MonoBehaviour
                             nowScale * scale, turnDropTime)
                         .SetEase(Ease.Linear))
                 .Insert(turnTime, item.canvasGroup.DOFade(
-                            0.3f, turnDropTime)
+                            ZERO, turnDropTime)
                         .SetEase(Ease.Linear))
                 .Insert(turnTime, item.rect.DOLocalMove(
                             Vector3.zero, turnDropTime)

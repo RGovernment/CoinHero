@@ -31,6 +31,7 @@ public class RoundStartState : IState
     {
         manager.GetPlayerCombat().transform.position = manager.playerSpawnPoint.position;
         int enemyCount = manager.GetEnemyCombat().Count;
+        manager.totalEnemy = enemyCount;
         if (enemyCount == 1)
             manager.GetEnemyCombat()[0].transform.position
                 = manager.enemySpawnPoint[0].position;

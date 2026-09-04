@@ -12,11 +12,12 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            state = new();
         }
         else
         {
             Destroy(gameObject);
         }
-
+        
     }
 }

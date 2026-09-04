@@ -17,6 +17,7 @@ public static class Constants
     public static string PLAYER_TAG = "Player";
     public static string ENEMY_TAG = "Enemy";
     public static string HAND_TAG = "Hand";
+    public static string REWARD_TAG = "Reward";
     public static string SLOT_TAG = "Slot";
     public static string INVEN_TAG = "Inven";
 
@@ -24,6 +25,10 @@ public static class Constants
     public static string ATTACK_COLOR = "CC2424";
     public static string SHIELD_COLOR = "16E9FC";
     public static string HEAL_COLOR = "81F65A";
+
+    // 단순 상수
+    public static int ONE = 1;
+    public static int ZERO = 0;
 
     // 전투 연출 타이머 용 상수
     public static int COIN_FLIP_TIMER = 500;
@@ -55,11 +60,16 @@ public static class Constants
     public static int ENEMY_CARD_ID_START = 5000;
     public static float CARD_EXPAND_TIMER = 0.15f;
     public static float CARD_EXPAND_SCALE = 1.25f;
+    public static float CARD_DEFAULT_EXPAND_SCALE = 1.1f;
+    public static int CARD_MAX_UPGRADE_COUNT = 5;
 
     //인벤토리 관련
     public static float INVEN_CARD_SCALE = 0.85f;
     public static float ROTATE_MIN_ANGlE = -4;
     public static float ROTATE_MAX_ANGlE = 4;
+
+    //게임 관련
+    public static int DEFAULT_MAX_CARD_REWARD_GOLD = 100;
 
     
 

@@ -17,6 +17,7 @@ public class BattleManager : MonoBehaviour
     public static BattleManager Instance { get; set; }
 
     [Header("패널 관련")]
+    [SF] private RewardManager rewardManager;
     [SF] private GameObject StartPanel;
     [SF] private GameObject EndPanel;
     [SF] private TextMeshProUGUI endPanelText;
@@ -52,6 +53,7 @@ public class BattleManager : MonoBehaviour
     public int enemyActionOrderCount = 0;
     public bool EnemyDeadTurn;
     public CancellationTokenSource battlePhaseToken;
+    public int totalEnemy;
 
     private void Awake()
     {
@@ -90,7 +92,7 @@ public class BattleManager : MonoBehaviour
 
     public async UniTaskVoid DrawPhaseDelay()
     {
-        await UniTask.DelayFrame(1);
+        await UniTask.DelayFrame(ONE);
         state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
     }
 
@@ -248,7 +250,6 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     public void RonudNext()
     {
-        // 임시로 타이틀로 돌아감
-        SceneManager.LoadScene(0);
+        rewardManager.RewardSetting(totalEnemy);
     }
 }

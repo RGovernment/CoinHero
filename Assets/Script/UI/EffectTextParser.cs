@@ -14,7 +14,7 @@ public static class EffectTextParser
     /// <summary>
     /// 정규식 카드 텍스트 변환
     /// </summary>
-    public static string ParseDescription(this string rawDescription, Card card)
+    public static string ParseDescription(this string rawDescription, Card card, Character user)
     {
         if (string.IsNullOrEmpty(rawDescription)) return string.Empty;
 
@@ -23,19 +23,19 @@ public static class EffectTextParser
             string key = match.Value;
 
             if (key == $"[{VALUE}{PLUS}{COIN}{MULTIPLY}{COIN_POINT}]")
-                return (card.FinalValue() + (card.FinalCoin() * card.FinalCoinPoint())).ToString();
+                return (card.FinalValue(user) + (card.FinalCoin(user) * card.FinalCoinPoint(user))).ToString();
 
             if (key == $"[{COIN}{MULTIPLY}{COIN_POINT}]")
-                return (card.FinalCoin() * card.FinalCoinPoint()).ToString();
+                return (card.FinalCoin(user) * card.FinalCoinPoint(user)).ToString();
 
             if (key == $"[{COIN_POINT}]")
-                return card.FinalCoinPoint().ToString();
+                return card.FinalCoinPoint(user).ToString();
 
             if (key == $"[{COIN}]")
-                return card.FinalCoin().ToString();
+                return card.FinalCoin(user).ToString();
 
             if (key == $"[{VALUE}]")
-                return card.FinalValue().ToString();
+                return card.FinalValue(user).ToString();
 
             return match.Value;
         });

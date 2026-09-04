@@ -60,12 +60,12 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if(ResourceManager.Instance.EffectData == null) return;
 
         string name = cardData.Name;
-        int value = cardData.FinalValue();
-        int coin = cardData.FinalCoin();
-        int coinPoint = cardData.FinalCoinPoint();
+        int value = cardData.FinalValue(user);
+        int coin = cardData.FinalCoin(user);
+        int coinPoint = cardData.FinalCoinPoint(user);
         int typeInt = (int)cardData.Type;
         string descriptionText 
-            = cardData.GetDescription(ResourceManager.Instance.EffectData);
+            = cardData.GetDescription(ResourceManager.Instance.EffectData, user);
 
         description.text = descriptionText;
         nameText.text = name;
@@ -131,9 +131,9 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         
         if(CompareTag(HAND_TAG))
         {
+            transform.SetParent(handTransform);
             transform.SetSiblingIndex(posIndex);
             CloseBtn.onClick.RemoveAllListeners();
-            transform.SetParent(handTransform);
             seq.Join(rect.DOLocalMove(beforeLocalPos, CARD_EXPAND_TIMER));
             seq.Join(rect.DOScale(Vector3.one, CARD_EXPAND_TIMER));
         }    

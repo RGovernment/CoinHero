@@ -113,7 +113,7 @@ public class BattleManager : MonoBehaviour
 
     public void SelectCard(CardData data)
     {
-        PlayerZone.SetCardToZone(data).Forget();
+        PlayerZone.SetCardToZone(data, playerCombat.Character).Forget();
     }
 
     public void BattleStatusSet()

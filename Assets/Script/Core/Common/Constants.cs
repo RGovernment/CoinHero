@@ -32,14 +32,14 @@ public static class Constants
     public static float MOVE_TIMER = 0.8f;
 
     // 패 버릴 때 필요한 상수
-    public static float HAND_DROP_JUMP_POWER = 150f;
+    public static float HAND_DROP_JUMP_POWER = 30f;
     public static float HAND_DROP_TURN_TIME = 0.2f;
-    public static float HAND_DROP_TIME = 0.1f;
+    public static float HAND_DROP_TIME = 0.15f;
     public static float HAND_DROP_SCALE = 0.3f;
-    public static float HAND_DROP_GAP = 0.05f;
+    public static float HAND_DROP_GAP = 0.03f;
 
     // 드로우할 때 타이머
-    public static float DRAW_JUMP_POWER = 300f;
+    public static float DRAW_JUMP_POWER = 150f;
     public static float DRAW_TURN_TIME = 0.25f;
     public static float DRAW_TIME = 0.2f;
     public static float HAND_SORT_TIME = 0.015f;

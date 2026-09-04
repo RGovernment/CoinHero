@@ -10,11 +10,15 @@ using UnityEngine.UI;
 using SF = UnityEngine.SerializeField;
 public class BattleCoinUI : MonoBehaviour
 {
+    [SF] private Canvas mainCanvas;
     [SF] private Image iconImage;
     [SF] private TextMeshProUGUI valueText;
     [SF] private TextMeshProUGUI nameText;
     [SF] private Transform coinAreaParent;
     [SF] private CoinObject coinPrefab;
+
+    public GameObject backGround;
+    public ParticleSystem dissolve;
     public List<CoinObject> coinGroup;
     private Card card;
 
@@ -23,9 +27,10 @@ public class BattleCoinUI : MonoBehaviour
     public void Awake()
     {
         coinGroup = new();
+        mainCanvas.worldCamera = Camera.main;
     }
 
-    public void CoinSet(Card card)
+    public void CoinSet(Card card, Character user)
     {
         if (this == null || iconImage == null) return;
 
@@ -49,8 +54,8 @@ public class BattleCoinUI : MonoBehaviour
         nowCount = 0;
         this.card = card;
         nameText.text = card.Name;
-        valueText.text = card.Value.ToString();
-        nowVal = card.Value;
+        valueText.text = card.FinalValue(user).ToString();
+        nowVal = card.FinalValue(user);
         iconImage.sprite = ResourceManager.Instance.CardImageData[card.Id];
 
         gameObject.SetActive(true);
@@ -60,7 +65,7 @@ public class BattleCoinUI : MonoBehaviour
             Destroy(coinAreaParent.GetChild(i).gameObject);
         }
 
-        int makeCount = card.FinalCoin();
+        int makeCount = card.FinalCoin(user);
 
         for (int i = 0; i < makeCount; i++) 
         {
@@ -76,10 +81,10 @@ public class BattleCoinUI : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void CoinFlip()
+    public void CoinFlip(Character user)
     {
-        nowVal = card.Value;
-        valueText.text = card.Value.ToString();
+        nowVal = card.FinalValue(user);
+        valueText.text = card.FinalValue(user).ToString();
         foreach (var item in coinGroup)
         {
             item.Spin();
@@ -87,10 +92,10 @@ public class BattleCoinUI : MonoBehaviour
         nowCount = 0;
     }
 
-    public void CoinStop(bool front)
+    public void CoinStop(bool front, Character chara)
     {
         if (coinGroup.Count <= 0) return;
-        nowVal += front ? card.FinalCoinPoint() : 0;
+        nowVal += front ? card.FinalCoinPoint(chara) : 0;
         coinGroup[nowCount].Stop(front);
 
         valueText.text = $"{nowVal}";
@@ -159,6 +164,8 @@ public class BattleCoinUI : MonoBehaviour
 
         coinGroup.Clear();
         gameObject.SetActive(false);
+        if(!backGround.activeSelf)
+            backGround.SetActive(true);
     }
 
     private void RemoveCoinFromGroup(CoinObject coin)

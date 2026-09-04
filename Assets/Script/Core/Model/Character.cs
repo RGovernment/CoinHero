@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static Constants;
 
@@ -195,8 +196,14 @@ public abstract class Character : IDamageable, IBuffable
         StatusEffectList.Add(effect);
     }
 
-    public void RemoveEffect()
+    public void RemoveEffect(StatusEffect effect)
     {
-        //
+        StatusEffectList.Remove(effect);
+    }
+    public void RemoveEffect(int id)
+    {
+        int index = StatusEffectList.FindIndex(x => x.EffectData.Id == id);
+
+        StatusEffectList.RemoveAt(index);
     }
 }

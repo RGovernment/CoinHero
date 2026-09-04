@@ -3,9 +3,9 @@
     "Name": "장검",
     "Id": 1000,
     "Type": "Weapon",
-    "Value": 4,
-    "Coin": 3,
-    "CoinPoint": 1,
+    "Value": 3,
+    "Coin": 2,
+    "CoinPoint": 2,
     "CurrentUpgradeLv": 0,
     "MaxUpgradeLv": 3,
     "UpgradeData": [
@@ -110,6 +110,70 @@
     "Description": "{ItemCounter}"
   },
   {
+    "Name": "금간 거대한 도끼",
+    "Id": 1004,
+    "Type": "Weapon",
+    "Value": 10,
+    "Coin": 3,
+    "CoinPoint": 2,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Coin",
+        "value": 1
+      },
+      {
+        "statType": "Value",
+        "value": 5
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      }
+    ],
+    "Effect": [
+      {
+        "EffectId": 205,
+        "Value": 1,
+        "Duration": 0
+      }
+    ],
+    "Description": "{Crack}"
+  },
+  {
+    "Name": "레이피어",
+    "Id": 1005,
+    "Type": "Weapon",
+    "Value": 4,
+    "Coin": 3,
+    "CoinPoint": 1,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "Coin",
+        "value": 1
+      },
+      {
+        "statType": "Coin",
+        "value": 1
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      }
+    ],
+    "Effect": [
+      {
+        "EffectId": 100,
+        "Value": 2,
+        "Duration": 0
+      }
+    ],
+    "Description": "{ValueUp} [ValueUp_Value]"
+  },
+  {
     "Name": "나무 방패",
     "Id": 2000,
     "Type": "Armor",
@@ -160,6 +224,38 @@
     ],
     "Effect": [],
     "Description": "다루기 어렵지만 마법의 효과는 확실하다."
+  },
+  {
+    "Name": "가죽 방패",
+    "Id": 2002,
+    "Type": "Armor",
+    "Value": 3,
+    "Coin": 2,
+    "CoinPoint": 3,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 3,
+    "UpgradeData": [
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      },
+      {
+        "statType": "CoinPoint",
+        "value": 1
+      }
+    ],
+    "Effect": [
+      {
+        "EffectId": 103,
+        "Value": 2,
+        "Duration": 2
+      }
+    ],
+    "Description": "자신에게 [AttackUpEffect_Duration]차례 동안 {AttackUpEffect} [AttackUpEffect_Value] 부여"
   },
   {
     "Name": "빵",

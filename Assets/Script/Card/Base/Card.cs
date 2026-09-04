@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using static Enums;
 
@@ -95,11 +96,11 @@ public class Card
         return card;
     }
 
-    public int FinalValue()
+    public int FinalValue(Character user)
     {
         int result = 0;
 
-        if(UpgradeData != null)
+        if (UpgradeData != null)
         {
             int applyCount = Mathf.Min(CurrentUpgradeLv, UpgradeData.Count);
             for (int i = 0; i < applyCount; i++)
@@ -110,12 +111,40 @@ public class Card
             }
         }
 
+        if(Effect != null &&
+            Effect.Count > 0)
+        {
+            foreach (var item in Effect)
+            {
+                bool valueUpFlag = ResourceManager.Instance.EffectData
+                    .TryGetValue(item.EffectId, out StatusEffectData value);
+
+                 if (valueUpFlag && 
+                    value.Type == EffectType.ValueUp)
+                    result += item.Value;
+
+                else if(valueUpFlag &&
+                    value.Type == EffectType.ValueDown)
+                    result -= item.Value;
+            }
+        }
+
+        if (user != null && 
+            user.StatusEffectList != null && 
+            user.StatusEffectList.Count > 0)
+        {
+            foreach (var item in user.StatusEffectList)
+            {
+                if(Type == CardType.Weapon)
+                    result = item.OnModifyAttackValue(result);
+            }
+        }
         // 카드 자체 효과 (CardEffect) 추가시 여기에서 효과 처리 추가
 
         return Value + result;
     }
 
-    public int FinalCoinPoint()
+    public int FinalCoinPoint(Character user)
     {
         int result = 0;
         if (UpgradeData != null) {
@@ -132,12 +161,11 @@ public class Card
         }
         
 
-        // 카드 자체 효과 (CardEffect) 추가시 여기에서 효과 처리 추가
 
         return CoinPoint + result;
     }
 
-    public int FinalCoin()
+    public int FinalCoin(Character user)
     {
         int result = 0;
         if (UpgradeData != null)
@@ -160,7 +188,7 @@ public class Card
         return Mathf.Min(Coin + result, MAX_COIN);
     }
 
-    public string GetDescription(Dictionary<int, StatusEffectData> list)
+    public string GetDescription(Dictionary<int, StatusEffectData> list, Character user)
     {
         if (list == null || list.Count <= 0 ) return "";
         string result = Description;
@@ -178,19 +206,20 @@ public class Card
                         string effectLink = $"<link={data.Id}><color=#3333dd><u>[{data.Name}]</u></color></link>";
                         result = result
                             .Replace($"{{{enumText}}}", effectLink)
-                            .Replace($"[{enumText}_Value]", item.Value.ToString());
+                            .Replace($"[{enumText}_Value]", item.Value.ToString())
+                            .Replace($"[{enumText}_Duration]", item.Duration.ToString());
                     }
                 }
             }
         }
 
-        return result.ParseDescription(this);
+        return result.ParseDescription(this, user);
     }
 
-    public int CalcCoinValue(bool[] coinResults)
+    public int CalcCoinValue(bool[] coinResults, Character user)
     {
-        int finalValue = FinalValue();
-        int coinPoint = FinalCoinPoint();
+        int finalValue = FinalValue(user);
+        int coinPoint = FinalCoinPoint(user);
         for (int i = 0; i < coinResults.Length; i++)
         {
             if (coinResults[i])

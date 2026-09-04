@@ -43,7 +43,7 @@ public abstract class CombatBase : MonoBehaviour, ICombat
 
     public bool[] CoinToss(Card card, int SanitySet = -1)
     {
-        int coinCount = card.FinalCoin();
+        int coinCount = card.FinalCoin(Character);
         int sanity = SanitySet < 0 ? Character.Sanity : SanitySet;
 
         bool[] result = new bool[coinCount];
@@ -58,7 +58,7 @@ public abstract class CombatBase : MonoBehaviour, ICombat
     public int TotalValueByWin(Card card, int APDiscount = 0)
     {
         // 승리 시 밸류 + 남은 코인 * 코인 위력 리턴
-        return Mathf.Max(1, (card.FinalValue() + card.Coin * card.FinalCoinPoint()) - APDiscount);
+        return Mathf.Max(1, (card.FinalValue(Character) + card.Coin * card.FinalCoinPoint(Character)) - APDiscount);
     }
     public abstract int APDiscountByLose(Card card);
 

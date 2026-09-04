@@ -29,13 +29,14 @@ public class HandManager : MonoBehaviour
     /// 초기 상태 보존용
     /// </summary>
     private List<CardData> allCards;
+
     /// <summary>
     /// 핸드 카드
     /// </summary>
     private List<CardData> handCards;
 
     /// <summary>
-    /// 덱 내 카드, 스택으로 순서 보장
+    /// 덱 내 카드
     /// </summary>
     private List<CardData> deckCards;
 
@@ -52,6 +53,8 @@ public class HandManager : MonoBehaviour
     /// List2 : 현재 버려진 카드
     /// </summary>
     public event Action<List<CardData>, List<CardData>> OnDeckReload;
+
+    public event Action<int> OnCrackCard;
     public bool isDrawTime;
 
     public void CreateAllCard(List<Card> data,Character user)
@@ -63,9 +66,10 @@ public class HandManager : MonoBehaviour
         foreach (var item in data)
         {
             CardData card = Instantiate(baseCardObj, baseHolderPos);
+            card.user = user;
             card.gameObject.SetActive(false);
             card.cardData = item;
-            card.user = user;
+            
             card.parentTransform = handCanvas.transform;
             card.handTransform = cardHolderPos;
             card.CloseBtn = closeBtn;
@@ -105,7 +109,7 @@ public class HandManager : MonoBehaviour
             float nowY = item.rect.localPosition.y;
             Vector3 nowScale = item.rect.localScale;
             Sequence inSeq = DOTween.Sequence();
-            item.transform.SetParent(baseHolderPos);
+            
             inSeq
                 // 회전 중 위로 이동
                 .Join(item.rect.DOLocalMove(
@@ -126,7 +130,11 @@ public class HandManager : MonoBehaviour
                 // 회전 나머지 반
                 .Insert(turnTime / 2, item.rect.DOLocalRotate(
                             Vector3.zero, turnTime / 2)
-                        .SetEase(Ease.Linear))
+                        .SetEase(Ease.Linear)
+                        .OnComplete(()=>
+                        {
+                            item.transform.SetParent(baseHolderPos);
+                        }))
                 // 축소
                 .Insert(turnTime, item.rect.DOScale(
                             nowScale * scale, turnDropTime)
@@ -344,5 +352,31 @@ public class HandManager : MonoBehaviour
     public List<CardData> GetDiscardCards()
     {
         return discardCards;
+    }
+
+    /// <summary>
+    /// 묘지로 버려지기 전, 손패에서 지워지므로 전체 리스트와 손패 카드만 확인
+    /// </summary>
+    /// <param name="id"></param>
+    public async UniTask CrackCard(int id, ICombat combat)
+    {
+        Debug.Log("엥");
+        // 전체 카드 확인
+        int allIndex = allCards.FindIndex(x => x.cardData.Id == id);
+        if (allIndex < 0) return;
+        CardData card = allCards[allIndex];
+        allCards.RemoveAt(allIndex);
+        
+        // 손패 카드 리스트 처리
+        handCards.Remove(card);
+        DamageSkinSpawner.Instance.TextSpawn(combat.BaseCharaObj.transform.position,
+            $"<color=#{ATTACK_COLOR}>카드 파괴됨!</color>");
+        combat.CoinUI.dissolve.gameObject.SetActive(true);
+        combat.CoinUI.backGround.SetActive(false);
+        
+        await UniTask.WaitUntil(() => !combat.CoinUI.dissolve.IsAlive(true));
+        OnCrackCard?.Invoke(id);
+        combat.CoinUI.dissolve.gameObject.SetActive(false);
+        Destroy(card.gameObject);
     }
 }

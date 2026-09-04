@@ -6120,7 +6120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d10b4de1c8a1494b8b3a183228d6de4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
-  rewardManager: {fileID: 0}
+  rewardManager: {fileID: 14642691}
   StartPanel: {fileID: 814206803}
   EndPanel: {fileID: 623072477}
   endPanelText: {fileID: 183519845}
@@ -6142,6 +6142,7 @@ MonoBehaviour:
   enemyBeforePos: {x: 0, y: 0, z: 0}
   enemyActionOrderCount: 0
   EnemyDeadTurn: 0
+  totalEnemy: 0
 --- !u!4 &747545145
 Transform:
   m_ObjectHideFlags: 0
@@ -13290,7 +13291,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 302807503
-  m_SortingOrder: 101
+  m_SortingOrder: 19
   m_TargetDisplay: 0
 --- !u!1 &2036394286 stripped
 GameObject:

@@ -360,7 +360,6 @@ public class HandManager : MonoBehaviour
     /// <param name="id"></param>
     public async UniTask CrackCard(int id, ICombat combat)
     {
-        Debug.Log("엥");
         // 전체 카드 확인
         int allIndex = allCards.FindIndex(x => x.cardData.Id == id);
         if (allIndex < 0) return;

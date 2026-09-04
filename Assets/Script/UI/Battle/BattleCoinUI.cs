@@ -59,6 +59,7 @@ public class BattleCoinUI : MonoBehaviour
         iconImage.sprite = ResourceManager.Instance.CardImageData[card.Id];
 
         gameObject.SetActive(true);
+        backGround.SetActive(true);
 
         for (int i = coinAreaParent.childCount - 1; i >= 0; i--)
         {

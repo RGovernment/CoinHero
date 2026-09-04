@@ -70,6 +70,9 @@ public static class Constants
 
     //게임 관련
     public static int DEFAULT_MAX_CARD_REWARD_GOLD = 100;
+    public static int REWARD_SORT_ORDER = 101;
+    public static string REWARD_SORT_LAYER_NAME = "StatusUI";
+    public static float DEFAULT_FADE_TIME = 0.3f;
 
     
 

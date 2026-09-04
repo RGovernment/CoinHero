@@ -182,6 +182,13 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             return;
         }
 
+        if (CompareTag(REWARD_TAG))
+        {
+            transform.localScale = CARD_DEFAULT_EXPAND_SCALE * Vector3.one;
+            outline1.enabled = true;
+            outline2.enabled = true;
+        }
+
         if (!isPopup && CompareTag(HAND_TAG) && 
             BattleManager.Instance.state.GetStateType() == 
             BattleStateType.PlayerChoosePhase)
@@ -200,12 +207,20 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             outline1.enabled = false;
             outline2.enabled = false;
-            if (isPopup)
-                CloseBtnActive().Forget();
-            else
-                transform.localScale = Vector3.one * INVEN_CARD_SCALE;
+
+            transform.localScale = Vector3.one * INVEN_CARD_SCALE;
             return;
         }
+        else if (CompareTag(REWARD_TAG))
+        {
+            outline1.enabled = false;
+            outline2.enabled = false;
+
+            transform.localScale = Vector3.one;
+
+            return;
+        }
+
 
         if (!isPopup && CompareTag(HAND_TAG) &&
             BattleManager.Instance.state.GetStateType() ==

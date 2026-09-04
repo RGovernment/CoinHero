@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 using SF = UnityEngine.SerializeField;
 
 public class SelectZone : MonoBehaviour
@@ -94,13 +95,14 @@ public class SelectZone : MonoBehaviour
         nowSelectCount++;
     }
 
-    public async UniTaskVoid SetCardToZone(CardData data)
+    public async UniTaskVoid SetCardToZone(CardData data, Character user)
     {
         if (nowSelectCount >= GetSelectZoneCount()) return;
         
         Transform emptySlot = EmptySlot[nowSelectCount].transform;
         data.gameObject.SetActive(false);
         CardData slotObj = Instantiate(data, Canvas);
+        slotObj.user = user;
         slotObj.Init(data.cardData);
         slotObj.transform
             .SetPositionAndRotation(data.transform.position, data.transform.rotation);

@@ -86,7 +86,7 @@ public class BattlePhaseState : IState
             ICombat attacker = playerAble ? manager.GetPlayerCombat() : selectEnemy;
             ICombat defender = playerAble ? selectEnemy : manager.GetPlayerCombat();
             var card = playerAble ? playerCard : enemyCard;
-
+            defender.CoinUI.Release();
             await OneWayAction(attacker, card, defender, cts);
         }
         // 합
@@ -131,8 +131,8 @@ public class BattlePhaseState : IState
             Card winCard = null, loseCard = null;
             ICombat winCombat = null, loseCombat = null;
 
-            player.CoinUI.CoinSet(playerCard);
-            enemy.CoinUI.CoinSet(enemyCard);
+            player.CoinUI.CoinSet(playerCard,player.Character);
+            enemy.CoinUI.CoinSet(enemyCard, enemy.Character);
 
             // 코인 토스 후 승리 결정
             while (true)
@@ -142,21 +142,21 @@ public class BattlePhaseState : IState
 
                 int coinCount = Mathf.Max(playerCoins.Length, enemyCoins.Length);
 
-                player.CoinUI.CoinFlip();
-                enemy.CoinUI.CoinFlip();
+                player.CoinUI.CoinFlip(player.Character);
+                enemy.CoinUI.CoinFlip(enemy.Character);
 
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
                 // 코인 표시
                 for (int i = 0; i < coinCount; i++)
                 {
-                    if (i < playerCoins.Length) player.CoinUI.CoinStop(playerCoins[i]);
-                    if (i < enemyCoins.Length) enemy.CoinUI.CoinStop(enemyCoins[i]);
+                    if (i < playerCoins.Length) player.CoinUI.CoinStop(playerCoins[i], player.Character);
+                    if (i < enemyCoins.Length) enemy.CoinUI.CoinStop(enemyCoins[i], enemy.Character);
 
                     await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                 }
 
-                int playerResult = playerCard.CalcCoinValue(playerCoins);
-                int enemyResult = enemyCard.CalcCoinValue(enemyCoins);
+                int playerResult = playerCard.CalcCoinValue(playerCoins, player.Character);
+                int enemyResult = enemyCard.CalcCoinValue(enemyCoins, enemy.Character);
 
                 manager.GetBattleUISound().clip = manager.atkSound;
                 manager.GetBattleUISound().Play();
@@ -284,7 +284,7 @@ public class BattlePhaseState : IState
     {
         /// 일방 공격은 여기서 UI 생성
         if (flag == CrashType.OneWay)
-            user.CoinUI.CoinSet(card);
+            user.CoinUI.CoinSet(card, user.Character);
         
 
         switch (card.Type)
@@ -309,17 +309,17 @@ public class BattlePhaseState : IState
 
                     int coinCount = userCoins.Length;
 
-                    user.CoinUI.CoinFlip();
+                    user.CoinUI.CoinFlip(user.Character);
 
                     await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
 
                     for (int i = 0; i < coinCount; i++)
                     {
-                        user.CoinUI.CoinStop(userCoins[i]);
+                        user.CoinUI.CoinStop(userCoins[i],user.Character);
                         await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                     }
 
-                    result = card.CalcCoinValue(userCoins);
+                    result = card.CalcCoinValue(userCoins, user.Character);
                 }
                 else
                     result = user.TotalValueByWin(card, APDiscount);
@@ -351,17 +351,17 @@ public class BattlePhaseState : IState
 
                     int coinCount = userCoins.Length;
 
-                    user.CoinUI.CoinFlip();
+                    user.CoinUI.CoinFlip(user.Character);
 
                     await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
 
                     for (int i = 0; i < coinCount; i++)
                     {
-                        user.CoinUI.CoinStop(userCoins[i]);
+                        user.CoinUI.CoinStop(userCoins[i], user.Character);
                         await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                     }
 
-                    armorResult = card.CalcCoinValue(userCoins);
+                    armorResult = card.CalcCoinValue(userCoins, user.Character);
                 }
                 else
                     armorResult = user.TotalValueByWin(card, 0);
@@ -415,10 +415,46 @@ public class BattlePhaseState : IState
             Debug.Log("초기화됨");
             user.CoinUI.Release();
         }
+
+        // 지속 효과 부여 유무 체크
+        if (targetCard == null)
+        {
+            foreach (var item in card.Effect)
+            {
+                StatusEffectData data = ResourceManager.Instance.EffectData[item.EffectId];
+                int value = item.Value;
+                int duration = item.Duration;
+                //이펙트 부여 애니메이션은 차후 필요하면 추가 
+                await DurationEffectCk(data, user, target, card, value, duration, cts);
+            }
+        }
+        else
+        {
+            //적 카드 상태 검사 하는 로직 추가해야함 
+            foreach (var item in card.Effect)
+            {
+                StatusEffectData data = ResourceManager.Instance.EffectData[item.EffectId];
+
+                int value = item.Value;
+                int duration = item.Duration;
+                //이펙트 부여 애니메이션은 차후 필요하면 추가 
+                await DurationEffectCk(data, user, target, card, value, duration, cts);
+            }
+        }
+
         // 자연스러운 전환을 위한 고정값 딜레이
         await UniTask.Delay(BATTLE_END_DELAY);
     }
 
+    /// <summary>
+    /// 적 카드가 같이 등장하지 않은 일방 공격 시 처리
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="user"></param>
+    /// <param name="target"></param>
+    /// <param name="card"></param>
+    /// <param name="cts"></param>
+    /// <returns></returns>
     public async  UniTask InstantEffectCk(EffectType type, ICombat user, ICombat target,
          Card card, CancellationToken cts)
     {
@@ -433,37 +469,37 @@ public class BattlePhaseState : IState
 
                 int coinCount = userCoins.Length;
 
-                user.CoinUI.CoinFlip();
+                user.CoinUI.CoinFlip(user.Character);
 
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
 
                 for (int i = 0; i < coinCount; i++)
                 {
-                    user.CoinUI.CoinStop(userCoins[i]);
+                    user.CoinUI.CoinStop(userCoins[i], user.Character);
                     await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                 }
                 user.AnimatorManager.OnCustom();
 
-                int result = card.CalcCoinValue(userCoins);
+                int result = card.CalcCoinValue(userCoins, user.Character);
                 await user.AnimatorManager.animationTriggerItem.Task.AttachExternalCancellation(cts);
                 target.Character.TakeDamage(result, user.Character);
                 break;
             case EffectType.InstantHeal :
-                bool[] healCoins = user.CoinToss(card, user.Character.Sanity);
+                bool[] healCoins = user.CoinToss(card);
                 int healCoinCount = healCoins.Length;
                 
-                user.CoinUI.CoinFlip();
+                user.CoinUI.CoinFlip(user.Character);
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
                 
                 for (int i = 0; i < healCoinCount; i++)
                 {
                     Debug.Log("회복 실행됨");
-                    user.CoinUI.CoinStop(healCoins[i]);
+                    user.CoinUI.CoinStop(healCoins[i], user.Character);
                     await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                 }
                 user.AnimatorManager.OnCustom();
 
-                int healResult = card.CalcCoinValue(healCoins);
+                int healResult = card.CalcCoinValue(healCoins, user.Character);
 
                 await user.AnimatorManager.animationTriggerItem.Task.AttachExternalCancellation(cts);
                 
@@ -473,6 +509,16 @@ public class BattlePhaseState : IState
         
     }
 
+    /// <summary>
+    /// 적 카드가 같이 등장한 일방 공격 시 처리
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="user"></param>
+    /// <param name="target"></param>
+    /// <param name="card"></param>
+    /// <param name="targetCard"></param>
+    /// <param name="cts"></param>
+    /// <returns></returns>
     public async UniTask InstantEffectCk(EffectType type, ICombat user, ICombat target,
      Card card, Card targetCard, CancellationToken cts)
     {
@@ -488,18 +534,18 @@ public class BattlePhaseState : IState
 
                 int coinCount = userCoins.Length;
 
-                user.CoinUI.CoinFlip();
+                user.CoinUI.CoinFlip(user.Character);
 
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
 
                 for (int i = 0; i < coinCount; i++)
                 {
-                    user.CoinUI.CoinStop(userCoins[i]);
+                    user.CoinUI.CoinStop(userCoins[i], user.Character);
                     await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                 }
                 user.AnimatorManager.OnCustom();
 
-                int result = card.CalcCoinValue(userCoins);
+                int result = card.CalcCoinValue(userCoins, user.Character);
                 await user.AnimatorManager.animationTriggerItem.Task.AttachExternalCancellation(cts);
                 target.Character.TakeDamage(result, user.Character);
                 break;
@@ -508,24 +554,65 @@ public class BattlePhaseState : IState
                 int healCoinCount = healCoins.Length;
                 Debug.Log(healCoinCount);
 
-                user.CoinUI.CoinFlip();
+                user.CoinUI.CoinFlip(user.Character);
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
 
                 for (int i = 0; i < healCoinCount; i++)
                 {
                     Debug.Log("회복 실행됨");
-                    user.CoinUI.CoinStop(healCoins[i]);
+                    user.CoinUI.CoinStop(healCoins[i], user.Character);
                     await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
                 }
                 user.AnimatorManager.OnCustom();
 
-                int healResult = card.CalcCoinValue(healCoins);
+                int healResult = card.CalcCoinValue(healCoins, user.Character);
 
                 await user.AnimatorManager.animationTriggerItem.Task.AttachExternalCancellation(cts);
 
                 user.Character.TakeHeal(healResult, user.Character);
                 break;
         }
+    }
 
+    public async UniTask DurationEffectCk(StatusEffectData data, 
+        ICombat user, ICombat target, Card card,
+        int effectValue, int effectDuration,
+        CancellationToken cts = default)
+    {
+        if (data.Type == EffectType.Crack)
+        {
+            int removeId = user.Character.CardList.FindIndex(x => x.Id == card.Id);
+            if (user is PlayerCombat)
+                await manager.GetHandManager().CrackCard(card.Id, user);
+            else if (user is EnemyCombat)
+            {
+                // 적 크랙 연출은 차후 추가
+            }
+
+            if(removeId > -1)
+                user.Character.CardList.RemoveAt(removeId);
+            return;
+        }
+        Debug.Log(data.Name);
+
+        StatusEffect effect = EffectCreate(data, effectValue, effectDuration);
+        if (effect == null) return;
+
+        Debug.Log(effect.EffectData.Name);
+
+        if (data.Target == TargetType.Caster)
+            user.Character.TakeEffect(effect);
+        else if (data.Target == TargetType.TargetEnemy)
+            target.Character.TakeEffect(effect);
+    }   
+
+    public StatusEffect EffectCreate(StatusEffectData data, int value, int duration)
+    {
+        return data.Type switch
+        {
+            EffectType.AttackUpEffect => new AttackUpEffect(data, value, duration),
+            EffectType.AttackDownEffect => new AttackDownEffect(data, value, duration),
+            _ => null,
+        };
     }
 }

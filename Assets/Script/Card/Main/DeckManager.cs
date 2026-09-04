@@ -38,11 +38,13 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnEnable()
     {
         handManager.OnDeckReload += DeckInfoLoad;
+        handManager.OnCrackCard += CrackCard;
     }
 
     public void OnDisable()
     {
         handManager.OnDeckReload -= DeckInfoLoad;
+        handManager.OnCrackCard -= CrackCard;
     }
 
     public void DeckOpen()
@@ -124,6 +126,18 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             item.canvasGroup.alpha = 1;
 
         }
+    }
+
+    public void CrackCard(int id)
+    {
+        int index = deckCards.FindIndex(x => x.cardData.Id == id);
+        CardData data = deckCards[index];
+
+        deckCards.RemoveAt(index);
+
+        Destroy(data.gameObject);
+
+        DeckInfoLoad(handManager.GetAllCards(), handManager.GetDiscardCards());
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -1,8 +1,8 @@
 [
   {
     "Name": "위력 증가",
-    "Id": 100,
-    "Description": "수치만큼 위력이 증가한다.",
+    "Id": "100",
+    "Description": "수치 만큼 이 카드의 위력이 증가한다.",
     "Type": "ValueUp",
     "Trigger": "OnPlay",
     "Zone": "Slot",
@@ -10,7 +10,7 @@
   },
   {
     "Name": "체력 회복",
-    "Id": 101,
+    "Id": "101",
     "Description": "수치만큼 대상의 체력을 회복시킨다.",
     "Type": "InstantHeal",
     "Trigger": "OnPlay",
@@ -19,20 +19,25 @@
   },
   {
     "Name": "연속 행동",
-    "Id": 102,
+    "Id": "102",
     "Description": "이번 턴에 사용 가능한 슬롯이 1칸 증가한다.",
     "Type": "ExtraSlot",
     "Trigger": "OnSpecial",
     "Zone": "Special",
     "Target": "Slot"
   },
-
-
-  // 이하 디버프
-
+  {
+    "Name": "공격 위력 강화",
+    "Id": "103",
+    "Description": "지속 시간 동안 공격 카드의 위력이 증가한다.",
+    "Type": "AttackUpEffect",
+    "Trigger": "OnPlay",
+    "Zone": "Slot",
+    "Target": "Caster"
+  },
   {
     "Name": "위력 감소",
-    "Id": 200,
+    "Id": "200",
     "Description": "수치만큼 위력이 감소한다.",
     "Type": "ValueDown",
     "Trigger": "OnPlay",
@@ -41,7 +46,7 @@
   },
   {
     "Name": "체력 피해",
-    "Id": 201,
+    "Id": "201",
     "Description": "수치만큼 대상에게 피해를 준다.",
     "Type": "InstantDamage",
     "Trigger": "OnPlay",
@@ -50,7 +55,7 @@
   },
   {
     "Name": "화상",
-    "Id": 202,
+    "Id": "202",
     "Description": "턴이 종료될 때 수치만큼 피해를 받는다.",
     "Type": "Burn",
     "Trigger": "OnTurnEnd",
@@ -59,9 +64,36 @@
   },
   {
     "Name": "아이템 무효화",
-    "Id": 203,
+    "Id": "203",
     "Description": "아이템과 합을 겨룰 경우, 해당 아이템의 효과를 무효화한다.",
     "Type": "ItemCounter",
+    "Trigger": "OnPlay",
+    "Zone": "Slot",
+    "Target": "TargetEnemy"
+  },
+  {
+    "Name": "공격 위력 약화",
+    "Id": "204",
+    "Description": "지속 시간 동안 공격 카드의 위력이 감소한다.",
+    "Type": "AttackDownEffect",
+    "Trigger": "OnPlay",
+    "Zone": "Slot",
+    "Target": "TargetEnemy"
+  },
+  {
+    "Name": "균열",
+    "Id": "205",
+    "Description": "사용 시 버려지지 않고 덱에서 제거된다.",
+    "Type": "Crack",
+    "Trigger": "OnPlay",
+    "Zone": "Slot",
+    "Target": "Caster"
+  },
+  {
+    "Name": "침묵",
+    "Id": "206",
+    "Description": "특수/아이템을 제외한 카드의 사용 효과가 무효화된다.",
+    "Type": "Silence",
     "Trigger": "OnPlay",
     "Zone": "Slot",
     "Target": "TargetEnemy"

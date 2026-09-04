@@ -13,11 +13,11 @@ public abstract class StatusEffect
     public int Value;
     public int Duration;
 
-    public StatusEffect(StatusEffectData data)
+    public StatusEffect(StatusEffectData data, int value, int duration)
     {
         EffectData = data;
-        Value = EffectData.Value;
-        Duration = EffectData.Duration;
+        Value = value;
+        Duration = duration;
     }
 
     /// <summary>
@@ -48,6 +48,12 @@ public abstract class StatusEffect
     /// <returns>계산된 대미지</returns>
     public virtual int OnModifyAttackDamage(int baseDamage) => baseDamage;
 
+    /// <summary>
+    /// 위력 계산 시 발동
+    /// </summary>
+    /// <param name="baseDamage">원본 기본 위력</param>
+    /// <returns>계산된 위력</returns>
+    public virtual int OnModifyAttackValue(int baseDamage) => baseDamage;
     /// <summary>
     /// 피해를 받을 때 발동
     /// </summary>

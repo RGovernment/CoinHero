@@ -11,5 +11,10 @@ public interface IBuffable
     /// <summary>
     /// 효과 제거
     /// </summary>
-    public void RemoveEffect();
+    public void RemoveEffect(StatusEffect effect);
+
+    /// <summary>
+    /// 효과 제거
+    /// </summary>
+    public void RemoveEffect(int id);
 }

@@ -56,11 +56,7 @@ public static class Enums
 
     public enum SceneType { Title, Loading, Battle, Map, Shop, None };
 
-
-
-
-
-
+    public enum ButtonSoundType { Click, Hover, Inven, None }
 
     // Json 파일로의 저장시 참고용
     public enum EffectType { ValueUp, ValueDown, 

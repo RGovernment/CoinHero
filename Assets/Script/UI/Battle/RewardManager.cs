@@ -183,22 +183,24 @@ public class RewardManager : MonoBehaviour
         {
             Card cardData = cardList[index];
             
+            // 업그레이드가 가능할 경우
             if (cardData.MaxUpgradeLv > cardData.CurrentUpgradeLv)
             {
                 Debug.Log($"{card.cardData.Name} {cardData.CurrentUpgradeLv} -> {cardData.CurrentUpgradeLv + 1} 업그레이드");
                 cardData.CurrentUpgradeLv++;
             }
+
+            // 업그레이드가 불가능할 경우
             else
             {
                 GameManager.Instance.state.gold += DEFAULT_MAX_CARD_REWARD_GOLD;
                 return;
             }
 
+            // 카드 업그레이드 시 업그레이드 횟수 만큼 별 표시 활성화
             for (int i = 0; i < cardData.CurrentUpgradeLv; i++)
-            {
                 card.starSlot.transform.GetChild(i).gameObject.SetActive(true);
-            }
-
+            
             DG.Tweening.Sequence seq = DOTween.Sequence();
             
             seq
@@ -209,7 +211,8 @@ public class RewardManager : MonoBehaviour
                     Vector3.one , cardUpgradeTime)
                 );
 
-            for(int i = 0; i <cardData.CurrentUpgradeLv; i++)
+            // 카드 업그레이드 시 별 표시 활성화 애니메이션
+            for (int i = 0; i <cardData.CurrentUpgradeLv; i++)
             {
                 Transform star = card.starSlot.transform.GetChild(i);
                 Debug.Log($"Star {i}");
@@ -233,6 +236,7 @@ public class RewardManager : MonoBehaviour
             DG.Tweening.Sequence seq = DOTween.Sequence();
 
             cardList.Add(card.cardData);
+
             seq
                 .Join(card.transform.DOMove(
                     CardDeck.position, cardStackTime)
@@ -251,9 +255,6 @@ public class RewardManager : MonoBehaviour
 
         CardPanel.DOFade(ZERO, DEFAULT_FADE_TIME);
         CardPanel.gameObject.SetActive(false);
-
-        foreach (var item in GameManager.Instance.state.playerData.CardList)
-            item.ToString();
 
         Button cardBtn = card.GetComponent<Button>();
         cardBtn.onClick.RemoveAllListeners();

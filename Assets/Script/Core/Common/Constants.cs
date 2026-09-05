@@ -82,6 +82,9 @@ public static class Constants
     public static string REWARD_SORT_LAYER_NAME = "StatusUI";
     public static float DEFAULT_FADE_TIME = 0.3f;
 
-    
+    // 저장 관련 상수
+    public static string SAVE_FILE_NAME = "savefile.dat";
+    public static string SAVE_FILE_ROOT_NAME = "saves";
+
 
 }

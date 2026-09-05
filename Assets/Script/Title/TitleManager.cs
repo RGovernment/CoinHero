@@ -18,10 +18,19 @@ public class TitleManager : MonoBehaviour
     {
         titlePanel.alpha = ZERO;
         titlePanel.gameObject.SetActive(false);
+        SaveManager.Instance.SaveExists();
     }
 
     public void StartGame()
     {
+        GameManager.Instance.nextScene = SceneType.Battle;
+        // 임시로 즉시 이동
+        SceneNext().Forget();
+    }
+
+    public void ContinueGame()
+    {
+        SaveManager.Instance.Load();
         GameManager.Instance.nextScene = SceneType.Battle;
         // 임시로 즉시 이동
         SceneNext().Forget();

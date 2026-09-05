@@ -9,6 +9,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Constants;
+using static Enums;
+
 using SF = UnityEngine.SerializeField;
 
 public class RewardManager : MonoBehaviour
@@ -281,7 +283,10 @@ public class RewardManager : MonoBehaviour
             RewardPanel.DOFade(ZERO, DEFAULT_FADE_TIME).OnComplete(() =>
             {
                 RewardPanel.gameObject.SetActive(false);
-                SceneManager.LoadScene(1);
+
+                // 로비로 다시 이동하도록 설정, 추후 맵 씬으로 이동하도록 변경
+                GameManager.Instance.nextScene = SceneType.Battle;
+                SceneManager.LoadScene((int)SceneType.Loading);
             });
         }
     }

@@ -1,10 +1,16 @@
 using UnityEngine;
+using static Enums;
+
+using HIn = UnityEngine.HideInInspector;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance {  get; private set; }
 
     public GameState state;
+
+    [HIn] public SceneType nextScene;
+    [HIn] public SceneType nowScene;
 
     private void Awake()
     {

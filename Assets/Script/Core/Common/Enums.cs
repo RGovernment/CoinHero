@@ -20,6 +20,7 @@ public static class Enums
     /// 단 Effect 자체가 효과를 가진 경우 쓰지 않음
     /// </summary>
     public enum CardType { Weapon, Armor, Item, Special }
+
     /// <summary>
     /// 발동 시점
     ///<para>OnPlay : 전투 진행 중</para>
@@ -29,12 +30,14 @@ public static class Enums
     ///<para>Passive : 사용 후 상시 발동</para>
     /// </summary>
     public enum CardTrigger { OnPlay, OnTurnStart, OnTurnEnd, OnSpecial, Passive }
+
     /// <summary>
     /// 발동 위치
     /// <para>Slot : 슬롯에서 발동</para>
     /// <para>Special : 특수 카드존에서 발동</para>
     /// </summary>
     public enum CardZone { Slot, Special }
+
     /// <summary>
     /// <para>Caster : 본인</para>
     /// <para>TargetEnemy : 타겟한 적</para>
@@ -51,6 +54,7 @@ public static class Enums
 
     public enum CrashType { Crash, OneWay }
 
+    public enum SceneType { Title, Loading, Battle, Map, Shop, None };
 
 
 

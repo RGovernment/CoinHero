@@ -26,6 +26,13 @@ public static class Constants
     public static string SHIELD_COLOR = "16E9FC";
     public static string HEAL_COLOR = "81F65A";
 
+    // 씬 넘버
+    public static int TITLE_SCENE = 0;
+    public static int LOADING_SCENE = 1;
+    public static int BATTLE_SCENE = 2;
+    public static int MAP_SCENE = 3;
+    public static int SHOP_SCENE = 4;
+
     // 단순 상수
     public static int ONE = 1;
     public static int ZERO = 0;
@@ -61,6 +68,7 @@ public static class Constants
     public static float CARD_EXPAND_TIMER = 0.15f;
     public static float CARD_EXPAND_SCALE = 1.25f;
     public static float CARD_DEFAULT_EXPAND_SCALE = 1.1f;
+    public static float STAR_DEFAULT_EXPAND_SCALE = 3f;
     public static int CARD_MAX_UPGRADE_COUNT = 5;
 
     //인벤토리 관련

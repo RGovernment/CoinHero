@@ -1,13 +1,14 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Constants;
-using static UnityEditor.Experimental.GraphView.GraphView;
 using SF = UnityEngine.SerializeField;
 
 public class RewardManager : MonoBehaviour
@@ -24,6 +25,7 @@ public class RewardManager : MonoBehaviour
     [SF] private Button cardBtn;
     [SF] private TextMeshProUGUI cardText;
     [SF] private Button giveUpBtn;
+    [SF] private Button rewardCompleteBtn;
 
     [Header("구성 요소 / 카드 보상")]
     [SF] private Transform cardLayout;
@@ -34,14 +36,42 @@ public class RewardManager : MonoBehaviour
     private int rewardCardNum = 1;
     private int rewardGold = 0;
     private int layerID = 0;
+    /// <summary>
+    /// 보상 완료 버튼 수, 활성화된 버튼을 모두 클릭 시 보상 종료
+    /// </summary>
+    private int rewardCompleteCountMax = 0;
+    private int rewardCompleteCount = 0;
+
+    private event Action OnRewardBtnClick;
+
     public void Awake()
     {
         layerID = SortingLayer.NameToID(REWARD_SORT_LAYER_NAME);
         
     }
 
+    public void OnEnable()
+    {
+        OnRewardBtnClick += BtnClick;
+    }
+
+    public void OnDisable()
+    {
+        OnRewardBtnClick -= BtnClick;
+    }
+
+    private void BtnClick()
+    {
+        if (rewardCompleteCount >= rewardCompleteCountMax)
+        {
+            rewardCompleteBtn.interactable = true;
+            rewardCompleteBtn.gameObject.SetActive(true);
+        }
+    }
+
     public void RewardSetting(int enemyNum)
     {
+        rewardCompleteCount = 0;
         rewardGold = 0;
         RewardPanel.alpha = 0;
 
@@ -49,15 +79,21 @@ public class RewardManager : MonoBehaviour
 
         InvenBtnCanvas.sortingOrder = 101;
         InvenBtnCanvas.sortingLayerID = layerID;
-        
+
+        #region 골드 획득의 경우. 항상 지급
 
         for (int i = 0; i < enemyNum; i++) {
-            int randomGold = Random.Range(20, 51);
+            int randomGold = UnityEngine.Random.Range(20, 51);
             rewardGold += randomGold;
         }
         
         goldText.text = $"골드 {rewardGold} 획득";
         goldBtn.gameObject.SetActive(true);
+        if (goldBtn.gameObject.activeSelf)
+            rewardCompleteCountMax++;
+        #endregion
+
+        #region 카드 획득의 경우. 카드는 상황에 따라 지급 여부가 달라질 수 있음
         // 카드를 어떤 방식으로 추가로 얻을지 정하면 {rewardCardNum} > 해당 값으로 대체
         cardText.text = $"카드 {rewardCardNum}장 획득";
         goldBtn.onClick.RemoveAllListeners();
@@ -66,7 +102,15 @@ public class RewardManager : MonoBehaviour
         cardBtn.onClick.RemoveAllListeners();
         // 카드를 어떤 방식으로 추가로 얻을지 정하면 (rewardCardNum) > 해당 값으로 대체
         cardBtn.onClick.AddListener(() => OpenCardSelectView(rewardCardNum));
+
         cardBtn.gameObject.SetActive(true);
+        if(cardBtn.gameObject.activeSelf)
+            rewardCompleteCountMax++;
+        #endregion
+
+        #region 아티팩트 획득의 경우. 아티팩트는 상황에 따라 지급 여부가 달라질 수 있음
+        // 아티팩트 획득은 추후 구현 예정
+        #endregion
 
         RewardPanel.DOFade(ONE, DEFAULT_FADE_TIME);
     }
@@ -76,11 +120,14 @@ public class RewardManager : MonoBehaviour
         GameManager.Instance.state.gold += gold;
         goldBtn.onClick.RemoveAllListeners();
         goldBtn.interactable = false;
+        rewardCompleteCount++;
+        OnRewardBtnClick?.Invoke();
     }
 
     public void OpenCardSelectView(int num)
     {
         cardBtn.enabled = false;
+        cardBtn.interactable = false;
         goldBtn.onClick.RemoveAllListeners();
         CardPanel.alpha = 0;
 
@@ -89,7 +136,7 @@ public class RewardManager : MonoBehaviour
         {
             Card card = cardList[i];
 
-            CardData data = CardMake(card);
+            CardMake(card);
         }
 
         CardPanel.gameObject.SetActive(true);
@@ -101,7 +148,7 @@ public class RewardManager : MonoBehaviour
 
     }
 
-    private CardData CardMake(Card card)
+    private void CardMake(Card card)
     {
         CardData data = Instantiate(cardPrefab, cardLayout);
         data.Init(card);
@@ -112,7 +159,6 @@ public class RewardManager : MonoBehaviour
         data.gameObject.tag = REWARD_TAG;
         data.AddComponent<Button>().onClick.AddListener(() => CardSelectEvent(data));
         data.gameObject.SetActive(true);
-        return data;
     }
 
     private void CardSelectEvent(CardData data)
@@ -126,23 +172,24 @@ public class RewardManager : MonoBehaviour
         List<Card> cardList = GameManager.Instance.state.playerData.CardList;
         
         int index = cardList.FindIndex(x => x.Id == card.cardData.Id);
-
+        card.canvasGroup.interactable = false;
         float cardUpgradeTime = 0.2f;
+        float starStackTime = 0.5f;
         float cardStackTime = 0.5f;
         Vector3 rotateAngle = new(0, 0, 20);
-        Debug.Log(index);
-        card.GetComponent<Button>().onClick.RemoveAllListeners();
+        
+        // 얻은 카드가 카드 목록에 존재할 경우 
         if (index > -1)
         {
             Card cardData = cardList[index];
             
             if (cardData.MaxUpgradeLv > cardData.CurrentUpgradeLv)
             {
+                Debug.Log($"{card.cardData.Name} {cardData.CurrentUpgradeLv} -> {cardData.CurrentUpgradeLv + 1} 업그레이드");
                 cardData.CurrentUpgradeLv++;
             }
             else
             {
-                // 업그레이드 불가능 처리 대신 돈 올라감
                 GameManager.Instance.state.gold += DEFAULT_MAX_CARD_REWARD_GOLD;
                 return;
             }
@@ -151,6 +198,7 @@ public class RewardManager : MonoBehaviour
             {
                 card.starSlot.transform.GetChild(i).gameObject.SetActive(true);
             }
+
             DG.Tweening.Sequence seq = DOTween.Sequence();
             
             seq
@@ -164,14 +212,24 @@ public class RewardManager : MonoBehaviour
             for(int i = 0; i <cardData.CurrentUpgradeLv; i++)
             {
                 Transform star = card.starSlot.transform.GetChild(i);
-                
-                seq.Join(star.DOPunchScale(Vector3.forward, cardUpgradeTime, 3, 1));
+                Debug.Log($"Star {i}");
+
+                seq.Insert(cardUpgradeTime + starStackTime * i, star.DOScale(
+                    Vector3.one * STAR_DEFAULT_EXPAND_SCALE, starStackTime / 2)
+                );
+                seq.Insert(cardUpgradeTime + starStackTime * i + starStackTime / 2, star.DOScale(
+                    Vector3.one, starStackTime / 2)
+                );
+
             }
 
             await seq.Play().ToUniTask();
         }
+
+        // 목록에 존재하지 않을 경우
         else
         {
+            Debug.Log($"카드 {card.cardData.Name} 추가");
             DG.Tweening.Sequence seq = DOTween.Sequence();
 
             cardList.Add(card.cardData);
@@ -193,6 +251,16 @@ public class RewardManager : MonoBehaviour
 
         CardPanel.DOFade(ZERO, DEFAULT_FADE_TIME);
         CardPanel.gameObject.SetActive(false);
+
+        foreach (var item in GameManager.Instance.state.playerData.CardList)
+            item.ToString();
+
+        Button cardBtn = card.GetComponent<Button>();
+        cardBtn.onClick.RemoveAllListeners();
+        cardBtn.interactable = false;
+
+        rewardCompleteCount++;
+        OnRewardBtnClick?.Invoke();
     }
 
     /// <summary>
@@ -202,5 +270,18 @@ public class RewardManager : MonoBehaviour
     {
         CardPanel.DOFade(ZERO, DEFAULT_FADE_TIME);
         CardPanel.gameObject.SetActive(false);
+        rewardCompleteCount++;
+    }
+
+    public void RewardCompleteCheck()
+    {
+        if (rewardCompleteCount >= rewardCompleteCountMax)
+        {
+            RewardPanel.DOFade(ZERO, DEFAULT_FADE_TIME).OnComplete(() =>
+            {
+                RewardPanel.gameObject.SetActive(false);
+                SceneManager.LoadScene(1);
+            });
+        }
     }
 }

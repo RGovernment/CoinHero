@@ -16,7 +16,7 @@ public class EnemyCombat : CombatBase
             cd.Add(item.Value);
         }
 
-        Character = new Enemy(nextEnemyInstanceId++, $"Dummy_{name}", 20, cd);
+        Character = new Enemy(nextEnemyInstanceId++, $"Dummy_{name}", 2, cd);
         CoinUI.gameObject.SetActive(false);
         animatorManager.Combat = this;
         statUI.combat = this;

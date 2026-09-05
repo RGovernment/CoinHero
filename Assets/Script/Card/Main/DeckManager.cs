@@ -49,17 +49,17 @@ public class DeckManager : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void DeckOpen()
     {
-        deckCanvasGroup.alpha = 0;
+        deckCanvasGroup.alpha = ZERO;
         deckCanvasGroup.gameObject.SetActive(true);
-        deckCanvasGroup.DOFade(1, FadeTime);
+        deckCanvasGroup.DOFade(ONE, FadeTime);
 
         DeckInfoLoad(handManager.GetAllCards(), handManager.GetDiscardCards());
     }
 
     public void DeckClose()
     {
-        deckCanvasGroup.alpha = 1;
-        deckCanvasGroup.DOFade(0, FadeTime);
+        deckCanvasGroup.alpha = ONE;
+        deckCanvasGroup.DOFade(ZERO, FadeTime);
         deckCanvasGroup.gameObject.SetActive(false);
 
     }

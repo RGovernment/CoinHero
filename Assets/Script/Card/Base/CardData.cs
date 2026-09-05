@@ -75,11 +75,16 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         typeIcon.sprite = typeIconSprite[typeInt];
         if(ResourceManager.Instance.CardImageData.TryGetValue(cardData.Id,out Sprite sp))
             itemImage.sprite = sp;
+
+        for(int i = starSlot.transform.childCount - 1; i >= cardData.CurrentUpgradeLv; i--)
+            starSlot.transform.GetChild(i).gameObject.SetActive(false);
     }
 
     public void Init(Card cardData)
     {
         this.cardData = cardData.Init(cardData);
+        for(int i = 0; i < CARD_MAX_UPGRADE_COUNT; i++)
+            Instantiate(starImage, starSlot.transform).gameObject.SetActive(false);
     }
 
 
@@ -170,18 +175,25 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (CompareTag(INVEN_TAG)) 
         {
-            transform.localScale = 1.1f * INVEN_CARD_SCALE * Vector3.one;
+            transform.localScale = CARD_DEFAULT_EXPAND_SCALE * INVEN_CARD_SCALE * Vector3.one;
             outline1.enabled = true;
             outline2.enabled = true;
 
             return;
         }
 
+        if (CompareTag(REWARD_TAG))
+        {
+            transform.localScale = CARD_DEFAULT_EXPAND_SCALE * Vector3.one;
+            outline1.enabled = true;
+            outline2.enabled = true;
+        }
+
         if (!isPopup && CompareTag(HAND_TAG) && 
             BattleManager.Instance.state.GetStateType() == 
             BattleStateType.PlayerChoosePhase)
         {
-            transform.localScale = Vector3.one * 1.1f; 
+            transform.localScale = Vector3.one * CARD_DEFAULT_EXPAND_SCALE; 
             transform.SetAsLastSibling();
             outline1.enabled = true;
             outline2.enabled = true;
@@ -195,12 +207,20 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             outline1.enabled = false;
             outline2.enabled = false;
-            if (isPopup)
-                CloseBtnActive().Forget();
-            else
-                transform.localScale = Vector3.one * INVEN_CARD_SCALE;
+
+            transform.localScale = Vector3.one * INVEN_CARD_SCALE;
             return;
         }
+        else if (CompareTag(REWARD_TAG))
+        {
+            outline1.enabled = false;
+            outline2.enabled = false;
+
+            transform.localScale = Vector3.one;
+
+            return;
+        }
+
 
         if (!isPopup && CompareTag(HAND_TAG) &&
             BattleManager.Instance.state.GetStateType() ==

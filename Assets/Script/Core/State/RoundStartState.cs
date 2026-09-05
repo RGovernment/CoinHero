@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 public class RoundStartState : IState
 {
@@ -30,7 +31,9 @@ public class RoundStartState : IState
     public void CharaPosSet()
     {
         manager.GetPlayerCombat().transform.position = manager.playerSpawnPoint.position;
+        GameManager.Instance.PlayerSetting(manager.GetPlayerCombat().Character);
         int enemyCount = manager.GetEnemyCombat().Count;
+        manager.totalEnemy = enemyCount;
         if (enemyCount == 1)
             manager.GetEnemyCombat()[0].transform.position
                 = manager.enemySpawnPoint[0].position;

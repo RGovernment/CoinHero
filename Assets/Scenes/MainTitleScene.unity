@@ -1812,22 +1812,11 @@ MonoBehaviour:
   battleClips:
   - type: 0
     audioClip:
-    - {fileID: 8300000, guid: 9b0ce762b94f28f4e93fe52e50147880, type: 3}
-    - {fileID: 8300000, guid: b107a6645a757144f99dfd0005332109, type: 3}
-    - {fileID: 8300000, guid: a1ec17297d24aec458a6e0d273aaf612, type: 3}
-    - {fileID: 8300000, guid: afba327686afd7a4aaa4ee6860ff12f2, type: 3}
     - {fileID: 8300000, guid: 808a88bd8a83a2649976c4a01bb0759c, type: 3}
-    - {fileID: 8300000, guid: 001c4101b4f15ab45a7c300ee219673b, type: 3}
-    - {fileID: 8300000, guid: f499f44888b6246478cab30f73d89ea0, type: 3}
-    - {fileID: 8300000, guid: 9e8b95b0a74e9bb4990d7dbddecf7942, type: 3}
-    - {fileID: 8300000, guid: 941c1a2fda4b3e14c887e99414675178, type: 3}
     - {fileID: 8300000, guid: ff4eff5c824690a4aaa8f1d7515bb6c2, type: 3}
-    - {fileID: 8300000, guid: 3317e6481d9005045a0c9cdfe670694c, type: 3}
     - {fileID: 8300000, guid: c3b1bc425c893b74ca253226208e9f28, type: 3}
     - {fileID: 8300000, guid: 80d812f28b781c84483447593c04047d, type: 3}
     - {fileID: 8300000, guid: 9b5d0a60dd386834fbbd66613643f56d, type: 3}
-    - {fileID: 8300000, guid: 3172792f0ed7331459bad003d96582d0, type: 3}
-    - {fileID: 8300000, guid: df516e5191cf8194f980e6556e95289d, type: 3}
     - {fileID: 8300000, guid: daf5f9f61cbef15449e7b414275bcd68, type: 3}
   - type: 1
     audioClip:

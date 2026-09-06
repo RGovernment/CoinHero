@@ -16,6 +16,8 @@ public class ResourceManager : MonoBehaviour
     public Dictionary<int, StatusEffectData> EffectData { get; private set; }
 
     public Dictionary<EffectType, StatusEffectData> EffectDataByType { get; private set; }
+    public Dictionary<SystemSoundType, AudioClip> SystemSoundData { get; private set; }
+    public Dictionary<SceneType, AudioClip> BackgroundSoundData { get; private set; }
 
     private void Awake()
     {
@@ -34,6 +36,8 @@ public class ResourceManager : MonoBehaviour
         EnemyCardData = new();
         CardImageData = new();
         EffectDataByType = new();
+        SystemSoundData = new();
+        BackgroundSoundData = new();
         ResourceLoad();
         CardImageLoad();
     }

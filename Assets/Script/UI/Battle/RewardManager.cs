@@ -179,7 +179,9 @@ public class RewardManager : MonoBehaviour
         float starStackTime = 0.5f;
         float cardStackTime = 0.5f;
         Vector3 rotateAngle = new(0, 0, 20);
-        
+
+        SoundManager.Instance.PlaySystemSFX(SystemSoundType.Reward);
+
         // 얻은 카드가 카드 목록에 존재할 경우 
         if (index > -1)
         {

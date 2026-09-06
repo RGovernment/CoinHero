@@ -124,6 +124,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             outline2.enabled = false;
             BattleManager.Instance.SelectCard(this);
         }
+        SoundManager.Instance.PlaySystemSFX(SystemSoundType.CardClick);
     }
     public void OpenInfoEvent()
     {
@@ -175,6 +176,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (CompareTag(INVEN_TAG)) 
         {
+            SoundManager.Instance.PlaySystemSFX(SystemSoundType.CardHover);
             transform.localScale = CARD_DEFAULT_EXPAND_SCALE * INVEN_CARD_SCALE * Vector3.one;
             outline1.enabled = true;
             outline2.enabled = true;
@@ -198,7 +200,9 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             outline1.enabled = true;
             outline2.enabled = true;
         }
-            
+
+        // 카드에 마우스 올렸을 때 효과음 재생
+        SoundManager.Instance.PlaySystemSFX(SystemSoundType.CardHover);
     }
 
     public void OnPointerExit(PointerEventData eventData)

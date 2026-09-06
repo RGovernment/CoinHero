@@ -25,11 +25,19 @@ public class SoundManager : MonoBehaviour
         public AudioClip audioClip;
     }
 
+    [Serializable]
+    public struct BattleSoundData
+    {
+        public BattleSoundType type;
+        public AudioClip[] audioClip;
+    }
+
     [SF] private AudioMixer mainMixer;
     [SF] private AudioSource systemAudioSource;
     [SF] private AudioSource bgmSource;
     [SF] private SystemSoundData[] audioClips;
     [SF] private BackgroundSoundData[] backgroundAudioClips;
+    [SF] private BattleSoundData[] battleClips;
 
     private void Awake()
     {
@@ -60,6 +68,11 @@ public class SoundManager : MonoBehaviour
             if(data.audioClip == null) continue;
 
             dict2[data.type] = data.audioClip;
+        }
+        foreach (var data in battleClips)
+        {
+            if (data.audioClip == null || data.audioClip.Length == 0) continue;
+            ResourceManager.Instance.BattleSoundData[data.type] = data.audioClip;
         }
     }
 
@@ -118,5 +131,16 @@ public class SoundManager : MonoBehaviour
         if (clip == null) return;
 
         systemAudioSource.PlayOneShot(clip);
+    }
+
+    public void PlayBattleSFX(BattleSoundType type)
+    {
+        AudioClip[] clips = ResourceManager.Instance.BattleSoundData[type];
+
+        int index = UnityEngine.Random.Range(0, clips.Length);
+
+        if(clips[index] == null) return;
+
+        systemAudioSource.PlayOneShot(clips[index]);
     }
 }

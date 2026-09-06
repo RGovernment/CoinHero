@@ -287,7 +287,7 @@ public class RewardManager : MonoBehaviour
                 RewardPanel.gameObject.SetActive(false);
 
                 // 로비로 다시 이동하도록 설정, 추후 맵 씬으로 이동하도록 변경
-                GameManager.Instance.nextScene = SceneType.Battle;
+                GameManager.Instance.nextScene = SceneType.Title;
                 SceneManager.LoadScene((int)SceneType.Loading);
             });
         }

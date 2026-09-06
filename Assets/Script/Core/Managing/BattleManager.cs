@@ -38,10 +38,6 @@ public class BattleManager : MonoBehaviour
     public Transform[] enemySpawnPoint;
     public Transform enemyBattlePoint;
 
-    [Header("사운드")]
-    [SF] private AudioSource battleUISound;
-    public AudioClip atkSound;
-
     [Header("프리팹")]
     public StateMachine state;
     public Dictionary<BattleStateType, IState> stateGroup;
@@ -215,11 +211,6 @@ public class BattleManager : MonoBehaviour
     public Queue<Card> GetNowEnemyCards()
     {
         return nowEnemyCards;
-    }
-
-    public AudioSource GetBattleUISound()
-    {
-        return battleUISound;
     }
 
     public void RegisterPlayer(PlayerCombat player)

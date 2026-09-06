@@ -3,6 +3,8 @@ using UnityEngine;
 public class GameState
 {
     // 전체 상태
+    public bool isTutorialCompleted;
+
     public int NowRound;
     public bool IsBoss;
 

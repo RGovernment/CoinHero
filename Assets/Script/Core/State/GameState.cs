@@ -8,6 +8,10 @@ public class GameState
     public int NowRound;
     public bool IsBoss;
 
+    // 맵 상태
+    public MapGraph mapStatus;
+    public MapNode currentMapNode;
+
     // 플레이어 상태
     public int gold;
     public Character playerData;

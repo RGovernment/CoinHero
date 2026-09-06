@@ -85,7 +85,7 @@ public class RewardManager : MonoBehaviour
         #region 골드 획득의 경우. 항상 지급
 
         for (int i = 0; i < enemyNum; i++) {
-            int randomGold = UnityEngine.Random.Range(20, 51);
+            int randomGold = UnityEngine.Random.Range(NORMAL_GOLD_REWARD_MIN, NORMAL_GOLD_REWARD_MAX);
             rewardGold += randomGold;
         }
         

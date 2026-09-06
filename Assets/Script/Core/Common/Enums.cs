@@ -48,17 +48,40 @@ public static class Enums
     public enum TargetType { Caster, TargetEnemy, AllEnemies, All , Slot }
 
     /// <summary>
-    /// 
+    /// normal : 일반 맵
+    /// Boss : 보스 맵
+    /// Shop : 상점 맵
+    /// Rest Area : 휴식 맵
+    /// </summary>
+    public enum MapType { Normal, Boss, Shop, RestArea }
+
+    /// <summary>
+    /// 스탯 종류 
     /// </summary>
     public enum StatType { Value, CoinPoint, Coin }
 
+    /// <summary>
+    /// 합 유형
+    /// Crash : 합
+    /// OneWay : 일방
+    /// </summary>
     public enum CrashType { Crash, OneWay }
 
+    /// <summary>
+    /// 씬 유형
+    /// Title : 메인 타이틀
+    /// Loading : 로딩 화면
+    /// Battle : 전투 화면
+    /// Map : 지도 화면
+    /// Shop : 상점 화면
+    /// None : 없음
+    /// </summary>
     public enum SceneType { Title, Loading, Battle, Map, Shop, None };
 
     public enum SystemSoundType { Click, Hover, CardClick, CardHover, Inven, Reward , RewardBtn, None }
 
     public enum BattleSoundType { Crash, Attack, Use, None }
+
 
     // Json 파일로의 저장시 참고용
     public enum EffectType { ValueUp, ValueDown, 

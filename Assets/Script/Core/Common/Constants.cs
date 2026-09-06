@@ -81,6 +81,13 @@ public static class Constants
     public static int REWARD_SORT_ORDER = 101;
     public static string REWARD_SORT_LAYER_NAME = "StatusUI";
     public static float DEFAULT_FADE_TIME = 0.3f;
+    public static int NORMAL_GOLD_REWARD_MIN = 20;
+    public static int NORMAL_GOLD_REWARD_MAX = 51;
+    public static int ELETE_GOLD_REWARD_MIN = 35;
+    public static int ELETE_GOLD_REWARD_MAX = 81;
+    public static int BOSS_GOLD_REWARD_MIN = 100;
+    public static int BOSS_GOLD_REWARD_MAX = 151;
+
 
     // 저장 관련 상수
     public static string SAVE_FILE_NAME = "savefile.dat";
@@ -91,4 +98,8 @@ public static class Constants
     public const string SYSTEM_SFX_PARAM = "SystemSFXVolume";
     public const string GAME_SFX_PARAM = "GameSFXVolume";
     public const string BGM_PARAM = "BackgroundSFXVolume";
+
+    // 맵 관련
+    public const float NODE_LINE_BY_THREE_ABLE = 0.85f;
+    public const float NODE_LINE_BY_TWO_ABLE = 0.55f;
 }

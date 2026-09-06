@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviour
 
     public void Start()
     {
-        SoundManager.Instance.PlayBGM(SceneType.Title);
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayBGM(SceneType.Title);
     }
 
     public void PlayerSetting(Character chara)
@@ -64,6 +65,7 @@ public class GameManager : MonoBehaviour
 
     private void SceneMusicChanged(Scene arg0, Scene arg1)
     {
+        if (SoundManager.Instance == null) return;
         SoundManager.Instance.StopBGM();
 
         int index = arg1.buildIndex;

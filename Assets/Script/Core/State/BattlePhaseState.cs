@@ -158,9 +158,6 @@ public class BattlePhaseState : IState
                 int playerResult = playerCard.CalcCoinValue(playerCoins, player.Character);
                 int enemyResult = enemyCard.CalcCoinValue(enemyCoins, enemy.Character);
 
-                manager.GetBattleUISound().clip = manager.atkSound;
-                manager.GetBattleUISound().Play();
-
                 // 위력이 동등했을 경우 재굴림
                 if (playerResult == enemyResult)
                 {
@@ -173,7 +170,7 @@ public class BattlePhaseState : IState
                         player.AnimatorManager.animationTriggerAttacker.Task.AttachExternalCancellation(cts),
                         enemy.AnimatorManager.animationTriggerAttacker.Task.AttachExternalCancellation(cts)
                     );
-
+                    SoundManager.Instance.PlayBattleSFX(BattleSoundType.Crash);
                     continue;
                 }
                 // 플레이어가 우세했을 경우 적 코인 파괴
@@ -185,7 +182,7 @@ public class BattlePhaseState : IState
                     player.AnimatorManager.OnAttack();
                     
                     await player.AnimatorManager.animationTriggerAttacker.Task.AttachExternalCancellation(cts);
-
+                    SoundManager.Instance.PlayBattleSFX(BattleSoundType.Crash);
                     enemy.AnimatorManager.OnOther();
 
                     await UniTask.WhenAll(
@@ -211,6 +208,7 @@ public class BattlePhaseState : IState
                     enemy.AnimatorManager.OnAttack();
                     await enemy.AnimatorManager.animationTriggerAttacker.Task
                         .AttachExternalCancellation(cts);
+                    SoundManager.Instance.PlayBattleSFX(BattleSoundType.Crash);
                     player.AnimatorManager.OnOther();
                     await UniTask.WhenAll(
                         player.AnimatorManager.animationTriggerDefender.Task
@@ -327,6 +325,9 @@ public class BattlePhaseState : IState
                 user.AnimatorManager.OnAttack();
 
                 await user.AnimatorManager.animationTriggerAttacker.Task.AttachExternalCancellation(cts);
+
+                SoundManager.Instance.PlayBattleSFX(BattleSoundType.Attack);
+
                 target.AnimatorManager.OnDamage();
                 target.Character.TakeDamage(result, user.Character);
 
@@ -384,6 +385,8 @@ public class BattlePhaseState : IState
                     user.BaseCharaObj.transform.position,
                     $"<color=#{SHIELD_COLOR}>실드 증가 {SP}</color>");
 
+                SoundManager.Instance.PlayBattleSFX(BattleSoundType.Use);
+
                 await user.AnimatorManager.animationTriggerDefender.Task.AttachExternalCancellation(cts);
                 
                 break;
@@ -408,6 +411,7 @@ public class BattlePhaseState : IState
                         await InstantEffectCk(data.Type, user, target, card, targetCard, cts);
                     }
                 }
+                SoundManager.Instance.PlayBattleSFX(BattleSoundType.Use);
                 break;
         }
         if (flag == CrashType.OneWay)

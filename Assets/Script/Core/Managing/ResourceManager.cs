@@ -19,6 +19,8 @@ public class ResourceManager : MonoBehaviour
     public Dictionary<SystemSoundType, AudioClip> SystemSoundData { get; private set; }
     public Dictionary<SceneType, AudioClip> BackgroundSoundData { get; private set; }
 
+    public Dictionary<BattleSoundType, AudioClip[]> BattleSoundData { get; private set; }
+
     private void Awake()
     {
         if(Instance == null)
@@ -38,6 +40,7 @@ public class ResourceManager : MonoBehaviour
         EffectDataByType = new();
         SystemSoundData = new();
         BackgroundSoundData = new();
+        BattleSoundData = new();
         ResourceLoad();
         CardImageLoad();
     }

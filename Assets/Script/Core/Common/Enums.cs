@@ -103,4 +103,12 @@ public static class Enums
         ExtraSlot, Burn, ItemCounter,
         AttackUpEffect, AttackDownEffect, Crack, Silence
     }
+
+    public enum SoundMixerType
+    {
+        Master,
+        BGM,
+        System,
+        Game
+    }
 }

@@ -106,9 +106,9 @@ AudioMixerController:
   - guid: 5e629cfc9f558ef488f0f09250132a83
     name: GameSFXVolume
   - guid: 4d8fac0962cb2084f88cf3c85adc9d66
-    name: SystemSFXVolume
+    name: MasterVolume
   - guid: 0540ab9b41c7e674da0001ab4c9319f3
-    name: MyExposedParam
+    name: SystemSFXVolume
   m_AudioMixerGroupViews:
   - guids:
     - e1b5d31ba0f63bd4cb890d742e040f2e

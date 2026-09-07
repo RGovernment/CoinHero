@@ -37,6 +37,7 @@ public class TitleManager : MonoBehaviour
 
     public void StartGame()
     {
+        
         GameManager.Instance.nextScene = SceneType.Map;
         // 선택지 추가 후 변경 
         Player data = ResourceManager.Instance.PlayerData[ZERO];
@@ -56,6 +57,7 @@ public class TitleManager : MonoBehaviour
             cd
             );
         GameManager.Instance.state.NowRound = ONE;
+        SaveManager.Instance.DeleteSave();
         SceneNext().Forget();
     }
 
@@ -70,7 +72,10 @@ public class TitleManager : MonoBehaviour
             
         SceneNext().Forget();
     }
-
+    public void OpenOptionPanel()
+    {
+        OptionManager.Instance.OptionPanelOpen();
+    }
     public async UniTask SceneNext()
     {
         titlePanel.gameObject.SetActive(true);

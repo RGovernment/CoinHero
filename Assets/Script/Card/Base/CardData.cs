@@ -68,7 +68,7 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             = cardData.GetDescription(ResourceManager.Instance.EffectData, user);
 
         for(int i = 0; i< cardData.CurrentUpgradeLv; i++)
-            starSlot.transform.GetChild(i).gameObject.SetActive(true);
+            Instantiate(starImage, starSlot.transform).gameObject.SetActive(true);
         
         description.text = descriptionText;
         nameText.text = name;

@@ -4,20 +4,20 @@ using UnityEngine;
 public class GameState
 {
     // 전체 상태
-    public bool isTutorialCompleted;
+    public bool IsTutorialCompleted;
     public int NowRound;
     public bool IsBoss;
     public bool IsBattle;
     public List<Enemy> nextRoundEnemies;
 
-    public MapGraph mapStatus;
+    /*public MapGraph mapStatus;
 
-    public MapNode currentMapNode;
-    //세이브 로드 구현중 빌드를 위한 임시 제거
+    public MapNode currentMapNode;*/
+
     // 맵 상태
-    //public MapGraphData mapStatus;
+    public MapGraphData mapStatus;
 
-    //public int currentMapNodeId;
+    public int currentMapNodeId;
 
     // 플레이어 상태
     public int gold;

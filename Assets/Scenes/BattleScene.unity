@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RewardManager
   InvenBtnCanvas: {fileID: 2013931540}
-  CardDeck: {fileID: 0}
+  CardDeck: {fileID: 2013931537}
   RewardPanel: {fileID: 1507423244}
   CardPanel: {fileID: 257423151}
   goldBtn: {fileID: 1165355979}

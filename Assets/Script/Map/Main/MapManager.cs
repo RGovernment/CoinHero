@@ -66,23 +66,19 @@ public class MapManager : MonoBehaviour
         {
             // 맵 생성
             data = mapCreater.CreateMap();
-            gameState.mapStatus = data;
-            //gameState.mapStatus = SaveMapSaveData(data);
+            //gameState.mapStatus = data;
+            gameState.mapStatus = SaveMapSaveData(data);
         }
         // 있을 경우 재사용
         else
-            //data = LoadMapSaveData(gameState.mapStatus);
-            data = gameState.mapStatus;
+        {
+            data = LoadMapSaveData(gameState.mapStatus);
+            currentNode = ToMapNode(data, GameManager.Instance.state.currentMapNodeId);
+        }
 
-
-        if (GameManager.Instance.state.currentMapNode != null)
-            currentNode = GameManager.Instance.state.currentMapNode;
-
-        //currentNode = GameManager.Instance.state.currentMapNodeId;
-
-        // 세이브 로드 구현 중 빌드를 위해 임시 제외
-
-        //currentNode = ToMapNode(data, GameManager.Instance.state.currentMapNodeId);
+        //data = gameState.mapStatus;
+        /*if (GameManager.Instance.state.currentMapNode != null)
+            currentNode = GameManager.Instance.state.currentMapNode;*/
 
         // 노드 UI 생성
         foreach (var floor in data.floors)
@@ -127,7 +123,7 @@ public class MapManager : MonoBehaviour
         rect.anchorMin = new Vector2(0f, 0.5f);
         rect.anchorMax = new Vector2(0f, 0.5f);
 
-        int slot = GetSlotForNode(floor, node);
+        int slot = mapCreater.GetSlotForNode(floor, node);
         float x = node.y * floorSpacing + horizontalPadding;
         float y = (slot - 1) * slotSpacing + Random.Range(-positionJitter, positionJitter);
         rect.anchoredPosition = new Vector2(x, y);
@@ -184,15 +180,6 @@ public class MapManager : MonoBehaviour
         lineRect.localEulerAngles = new Vector3(0f, 0f, angle);
     }
 
-    // MapCreater의 GetSlotForNode와 동일한 규칙 (private이라 중복 구현, 규칙 바뀌면 양쪽 다 수정 필요)
-    private int GetSlotForNode(List<MapNode> floor, MapNode targetNode)
-    {
-        int index = floor.IndexOf(targetNode);
-        if (floor.Count == 1) return 1;
-        if (floor.Count == 2) return (index == 0) ? 0 : 2;
-        return index;
-    }
-
     private void OnNodeClick(MapNode node)
     {
         OnNodeClickBase(node).Forget();
@@ -212,7 +199,9 @@ public class MapManager : MonoBehaviour
 
         currentNode = node;
         // 선택한 노드 저장
-        GameManager.Instance.state.currentMapNode = node;
+
+        GameManager.Instance.state.currentMapNodeId = ToNodeId(node);
+
         UpdateInteractable();
 
         // 항상 이번 적 목록 초기화

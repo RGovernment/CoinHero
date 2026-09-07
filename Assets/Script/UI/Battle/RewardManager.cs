@@ -337,8 +337,7 @@ public class RewardManager : MonoBehaviour
                 GameManager.Instance.state.IsBattle = false;
                 GameManager.Instance.state.nextRoundEnemies.Clear();
 
-                // 빌드를 위해 임시 제외
-                //SaveManager.Instance.Save().Forget();
+                SaveManager.Instance.Save().Forget();
 
                 SceneManager.LoadScene((int)SceneType.Loading);
             });

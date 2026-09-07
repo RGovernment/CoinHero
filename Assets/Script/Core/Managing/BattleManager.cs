@@ -82,8 +82,8 @@ public class BattleManager : MonoBehaviour
         
         SpawnCharacter();
         GameManager.Instance.state.IsBattle = true;
-        // 빌드를 위해 임시 제외
-        //SaveManager.Instance.Save().Forget();
+
+        SaveManager.Instance.Save().Forget();
     }
 
     private void Start()
@@ -139,7 +139,7 @@ public class BattleManager : MonoBehaviour
         if (saveData.CardList.Count <= 0)
             card = InitCharacterCards(saveData);
         else
-            card = saveData.CardList;
+            card = new(saveData.CardList);
 
         Player playerData =
             new(

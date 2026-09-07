@@ -116,6 +116,8 @@ public class SaveManager : MonoBehaviour
     private void WriteEncrypted<T>(string path, T data)
     {
         string json = JsonConvert.SerializeObject(data);
+        Debug.Log("암호화");
+        Debug.Log(json);
         string encrypted = Encrypt(json);
         File.WriteAllText(path, encrypted);
     }
@@ -130,7 +132,10 @@ public class SaveManager : MonoBehaviour
     {
         string encrypted = File.ReadAllText(path);
         string json = Decrypt(encrypted);
+        Debug.Log("복호화");
+        Debug.Log(json);
         return JsonConvert.DeserializeObject<T>(json);
+
     }
 
     /// <summary>

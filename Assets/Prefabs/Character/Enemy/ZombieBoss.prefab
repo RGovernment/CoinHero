@@ -47,10 +47,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7bb852a0a2d614e9424af57251c53c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombat
-  baseCharaObj: {fileID: 0}
-  animator: {fileID: 0}
+  baseCharaObj: {fileID: 8481832351352814409}
+  animator: {fileID: 2764068562380134035}
   coinUI: {fileID: 7847776154262832000}
-  animatorManager: {fileID: 0}
+  animatorManager: {fileID: 278653556321764103}
   statUI: {fileID: 1700875795915491250}
 --- !u!1001 &1907100648847878275
 PrefabInstance:
@@ -413,6 +413,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 278653556321764103}
   m_SourcePrefab: {fileID: 100100000, guid: 8e13dc758d83146d99f55b59f08cad3e, type: 3}
+--- !u!95 &2764068562380134035 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 893076196623622208, guid: 8e13dc758d83146d99f55b59f08cad3e, type: 3}
+  m_PrefabInstance: {fileID: 3044197673757685459}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6611188165990052319 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8178679017122023180, guid: 8e13dc758d83146d99f55b59f08cad3e, type: 3}

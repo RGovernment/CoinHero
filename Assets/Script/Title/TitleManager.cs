@@ -61,12 +61,13 @@ public class TitleManager : MonoBehaviour
 
     public void ContinueGame()
     {
-        // 빌드를 위해 임시 제외
-        //SaveManager.Instance.Load();
-        if (!GameManager.Instance.state.IsBattle) 
-            GameManager.Instance.nextScene = SceneType.Map;
-        else
+        SaveManager.Instance.Load();
+        if (GameManager.Instance.state.IsBattle)
             GameManager.Instance.nextScene = SceneType.Battle;
+        else
+            GameManager.Instance.nextScene = SceneType.Map;
+        
+            
         SceneNext().Forget();
     }
 

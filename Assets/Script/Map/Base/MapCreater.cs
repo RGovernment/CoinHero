@@ -20,7 +20,9 @@ public class MapCreater : MonoBehaviour
     public MapGraph CreateMap()
     {
         MapGraph graph = new();
+
         int nodeId = 0;
+
         // 전체 노드 생성
         for (int i = 0; i < totalFloors; i++)
         {
@@ -250,7 +252,7 @@ public class MapCreater : MonoBehaviour
         }
     }
 
-    private int GetSlotForNode(List<MapNode> floor, MapNode targetNode)
+    public int GetSlotForNode(List<MapNode> floor, MapNode targetNode)
     {
         int index = floor.IndexOf(targetNode);
         if (floor.Count == 1) return 1; // 중앙

@@ -48,11 +48,27 @@ public class GameManager : MonoBehaviour
 
     public void UpdateState(GameState newState)
     {
+        Debug.Log($"newState: {newState}");
+        Debug.Log($"playerData: {newState?.playerData}");
+        Debug.Log($"CardList: {newState?.playerData?.CardList}");
+        Debug.Log($"nextRoundEnemies: {newState?.nextRoundEnemies}");
+
+        Player data = newState.playerData;
         state = new()
         {
-            playerData = newState.playerData,
+            playerData = new Player(
+                data.Id, data.Name, data.MaxHP, data.HP, data.ClassType,
+                new(data.CardList)) ,
             NowRound = newState.NowRound,
             IsBoss = newState.IsBoss,
+            IsBattle = newState.IsBattle,
+            IsTutorialCompleted = newState.IsTutorialCompleted,
+            nextRoundEnemies = new(newState.nextRoundEnemies),
+            mapStatus = new MapGraphData()
+            {
+                nodes = newState.mapStatus.nodes,
+            },
+            currentMapNodeId = newState.currentMapNodeId,
             gold = newState.gold
         };
     }

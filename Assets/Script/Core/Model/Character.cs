@@ -19,7 +19,6 @@ public abstract class Character : IDamageable, IBuffable
 
     public List<int> StartCardList;
 
-    [JsonIgnore]
     public List<Card> CardList;
 
     // 인게임에서만 사용

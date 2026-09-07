@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class RoundEndState : IState
@@ -18,15 +19,15 @@ public class RoundEndState : IState
     public void OnStart()
     {
         Debug.Log("RoundEndState start");
-        WinCk();
+        WinCk().Forget();
     }
 
     public void OnStay()
     {
     }
 
-    public void WinCk()
+    public async UniTask WinCk()
     {
-        manager.RoundEnd(!manager.GetPlayerCombat().Character.IsDead);
+        await manager.RoundEnd(!manager.GetPlayerCombat().Character.IsDead);
     }
 }

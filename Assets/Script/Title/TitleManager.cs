@@ -1,16 +1,19 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Enums;
 using static Constants;
-
+using static Enums;
 using SF = UnityEngine.SerializeField;
-using Cysharp.Threading.Tasks;
 
 public class TitleManager : MonoBehaviour
 {
     [SF] private Button startBtn;
+    [SF] private Button continueBtn;
+    [SF] private TextMeshProUGUI continueBtnText;
     [SF] private Button closeBtn;
     [SF] private CanvasGroup titlePanel;
 
@@ -18,21 +21,53 @@ public class TitleManager : MonoBehaviour
     {
         titlePanel.alpha = ZERO;
         titlePanel.gameObject.SetActive(false);
-        SaveManager.Instance.SaveExists();
+
+        if (SaveManager.Instance.SaveExists())
+        {
+            continueBtn.interactable = true;
+            continueBtnText.alpha = ONE;
+        }
+        else
+        {
+            continueBtn.interactable = false;
+            float alpha = continueBtn.colors.disabledColor.a;
+            continueBtnText.alpha = alpha;
+        }
     }
 
     public void StartGame()
     {
-        GameManager.Instance.nextScene = SceneType.Battle;
-        // 임시로 즉시 이동
+        GameManager.Instance.nextScene = SceneType.Map;
+        // 선택지 추가 후 변경 
+        Player data = ResourceManager.Instance.PlayerData[ZERO];
+
+        List<Card> cd = new();
+        foreach (var cardId in data.StartCardList)
+        {
+            cd.Add(ResourceManager.Instance.GetCardData(cardId));
+        }
+
+        GameManager.Instance.state.playerData = new Player(
+            data.Id,
+            data.Name,
+            data.MaxHP,
+            data.MaxHP,
+            data.ClassType,
+            cd
+            );
+        GameManager.Instance.state.NowRound = ONE;
         SceneNext().Forget();
     }
 
     public void ContinueGame()
     {
         SaveManager.Instance.Load();
-        GameManager.Instance.nextScene = SceneType.Battle;
-        // 임시로 즉시 이동
+        if (GameManager.Instance.state.IsBattle)
+            GameManager.Instance.nextScene = SceneType.Battle;
+        else
+            GameManager.Instance.nextScene = SceneType.Map;
+        
+            
         SceneNext().Forget();
     }
 

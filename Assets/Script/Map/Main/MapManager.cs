@@ -1,9 +1,14 @@
+using DG.Tweening;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Enums;
+using static Constants;
+using static Utility;
+
 using SF = UnityEngine.SerializeField;
+using Cysharp.Threading.Tasks;
 
 public class MapManager : MonoBehaviour
 {
@@ -15,7 +20,7 @@ public class MapManager : MonoBehaviour
     [SF] private RectTransform mapContent;
     // 맵 좌우 여백
     [SF] private float horizontalPadding = 100f;
-
+    [SF] private CanvasGroup fadeCanvas;
     //
     [SF] private float lineGap = 20f;
 
@@ -45,6 +50,9 @@ public class MapManager : MonoBehaviour
 
     private void Awake()
     {
+        fadeCanvas.gameObject.SetActive(true);
+        fadeCanvas.DOFade(ZERO, DEFAULT_FADE_TIME)
+            .OnComplete(()=> fadeCanvas.gameObject.SetActive(false));
         GenerateMap();
     }
 
@@ -58,16 +66,21 @@ public class MapManager : MonoBehaviour
         {
             // 맵 생성
             data = mapCreater.CreateMap();
-            gameState.mapStatus = data;
+            //gameState.mapStatus = data;
+            gameState.mapStatus = SaveMapSaveData(data);
         }
         // 있을 경우 재사용
         else
-            data = gameState.mapStatus;
-        
-        if(GameManager.Instance.state.currentMapNode != null)
-            currentNode = GameManager.Instance.state.currentMapNode;
+        {
+            data = LoadMapSaveData(gameState.mapStatus);
+            currentNode = ToMapNode(data, GameManager.Instance.state.currentMapNodeId);
+        }
 
-        // 2. 노드 UI 생성 (좌표 계산 + 프리팹 인스턴스화)
+        //data = gameState.mapStatus;
+        /*if (GameManager.Instance.state.currentMapNode != null)
+            currentNode = GameManager.Instance.state.currentMapNode;*/
+
+        // 노드 UI 생성
         foreach (var floor in data.floors)
         {
             foreach (var node in floor)
@@ -76,7 +89,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        // 3. 연결선 UI 생성 (모든 노드 좌표가 계산된 뒤에 그려야 함)
+        // 연결선 UI 생성 (모든 노드 좌표가 계산된 뒤에 그려야 함)
         foreach (var floor in data.floors)
         {
             foreach (var node in floor)
@@ -110,12 +123,12 @@ public class MapManager : MonoBehaviour
         rect.anchorMin = new Vector2(0f, 0.5f);
         rect.anchorMax = new Vector2(0f, 0.5f);
 
-        int slot = GetSlotForNode(floor, node);
+        int slot = mapCreater.GetSlotForNode(floor, node);
         float x = node.y * floorSpacing + horizontalPadding;
         float y = (slot - 1) * slotSpacing + Random.Range(-positionJitter, positionJitter);
         rect.anchoredPosition = new Vector2(x, y);
 
-        instance.onClick.AddListener(() => OnNodeClicked(node));
+        instance.onClick.AddListener(() => OnNodeClick(node));
 
         nodeViews[node] = rect;
         nodeButtons[node] = instance;
@@ -167,43 +180,95 @@ public class MapManager : MonoBehaviour
         lineRect.localEulerAngles = new Vector3(0f, 0f, angle);
     }
 
-    // MapCreater의 GetSlotForNode와 동일한 규칙 (private이라 중복 구현, 규칙 바뀌면 양쪽 다 수정 필요)
-    private int GetSlotForNode(List<MapNode> floor, MapNode targetNode)
+    private void OnNodeClick(MapNode node)
     {
-        int index = floor.IndexOf(targetNode);
-        if (floor.Count == 1) return 1;
-        if (floor.Count == 2) return (index == 0) ? 0 : 2;
-        return index;
+        OnNodeClickBase(node).Forget();
     }
 
     /// <summary>
     /// 현재 노드의 값을 가져온 뒤, 해당 노드로 이동
     /// </summary>
     /// <param name="node"></param>
-    private void OnNodeClicked(MapNode node)
+    private async UniTask OnNodeClickBase(MapNode node)
     {
+        fadeCanvas.gameObject.SetActive(true);
+        SceneType loadScene = SceneType.None;
         // 클릭 조건 검사
         if (currentNode == null && node.y != 0) return;
         if (currentNode != null && !currentNode.nextNodes.Contains(node)) return;
 
         currentNode = node;
         // 선택한 노드 저장
-        GameManager.Instance.state.currentMapNode = node;
+
+        GameManager.Instance.state.currentMapNodeId = ToNodeId(node);
+
         UpdateInteractable();
+
+        // 항상 이번 적 목록 초기화
+        GameManager.Instance.state.nextRoundEnemies.Clear();
 
         switch (node.mapType)
         {
             case MapType.Normal:
+                // 스폰 로직은 차후 디테일하게 수정할 것
                 GameManager.Instance.state.IsBoss = false;
+
+                int countRandom = Random.Range(0, 100);
+                // 스폰 명 수 확률 지정
+                int enemyCount = 
+                    countRandom < ENEMY_THREE_COUNT_PERCENT ? 3 
+                    : countRandom < ENEMY_THREE_COUNT_PERCENT + ENEMY_TWO_COUNT_PERCENT ? 2 
+                    : 1;
+
+                //현재는 적에 좀비만 존재하므로 좀비 리스트 가져오기
+                List<Enemy> zombieList = ResourceManager.Instance.EnemyZombieData;
+
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    Enemy enemyData = zombieList[Random.Range(0, zombieList.Count)];
+
+                    GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
+                }
+
+                loadScene = SceneType.Battle;
                 break;
             case MapType.Boss:
                 GameManager.Instance.state.IsBoss = true;
+                // 보스는 항상 3마리 스폰
+                int enemybossCount = MAX_ENEMY_COUNT;
+                int nowRonud = GameManager.Instance.state.NowRound;
+                for(int i = 0;i < enemybossCount; i++)
+                {
+                    if (i == 0)
+                    {
+                        Enemy enemyData = 
+                            ResourceManager.Instance.EnemyBossData[nowRonud - 1];
+
+                        GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
+                    }
+                    else
+                    {
+                        List<Enemy> bossLineList = ResourceManager.Instance.EnemyZombieData;
+
+                        Enemy enemyData = bossLineList[Random.Range(0, bossLineList.Count)];
+
+                        GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
+                    }
+                }
+
+                loadScene = SceneType.Battle;
                 break;
             case MapType.Shop:
+                loadScene = SceneType.Shop;
                 break;
             case MapType.RestArea:
+                //loadScene = SceneType.;
                 break;
         }
+
+        await fadeCanvas.DOFade(ONE, DEFAULT_FADE_TIME);
+
+        SceneManager.LoadScene((int)loadScene);
     }
 
     /// <summary>

@@ -6,6 +6,10 @@ public static class Constants
     public static string STATUS_EFFECT_DATA = "StatusEffectData";
     public static string PLAYER_CARD_DATA = "PlayerCardData";
     public static string ENEMY_CARD_DATA = "EnemyCardData";
+    public static string ENEMY_DATA = "EnemyData";
+    public static string PLAYER_DATA = "PlayerData";
+    public static string BOSS = "Boss";
+    public static string ZOMBIE = "Zombie";
     
     public static string VALUE = "Value";
     public static string DURATION = "Duration";
@@ -58,6 +62,7 @@ public static class Constants
     public static float DRAW_GAP = 0.2f;
 
     // 전투 관련 상수
+    public static int MAX_ENEMY_COUNT = 3;
     public static int REBOUND_SANITY_COST = 5;
     public static int MAX_SANITY = 95;
     public static int MIN_SANITY = 30;
@@ -79,6 +84,8 @@ public static class Constants
     //게임 관련
     public static int DEFAULT_MAX_CARD_REWARD_GOLD = 100;
     public static int REWARD_SORT_ORDER = 101;
+    public static int DEFAULT_PLAYER_ROUND_CLEAR_MAX_HP_GAIN = 5;
+    public static int DEFAULT_PAYER_ROUND_CLEAR_SANITY_GAIN = 5;
     public static string REWARD_SORT_LAYER_NAME = "StatusUI";
     public static float DEFAULT_FADE_TIME = 0.3f;
     public static int NORMAL_GOLD_REWARD_MIN = 20;
@@ -88,6 +95,9 @@ public static class Constants
     public static int BOSS_GOLD_REWARD_MIN = 100;
     public static int BOSS_GOLD_REWARD_MAX = 151;
 
+    public static int ENEMY_THREE_COUNT_PERCENT = 65;
+    public static int ENEMY_TWO_COUNT_PERCENT = 20;
+    public static int ENEMY_ONE_COUNT_PERCENT = 15;
 
     // 저장 관련 상수
     public static string SAVE_FILE_NAME = "savefile.dat";

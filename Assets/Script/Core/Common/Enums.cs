@@ -56,9 +56,23 @@ public static class Enums
     public enum MapType { Normal, Boss, Shop, RestArea }
 
     /// <summary>
+    /// Normal : 일반
+    /// Elete : 엘리트
+    /// Boss : 보스
+    /// </summary>
+    public enum EnemyType { Normal, Elete, Boss}
+    /// <summary>
+    /// 적 세부 타입
+    /// Zombie : 적 타입이 좀비임
+    /// </summary>
+    public enum EnemyClassType { Zombie, ZombieBoss }
+
+    public enum PlayerClassType { Warrior }
+    /// <summary>
     /// 스탯 종류 
     /// </summary>
     public enum StatType { Value, CoinPoint, Coin }
+    
 
     /// <summary>
     /// 합 유형

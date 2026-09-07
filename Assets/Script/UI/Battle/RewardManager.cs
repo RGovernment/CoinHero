@@ -62,6 +62,9 @@ public class RewardManager : MonoBehaviour
         OnRewardBtnClick -= BtnClick;
     }
 
+    /// <summary>
+    /// 버튼 활성화용 이벤트
+    /// </summary>
     private void BtnClick()
     {
         if (rewardCompleteCount >= rewardCompleteCountMax)
@@ -71,6 +74,10 @@ public class RewardManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 리워드 세팅
+    /// </summary>
+    /// <param name="enemyNum"></param>
     public void RewardSetting(int enemyNum)
     {
         rewardCompleteCount = 0;
@@ -117,19 +124,28 @@ public class RewardManager : MonoBehaviour
         RewardPanel.DOFade(ONE, DEFAULT_FADE_TIME);
     }
 
+    /// <summary>
+    /// 골드 획득 버튼 작동용 함수
+    /// </summary>
+    /// <param name="gold"></param>
     public void GetGold(int gold)
     {
         GameManager.Instance.state.gold += gold;
         goldBtn.onClick.RemoveAllListeners();
         goldBtn.interactable = false;
+        goldText.alpha = goldBtn.colors.disabledColor.a;
         rewardCompleteCount++;
         OnRewardBtnClick?.Invoke();
     }
 
+    /// <summary>
+    /// 카드 선택 버튼 클릭시 나오는 화면
+    /// </summary>
+    /// <param name="num"></param>
     public void OpenCardSelectView(int num)
     {
-        cardBtn.enabled = false;
         cardBtn.interactable = false;
+        cardText.alpha = cardBtn.colors.disabledColor.a;
         goldBtn.onClick.RemoveAllListeners();
         CardPanel.alpha = 0;
 
@@ -150,6 +166,10 @@ public class RewardManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 보상 카드를 만드는 함수
+    /// </summary>
+    /// <param name="card"></param>
     private void CardMake(Card card)
     {
         CardData data = Instantiate(cardPrefab, cardLayout);
@@ -163,12 +183,22 @@ public class RewardManager : MonoBehaviour
         data.gameObject.SetActive(true);
     }
 
+
+    /// <summary>
+    /// 카드 선택시 작동하는 외부 함수(버튼 등록용 void 함수)
+    /// </summary>
+    /// <param name="data"></param>
     private void CardSelectEvent(CardData data)
     {
         CardSelect(data).Forget();
     }
 
 #pragma warning disable CS4014
+    /// <summary>
+    /// 카드 선택시 작동하는 메인 함수
+    /// </summary>
+    /// <param name="card"></param>
+    /// <returns></returns>
     private async UniTask CardSelect(CardData card)
     {
         List<Card> cardList = GameManager.Instance.state.playerData.CardList;
@@ -285,9 +315,30 @@ public class RewardManager : MonoBehaviour
             RewardPanel.DOFade(ZERO, DEFAULT_FADE_TIME).OnComplete(() =>
             {
                 RewardPanel.gameObject.SetActive(false);
+                // 저장된 플레이어 데이터 갱신 
+                Character data = GameManager.Instance.state.playerData;
+                // 체력 갱신
+                data.SetHP(BattleManager.Instance.GetPlayerCombat().Character.HP);
 
-                // 로비로 다시 이동하도록 설정, 추후 맵 씬으로 이동하도록 변경
+                // 최대 체력 증가
+                data.SetMaxHP(data.MaxHP + DEFAULT_PLAYER_ROUND_CLEAR_MAX_HP_GAIN);
+                data.SetSanity(data.Sanity + DEFAULT_PAYER_ROUND_CLEAR_SANITY_GAIN);
+
+                // 로비로 다시 이동하도록 설정, 라운드 추가시 증가하도록 설정
                 GameManager.Instance.nextScene = SceneType.Title;
+                if (GameManager.Instance.state.IsBoss)
+                {
+                    GameManager.Instance.nextScene = SceneType.Title;
+                    GameManager.Instance.state.NowRound++;
+                }    
+                else
+                    GameManager.Instance.nextScene = SceneType.Map;
+
+                GameManager.Instance.state.IsBattle = false;
+                GameManager.Instance.state.nextRoundEnemies.Clear();
+
+                SaveManager.Instance.Save().Forget();
+
                 SceneManager.LoadScene((int)SceneType.Loading);
             });
         }

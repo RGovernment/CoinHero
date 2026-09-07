@@ -556,7 +556,6 @@ public class BattlePhaseState : IState
             case EffectType.InstantHeal:
                 bool[] healCoins = user.CoinToss(card, user.Character.Sanity);
                 int healCoinCount = healCoins.Length;
-                Debug.Log(healCoinCount);
 
                 user.CoinUI.CoinFlip(user.Character);
                 await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);

@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,15 @@ public abstract class Character : IDamageable, IBuffable
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
-    public int HP { get; private set; }
+    public int HP { get; protected set; }
     public int MaxHP { get; private set; }
     public int SP { get; private set; }
     public int Sanity { get; private set; }
 
     public bool IsDead { get => HP <= 0; }
+
+    public List<int> StartCardList;
+
     public List<Card> CardList;
 
     // 인게임에서만 사용
@@ -178,6 +182,15 @@ public abstract class Character : IDamageable, IBuffable
         SP += getSP;
         
         OnSPChanged?.Invoke(nowSP, SP);
+    }
+    
+    /// <summary>
+    /// 전투 종료시 저장된 체력을 갱신하는 함수
+    /// </summary>
+    /// <param name="changeHp"></param>
+    public void SetHP(int changeHp)
+    {
+        HP = changeHp;
     }
 
     public void SetMaxHP(int changeMaxHp)

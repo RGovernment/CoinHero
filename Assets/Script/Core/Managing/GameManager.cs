@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Enums;
@@ -20,13 +20,15 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            state = new();
+            state = new()
+            {
+                nextRoundEnemies = new()
+            };
         }
         else
         {
             Destroy(gameObject);
         }
-        
     }
     public void OnEnable()
     {
@@ -44,21 +46,29 @@ public class GameManager : MonoBehaviour
             SoundManager.Instance.PlayBGM(SceneType.Title);
     }
 
-    public void PlayerSetting(Character chara)
-    {
-        //로드 대신 임시 지정
-        // 차후 로드되면 현재의 배틀 매니저 > 게임 매니저로 되어있는 역순 호출을
-        // 게임 매니저 > 배틀 매니저로의 로드로 정리할 것
-        state.playerData = new Player(chara.Id, chara.Name, chara.MaxHP, chara.CardList);
-    }
-
     public void UpdateState(GameState newState)
     {
+        Debug.Log($"newState: {newState}");
+        Debug.Log($"playerData: {newState?.playerData}");
+        Debug.Log($"CardList: {newState?.playerData?.CardList}");
+        Debug.Log($"nextRoundEnemies: {newState?.nextRoundEnemies}");
+
+        Player data = newState.playerData;
         state = new()
         {
-            playerData = newState.playerData,
+            playerData = new Player(
+                data.Id, data.Name, data.MaxHP, data.HP, data.ClassType,
+                new(data.CardList)) ,
             NowRound = newState.NowRound,
             IsBoss = newState.IsBoss,
+            IsBattle = newState.IsBattle,
+            IsTutorialCompleted = newState.IsTutorialCompleted,
+            nextRoundEnemies = new(newState.nextRoundEnemies),
+            mapStatus = new MapGraphData()
+            {
+                nodes = newState.mapStatus.nodes,
+            },
+            currentMapNodeId = newState.currentMapNodeId,
             gold = newState.gold
         };
     }

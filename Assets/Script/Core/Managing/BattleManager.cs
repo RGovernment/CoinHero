@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using static Constants;
 using static Enums;
 
@@ -14,13 +12,26 @@ using SF = UnityEngine.SerializeField;
 
 public class BattleManager : MonoBehaviour
 {
+    [Serializable]
+    public struct PlayerData
+    {
+        public PlayerClassType type;
+        public PlayerCombat combat;
+    }
+    [Serializable]
+    public struct EnemyData 
+    {
+        public EnemyClassType type;
+        public EnemyCombat combat;
+    }
+
+
     public static BattleManager Instance { get; set; }
 
     [Header("패널 관련")]
     [SF] private RewardManager rewardManager;
-    [SF] private GameObject StartPanel;
-    [SF] private GameObject EndPanel;
-    [SF] private TextMeshProUGUI endPanelText;
+    [SF] private CanvasGroup StartPanel;
+    [SF] private CanvasGroup EndPanel;
 
     [Header("덱/패 관련")]
     [SF] private HandManager handManager;
@@ -39,6 +50,8 @@ public class BattleManager : MonoBehaviour
     public Transform enemyBattlePoint;
 
     [Header("프리팹")]
+    [SF] private List<PlayerData> playerPrefabs;
+    [SF] private List<EnemyData> enemyPrefabs;
     public StateMachine state;
     public Dictionary<BattleStateType, IState> stateGroup;
 
@@ -50,20 +63,34 @@ public class BattleManager : MonoBehaviour
     public bool EnemyDeadTurn;
     public CancellationTokenSource battlePhaseToken;
     public int totalEnemy;
+    private Dictionary<EnemyClassType, EnemyData> enemyPrefabDict;
 
+    private static int nextEnemyInstanceId = 50;
     private void Awake()
     {
+        enemyPrefabDict = new Dictionary<EnemyClassType, EnemyData>();
+        foreach (var p in enemyPrefabs)
+        {
+            if (!enemyPrefabDict.ContainsKey(p.type))
+                enemyPrefabDict.Add(p.type, p);
+        }
+
         Instance = this;
         nowPlayerCards = new();
         nowEnemyCards = new();
         enemyCombat = new List<EnemyCombat>();
+        
+        SpawnCharacter();
+        GameManager.Instance.state.IsBattle = true;
+
+        SaveManager.Instance.Save().Forget();
     }
 
     private void Start()
     {
-        StartPanel.SetActive(true);
+        StartPanel.alpha = ONE;
+        StartPanel.gameObject.SetActive(true);
         state = new();
-
         stateGroup = new Dictionary<BattleStateType, IState>()
         {
             [BattleStateType.RoundStart] = new RoundStartState(Instance),
@@ -79,6 +106,112 @@ public class BattleManager : MonoBehaviour
         };
 
         state.ChangeState(stateGroup[BattleStateType.RoundStart]);
+        TurnStart().Forget();
+    }
+
+    private void SpawnCharacter()
+    {
+        // 1. 플레이어 스폰
+        SpawnPlayer();
+
+        // 2. 적 스폰
+        SpawnEnemies();
+    }
+
+    /// <summary>
+    /// 플레이어 스폰 함수
+    /// </summary>
+    private void SpawnPlayer()
+    {
+        if (GameManager.Instance == null || 
+            GameManager.Instance.state.playerData == null) return;
+        Player saveData =  GameManager.Instance.state.playerData;
+
+        PlayerData targetPrefab = playerPrefabs.Find(x => x.type == saveData.ClassType);
+        if (targetPrefab.combat == null)
+        {
+            Debug.LogError($"플레이어 탐색 안됨: {saveData.Name}");
+            return;
+        }
+
+        List<Card> card = new();
+
+        if (saveData.CardList.Count <= 0)
+            card = InitCharacterCards(saveData);
+        else
+            card = new(saveData.CardList);
+
+        Player playerData =
+            new(
+                saveData.Id,
+                saveData.Name,
+                saveData.MaxHP,
+                saveData.HP,
+                saveData.ClassType,
+                card
+                );
+
+        // 생성 및 데이터 주입
+        PlayerCombat combat = Instantiate(targetPrefab.combat, Vector3.zero, Quaternion.identity);
+        combat.Init(playerData);
+
+        playerCombat = combat;
+        playerCombat.gameObject.SetActive(true);
+        
+    }
+
+    /// <summary>
+    /// 적 스폰 함수
+    /// </summary>
+    private void SpawnEnemies()
+    {
+        List<Enemy> nextEnemies = GameManager.Instance.state.nextRoundEnemies;
+        if (nextEnemies == null || nextEnemies.Count == 0) return;
+
+        for (int i = 0; i < nextEnemies.Count; i++)
+        {
+            var enemyData = nextEnemies[i];
+
+            if (enemyPrefabDict.TryGetValue(enemyData.ClassType, out var prefabData))
+            {
+                EnemyCombat combat = Instantiate(prefabData.combat, Vector3.zero, Quaternion.identity);
+                
+                nextEnemyInstanceId++;
+                // 적 카드 세팅
+                Enemy enemySet = new (
+                    nextEnemyInstanceId,
+                    enemyData.Name,
+                    enemyData.MaxHP,
+                    enemyData.RoundValue,
+                    enemyData.Type,
+                    enemyData.ClassType,
+                    InitCharacterCards(enemyData)
+                    );
+
+                combat.Init(enemySet);
+
+                combat.gameObject.SetActive(true);
+                enemyCombat.Add(combat);
+            }
+            else
+                Debug.LogWarning($"타입에 해당하는 적 프리팹 없음: {enemyData.ClassType}");
+            
+        }
+    }
+
+    /// <summary>
+    /// 캐릭터 초기 생성 시 카드 초기화 함수
+    /// </summary>
+    /// <param name="character"></param>
+    private List<Card> InitCharacterCards(Character character)
+    {
+        List<Card> cd = new();
+        foreach (var cardId in character.StartCardList)
+        {
+            cd.Add(ResourceManager.Instance.GetCardData(cardId));
+        }
+
+        return cd;
     }
 
     private void Update()
@@ -89,6 +222,7 @@ public class BattleManager : MonoBehaviour
     public async UniTaskVoid DrawPhaseDelay()
     {
         await UniTask.DelayFrame(ONE);
+
         state.ChangeState(stateGroup[BattleStateType.DrawPhase]);
     }
 
@@ -213,31 +347,26 @@ public class BattleManager : MonoBehaviour
         return nowEnemyCards;
     }
 
-    public void RegisterPlayer(PlayerCombat player)
+    public async UniTask TurnStart()
     {
-        playerCombat = player;
-    }
-
-    public void RegisterEnemy(EnemyCombat enemy)
-    {
-        enemyCombat.Add(enemy);
-    }
-
-    public void TurnStart()
-    {
-        StartPanel.SetActive(false);
-
+        await StartPanel.DOFade(ZERO, DEFAULT_FADE_TIME);
+        StartPanel.gameObject.SetActive(false);
         state.ChangeState(stateGroup[BattleStateType.TurnStart]);
     }
 
-    public void RoundEnd(bool isWin)
+    public async UniTask RoundEnd(bool isWin)
     {
-        EndPanel.SetActive(true);
-        endPanelText.text = isWin ? "승리!" : "패배"; 
+        if (isWin) RonudNext();
+        else
+        {
+            EndPanel.alpha = ZERO;
+            EndPanel.gameObject.SetActive(true);
+            await EndPanel.DOFade(ONE, DEFAULT_FADE_TIME);
+        }
     }
 
     /// <summary>
-    /// 임시
+    /// 라운드 종료시 플레이어가 생존했으면 호출
     /// </summary>
     public void RonudNext()
     {

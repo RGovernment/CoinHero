@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using TMPro;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using static Constants;
 using static Enums;
@@ -14,6 +16,20 @@ using SF = UnityEngine.SerializeField;
 
 public class BattleManager : MonoBehaviour
 {
+    [Serializable]
+    public struct PlayerData
+    {
+        public string name;
+        public PlayerCombat combat;
+    }
+    [Serializable]
+    public struct EnemyData 
+    {
+        public EnemyClassType type;
+        public EnemyCombat combat;
+    }
+
+
     public static BattleManager Instance { get; set; }
 
     [Header("패널 관련")]
@@ -39,6 +55,8 @@ public class BattleManager : MonoBehaviour
     public Transform enemyBattlePoint;
 
     [Header("프리팹")]
+    [SF] private List<PlayerData> playerPrefabs;
+    [SF] private List<EnemyData> enemyPrefabs;
     public StateMachine state;
     public Dictionary<BattleStateType, IState> stateGroup;
 
@@ -50,13 +68,25 @@ public class BattleManager : MonoBehaviour
     public bool EnemyDeadTurn;
     public CancellationTokenSource battlePhaseToken;
     public int totalEnemy;
+    private Dictionary<EnemyClassType, EnemyData> enemyPrefabDict;
 
+    private static int nextEnemyInstanceId = 50;
     private void Awake()
     {
+        enemyPrefabDict = new Dictionary<EnemyClassType, EnemyData>();
+        foreach (var p in enemyPrefabs)
+        {
+            if (!enemyPrefabDict.ContainsKey(p.type))
+                enemyPrefabDict.Add(p.type, p);
+        }
+
         Instance = this;
         nowPlayerCards = new();
         nowEnemyCards = new();
         enemyCombat = new List<EnemyCombat>();
+        
+        SpawnCharacter();
+        GameManager.Instance.state.IsBattle = true;
     }
 
     private void Start()
@@ -79,6 +109,107 @@ public class BattleManager : MonoBehaviour
         };
 
         state.ChangeState(stateGroup[BattleStateType.RoundStart]);
+    }
+
+    private void SpawnCharacter()
+    {
+        // 1. 플레이어 스폰
+        SpawnPlayer();
+
+        // 2. 적 스폰
+        SpawnEnemies();
+    }
+
+    /// <summary>
+    /// 플레이어 스폰 함수
+    /// </summary>
+    private void SpawnPlayer()
+    {
+        if (GameManager.Instance == null || 
+            GameManager.Instance.state.playerData == null) return;
+        Character saveData =  GameManager.Instance.state.playerData; 
+        
+
+        PlayerData targetPrefab = playerPrefabs.Find(x => x.name == saveData.Name);
+        if (string.IsNullOrEmpty(targetPrefab.name))
+        {
+            Debug.LogError($"플레이어 탐색 안됨: {saveData.Name}");
+            return;
+        }
+
+        List<Card> card = new();
+
+        if (saveData.CardList.Count <= 0)
+            card = InitCharacterCards(saveData);
+        else
+            card = saveData.CardList;
+        Player playerData =
+            new(
+                saveData.Id,
+                saveData.Name,
+                saveData.MaxHP,
+                saveData.HP,
+                card
+                );
+        // 생성 및 데이터 주입
+        PlayerCombat combat = Instantiate(targetPrefab.combat, Vector3.zero, Quaternion.identity);
+        combat.Character = playerData;
+
+        playerCombat = combat;
+        playerCombat.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// 적 스폰 함수
+    /// </summary>
+    private void SpawnEnemies()
+    {
+        List<Enemy> nextEnemies = GameManager.Instance.state.nextRoundEnemies;
+        if (nextEnemies == null || nextEnemies.Count == 0) return;
+
+        for (int i = 0; i < nextEnemies.Count; i++)
+        {
+            var enemyData = nextEnemies[i];
+
+            if (enemyPrefabDict.TryGetValue(enemyData.ClassType, out var prefabData))
+            {
+                EnemyCombat combat = Instantiate(prefabData.combat, Vector3.zero, Quaternion.identity);
+                
+                nextEnemyInstanceId++;
+                // 적 카드 세팅
+                
+                combat.Character = new Enemy(
+                    nextEnemyInstanceId, 
+                    enemyData.Name, 
+                    enemyData.MaxHP,
+                    enemyData.RoundValue,
+                    enemyData.Type,
+                    enemyData.ClassType,
+                    InitCharacterCards(enemyData)
+                    );
+
+                combat.gameObject.SetActive(true);
+                enemyCombat.Add(combat);
+            }
+            else
+                Debug.LogWarning($"타입에 해당하는 적 프리팹이 없습니다: {enemyData.ClassType}");
+            
+        }
+    }
+
+    /// <summary>
+    /// 캐릭터 초기 생성 시 카드 초기화 함수
+    /// </summary>
+    /// <param name="character"></param>
+    private List<Card> InitCharacterCards(Character character)
+    {
+        List<Card> cd = new();
+        foreach (var cardId in character.StartCardList)
+        {
+            cd.Add(ResourceManager.Instance.GetCardData(cardId));
+        }
+
+        return cd;
     }
 
     private void Update()

@@ -61,11 +61,16 @@ public static class Enums
     /// Boss : 보스
     /// </summary>
     public enum EnemyType { Normal, Elete, Boss}
-
+    /// <summary>
+    /// 적 세부 타입
+    /// Zombie : 적 타입이 좀비임
+    /// </summary>
+    public enum EnemyClassType { Zombie }
     /// <summary>
     /// 스탯 종류 
     /// </summary>
     public enum StatType { Value, CoinPoint, Coin }
+    
 
     /// <summary>
     /// 합 유형

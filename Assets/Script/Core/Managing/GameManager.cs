@@ -20,8 +20,10 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            state = new();
-            nextRoundEnemies = new();
+            state = new()
+            {
+                nextRoundEnemies = new()
+            };
         }
         else
         {
@@ -42,14 +44,6 @@ public class GameManager : MonoBehaviour
     {
         if (SoundManager.Instance != null)
             SoundManager.Instance.PlayBGM(SceneType.Title);
-    }
-
-    public void PlayerSetting(Character chara)
-    {
-        //로드 대신 임시 지정
-        // 차후 로드되면 현재의 배틀 매니저 > 게임 매니저로 되어있는 역순 호출을
-        // 게임 매니저 > 배틀 매니저로의 로드로 정리할 것
-        state.playerData = new Player(chara.Id, chara.Name, chara.MaxHP, chara.CardList);
     }
 
     public void UpdateState(GameState newState)

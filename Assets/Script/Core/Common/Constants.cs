@@ -7,6 +7,7 @@ public static class Constants
     public static string PLAYER_CARD_DATA = "PlayerCardData";
     public static string ENEMY_CARD_DATA = "EnemyCardData";
     public static string ENEMY_DATA = "EnemyData";
+    public static string PLAYER_DATA = "PlayerData";
     public static string ZOMBIE = "Zombie";
     
     public static string VALUE = "Value";

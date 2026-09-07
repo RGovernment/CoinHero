@@ -1,22 +1,12 @@
 using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public class EnemyCombat : CombatBase
 {
-    private static int nextEnemyInstanceId = 50;
-
     private void Awake()
     {
-        List<Card> cd = new();
         hitMat = new();
-        foreach (var item in ResourceManager.Instance.EnemyCardData)
-        {
-            cd.Add(item.Value);
-        }
 
-        Character = new Enemy(nextEnemyInstanceId++, $"Dummy_{name}", 2, cd);
         CoinUI.gameObject.SetActive(false);
         animatorManager.Combat = this;
         statUI.combat = this;
@@ -41,12 +31,6 @@ public class EnemyCombat : CombatBase
         BattleManager.Instance.RegisterEnemy(this);
     }
 
-    public override int APDiscountByLose(Card card)
-    {
-        int coinVal = ResourceManager.Instance.EnemyCardData[card.Id].Coin;
-        
-        return card.Value + coinVal;
-    }
     public void EnemyDead(Character chara)
     {
         RemoveDelay(chara).Forget();

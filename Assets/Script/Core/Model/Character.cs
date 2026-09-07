@@ -10,7 +10,7 @@ public abstract class Character : IDamageable, IBuffable
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
-    public int HP { get; private set; }
+    public int HP { get; protected set; }
     public int MaxHP { get; private set; }
     public int SP { get; private set; }
     public int Sanity { get; private set; }

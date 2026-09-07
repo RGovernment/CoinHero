@@ -23,16 +23,17 @@ public class TitleManager : MonoBehaviour
 
     public void StartGame()
     {
-        GameManager.Instance.nextScene = SceneType.Battle;
-        // 임시로 즉시 이동
+        GameManager.Instance.nextScene = SceneType.Map;
         SceneNext().Forget();
     }
 
     public void ContinueGame()
     {
         SaveManager.Instance.Load();
-        GameManager.Instance.nextScene = SceneType.Battle;
-        // 임시로 즉시 이동
+        if (!GameManager.Instance.state.IsBattle) 
+            GameManager.Instance.nextScene = SceneType.Map;
+        else
+            GameManager.Instance.nextScene = SceneType.Battle;
         SceneNext().Forget();
     }
 

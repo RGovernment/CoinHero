@@ -28,15 +28,20 @@ public class RoundStartState : IState
     {
     }
 
+    /// <summary>
+    /// 적 및 플레이어의 시작 위치 배치
+    /// </summary>
     public void CharaPosSet()
     {
         manager.GetPlayerCombat().transform.position = manager.playerSpawnPoint.position;
-        GameManager.Instance.PlayerSetting(manager.GetPlayerCombat().Character);
+        
         int enemyCount = manager.GetEnemyCombat().Count;
         manager.totalEnemy = enemyCount;
+        // 혼자일 경우 중앙
         if (enemyCount == 1)
             manager.GetEnemyCombat()[0].transform.position
                 = manager.enemySpawnPoint[0].position;
+        // 둘일 경우 위/아래
         else if (enemyCount == 2)
         {
             manager.GetEnemyCombat()[0].transform.position
@@ -44,6 +49,7 @@ public class RoundStartState : IState
             manager.GetEnemyCombat()[1].transform.position
                 = manager.enemySpawnPoint[2].position;
         }
+        // 셋일 경우 모든 위치
         else if (enemyCount == 3) 
         {
             for (int i = 0; i < enemyCount; i++)

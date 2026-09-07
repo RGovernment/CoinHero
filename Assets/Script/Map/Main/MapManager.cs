@@ -206,6 +206,9 @@ public class MapManager : MonoBehaviour
         GameManager.Instance.state.currentMapNode = node;
         UpdateInteractable();
 
+        // 항상 이번 적 목록 초기화
+        GameManager.Instance.state.nextRoundEnemies.Clear();
+
         switch (node.mapType)
         {
             case MapType.Normal:
@@ -222,11 +225,9 @@ public class MapManager : MonoBehaviour
                 //현재는 적에 좀비만 존재하므로 좀비 리스트 가져오기
                 List<Enemy> zombieList = ResourceManager.Instance.EnemyZombieData;
 
-                GameManager.Instance.state.nextRoundEnemies.Clear();
-
                 for (int i = 0; i < enemyCount; i++)
                 {
-                    Enemy enemyData = zombieList[Random.Range(0, zombieList.Count - 1)];
+                    Enemy enemyData = zombieList[Random.Range(0, zombieList.Count)];
 
                     GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
                 }
@@ -235,6 +236,28 @@ public class MapManager : MonoBehaviour
                 break;
             case MapType.Boss:
                 GameManager.Instance.state.IsBoss = true;
+                // 보스는 항상 3마리 스폰
+                int enemybossCount = MAX_ENEMY_COUNT;
+                int nowRonud = GameManager.Instance.state.NowRound;
+                for(int i = 0;i < enemybossCount; i++)
+                {
+                    if (i == 0)
+                    {
+                        Enemy enemyData = 
+                            ResourceManager.Instance.EnemyBossData[nowRonud - 1];
+
+                        GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
+                    }
+                    else
+                    {
+                        List<Enemy> bossLineList = ResourceManager.Instance.EnemyZombieData;
+
+                        Enemy enemyData = bossLineList[Random.Range(0, bossLineList.Count)];
+
+                        GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
+                    }
+                }
+
                 loadScene = SceneType.Battle;
                 break;
             case MapType.Shop:
@@ -245,7 +268,7 @@ public class MapManager : MonoBehaviour
                 break;
         }
 
-        await fadeCanvas.DOFade(ZERO, DEFAULT_FADE_TIME);
+        await fadeCanvas.DOFade(ONE, DEFAULT_FADE_TIME);
 
         SceneManager.LoadScene((int)loadScene);
     }

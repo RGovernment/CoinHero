@@ -34,7 +34,16 @@ public abstract class CombatBase : MonoBehaviour, ICombat
         Character.OnSPHit -= SPDamageSkinSpawn;
         Character.OnHPHeal -= HealSkinSpawn;
     }
-    public abstract void Init(Character chara);
+    public void Init(Character chara)
+    {
+        Character = chara;
+        hitMat = new();
+        CoinUI.gameObject.SetActive(false);
+        animatorManager.Combat = this;
+        statUI.combat = this;
+        statUI.Init(Character.HP, Character.SP, Character.Sanity);
+        renders = animator.transform.GetComponentsInChildren<SpriteRenderer>();
+    }
 
     public async UniTask RemoveDelay(Character chara)
     {

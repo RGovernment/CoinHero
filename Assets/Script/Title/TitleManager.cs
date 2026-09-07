@@ -41,7 +41,7 @@ public class TitleManager : MonoBehaviour
             data.ClassType,
             cd
             );
-
+        GameManager.Instance.state.NowRound = ONE;
         SceneNext().Forget();
     }
 

@@ -1,0 +1,11 @@
+// 순서대로 라운드 1 ~ n의 보스 데이터
+[
+  {
+    "Type": "Boss",
+    "ClassType" :  "ZombieBoss",
+    "Name": "갑옷 좀비",
+    "MaxHP": 80,
+    "StartCardList": [ 5000, 5001, 6000, 7000 ],
+    "RoundValue": 1
+  }
+]

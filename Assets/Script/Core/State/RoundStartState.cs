@@ -19,7 +19,7 @@ public class RoundStartState : IState
     {
         Debug.Log("RoundStartState start");
         // 이번턴에 플레이어가 사용할 덱 초기화 
-
+        
         manager.GetHandManager().CreateAllCard(manager.GetPlayerCombat().Character.CardList, manager.GetPlayerCombat().Character);
 
         CharaPosSet();
@@ -38,6 +38,7 @@ public class RoundStartState : IState
         
         int enemyCount = manager.GetEnemyCombat().Count;
         manager.totalEnemy = enemyCount;
+
         // 혼자일 경우 중앙
         if (enemyCount == 1)
             manager.GetEnemyCombat()[0].transform.position

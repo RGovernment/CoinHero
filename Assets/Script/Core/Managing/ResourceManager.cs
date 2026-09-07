@@ -17,6 +17,7 @@ public class ResourceManager : MonoBehaviour
     public Dictionary<int, StatusEffectData> EffectData { get; private set; }
 
     public List<Enemy> EnemyZombieData {  get; private set; }
+    public List<Enemy> EnemyBossData { get; private set; }
     public List<Player> PlayerData {  get; private set; }
 
     public Dictionary<EffectType, StatusEffectData> EffectDataByType { get; private set; }
@@ -48,6 +49,7 @@ public class ResourceManager : MonoBehaviour
         BackgroundSoundData = new();
         BattleSoundData = new();
         EnemyZombieData = new();
+        EnemyBossData = new();
         PlayerData = new();
         ResourceLoad();
         CardImageLoad();
@@ -65,6 +67,8 @@ public class ResourceManager : MonoBehaviour
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + ENEMY_CARD_DATA).text;
         string statusEffectJson
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + STATUS_EFFECT_DATA).text;
+        string enemyBossJson
+            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{BOSS}").text;
         string enemyZombieJson
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{ZOMBIE}").text;
         string playerJson
@@ -79,6 +83,7 @@ public class ResourceManager : MonoBehaviour
 
         PlayerData = JsonConvert.DeserializeObject<List<Player>>(playerJson);
         EnemyZombieData = JsonConvert.DeserializeObject<List<Enemy>>(enemyZombieJson);
+        EnemyBossData = JsonConvert.DeserializeObject<List<Enemy>>(enemyBossJson);
 
         CardData = cardList.ToDictionary(x => x.Id);
         EnemyCardData = enemyCardList.ToDictionary(x => x.Id);

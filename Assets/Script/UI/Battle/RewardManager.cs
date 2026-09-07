@@ -321,12 +321,22 @@ public class RewardManager : MonoBehaviour
 
                 // 최대 체력 증가
                 data.SetMaxHP(data.MaxHP + DEFAULT_PLAYER_ROUND_CLEAR_MAX_HP_GAIN);
+                data.SetSanity(data.Sanity + DEFAULT_PAYER_ROUND_CLEAR_SANITY_GAIN);
 
-                // 로비로 다시 이동하도록 설정, 추후 맵 씬으로 이동하도록 변경
-                GameManager.Instance.nextScene = SceneType.Map;
+                // 로비로 다시 이동하도록 설정, 라운드 추가시 증가하도록 설정
+                GameManager.Instance.nextScene = SceneType.Title;
+                if (GameManager.Instance.state.IsBoss)
+                {
+                    GameManager.Instance.nextScene = SceneType.Title;
+                    GameManager.Instance.state.NowRound++;
+                }    
+                else
+                    GameManager.Instance.nextScene = SceneType.Map;
+
                 GameManager.Instance.state.IsBattle = false;
                 GameManager.Instance.state.nextRoundEnemies.Clear();
-                SceneManager.LoadScene((int)SceneType.Loading);
+                
+                    SceneManager.LoadScene((int)SceneType.Loading);
             });
         }
     }

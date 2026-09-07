@@ -16,5 +16,5 @@ public class GameState
 
     // 플레이어 상태
     public int gold;
-    public Character playerData;
+    public Player playerData;
 }

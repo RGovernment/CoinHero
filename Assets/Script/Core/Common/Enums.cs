@@ -66,6 +66,8 @@ public static class Enums
     /// Zombie : 적 타입이 좀비임
     /// </summary>
     public enum EnemyClassType { Zombie }
+
+    public enum PlayerClassType { Warrior }
     /// <summary>
     /// 스탯 종류 
     /// </summary>

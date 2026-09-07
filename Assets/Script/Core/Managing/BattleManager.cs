@@ -19,7 +19,7 @@ public class BattleManager : MonoBehaviour
     [Serializable]
     public struct PlayerData
     {
-        public string name;
+        public PlayerClassType type;
         public PlayerCombat combat;
     }
     [Serializable]
@@ -127,36 +127,42 @@ public class BattleManager : MonoBehaviour
     {
         if (GameManager.Instance == null || 
             GameManager.Instance.state.playerData == null) return;
-        Character saveData =  GameManager.Instance.state.playerData; 
-        
+        Player saveData =  GameManager.Instance.state.playerData;
 
-        PlayerData targetPrefab = playerPrefabs.Find(x => x.name == saveData.Name);
-        if (string.IsNullOrEmpty(targetPrefab.name))
+        Debug.Log("진행됨");
+        PlayerData targetPrefab = playerPrefabs.Find(x => x.type == saveData.ClassType);
+        if (targetPrefab.combat == null)
         {
             Debug.LogError($"플레이어 탐색 안됨: {saveData.Name}");
             return;
         }
-
+        Debug.Log("진행됨2");
         List<Card> card = new();
 
         if (saveData.CardList.Count <= 0)
             card = InitCharacterCards(saveData);
         else
             card = saveData.CardList;
+        Debug.Log("진행됨3");
         Player playerData =
             new(
                 saveData.Id,
                 saveData.Name,
                 saveData.MaxHP,
                 saveData.HP,
+                saveData.ClassType,
                 card
                 );
+
         // 생성 및 데이터 주입
         PlayerCombat combat = Instantiate(targetPrefab.combat, Vector3.zero, Quaternion.identity);
-        combat.Character = playerData;
+        combat.Init(playerData);
+        Debug.Log("진행됨4");
+        Debug.Log(combat);
 
         playerCombat = combat;
         playerCombat.gameObject.SetActive(true);
+        
     }
 
     /// <summary>
@@ -177,16 +183,17 @@ public class BattleManager : MonoBehaviour
                 
                 nextEnemyInstanceId++;
                 // 적 카드 세팅
-                
-                combat.Character = new Enemy(
-                    nextEnemyInstanceId, 
-                    enemyData.Name, 
+                Enemy enemySet = new Enemy(
+                    nextEnemyInstanceId,
+                    enemyData.Name,
                     enemyData.MaxHP,
                     enemyData.RoundValue,
                     enemyData.Type,
                     enemyData.ClassType,
                     InitCharacterCards(enemyData)
                     );
+
+                combat.Init(enemySet);
 
                 combat.gameObject.SetActive(true);
                 enemyCombat.Add(combat);

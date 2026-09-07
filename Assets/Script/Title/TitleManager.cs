@@ -1,12 +1,12 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Enums;
 using static Constants;
-
+using static Enums;
 using SF = UnityEngine.SerializeField;
-using Cysharp.Threading.Tasks;
 
 public class TitleManager : MonoBehaviour
 {
@@ -24,6 +24,24 @@ public class TitleManager : MonoBehaviour
     public void StartGame()
     {
         GameManager.Instance.nextScene = SceneType.Map;
+        // 선택지 추가 후 변경 
+        Player data = ResourceManager.Instance.PlayerData[ZERO];
+
+        List<Card> cd = new();
+        foreach (var cardId in data.StartCardList)
+        {
+            cd.Add(ResourceManager.Instance.GetCardData(cardId));
+        }
+
+        GameManager.Instance.state.playerData = new Player(
+            data.Id,
+            data.Name,
+            data.MaxHP,
+            data.MaxHP,
+            data.ClassType,
+            cd
+            );
+
         SceneNext().Forget();
     }
 

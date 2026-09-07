@@ -8,6 +8,7 @@ using static Enums;
 using static Constants;
 
 using SF = UnityEngine.SerializeField;
+using Cysharp.Threading.Tasks;
 
 public class MapManager : MonoBehaviour
 {
@@ -122,7 +123,7 @@ public class MapManager : MonoBehaviour
         float y = (slot - 1) * slotSpacing + Random.Range(-positionJitter, positionJitter);
         rect.anchoredPosition = new Vector2(x, y);
 
-        instance.onClick.AddListener(() => OnNodeClicked(node));
+        instance.onClick.AddListener(() => OnNodeClick(node));
 
         nodeViews[node] = rect;
         nodeButtons[node] = instance;
@@ -183,14 +184,19 @@ public class MapManager : MonoBehaviour
         return index;
     }
 
+    private void OnNodeClick(MapNode node)
+    {
+        OnNodeClickBase(node).Forget();
+    }
+
     /// <summary>
     /// 현재 노드의 값을 가져온 뒤, 해당 노드로 이동
     /// </summary>
     /// <param name="node"></param>
-    private void OnNodeClicked(MapNode node)
+    private async UniTask OnNodeClickBase(MapNode node)
     {
         fadeCanvas.gameObject.SetActive(true);
-        fadeCanvas.DOFade(ZERO, DEFAULT_FADE_TIME);
+        SceneType loadScene = SceneType.None;
         // 클릭 조건 검사
         if (currentNode == null && node.y != 0) return;
         if (currentNode != null && !currentNode.nextNodes.Contains(node)) return;
@@ -207,7 +213,11 @@ public class MapManager : MonoBehaviour
                 GameManager.Instance.state.IsBoss = false;
 
                 int countRandom = Random.Range(0, 100);
-                int enemyCount = countRandom < 65 ? 3 : countRandom < 85  ? 2 : 1;
+                // 스폰 명 수 확률 지정
+                int enemyCount = 
+                    countRandom < ENEMY_THREE_COUNT_PERCENT ? 3 
+                    : countRandom < ENEMY_THREE_COUNT_PERCENT + ENEMY_TWO_COUNT_PERCENT ? 2 
+                    : 1;
 
                 //현재는 적에 좀비만 존재하므로 좀비 리스트 가져오기
                 List<Enemy> zombieList = ResourceManager.Instance.EnemyZombieData;
@@ -221,19 +231,23 @@ public class MapManager : MonoBehaviour
                     GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
                 }
 
-                SceneManager.LoadScene((int)SceneType.Battle);
-
+                loadScene = SceneType.Battle;
                 break;
             case MapType.Boss:
                 GameManager.Instance.state.IsBoss = true;
+                loadScene = SceneType.Battle;
                 break;
             case MapType.Shop:
+                loadScene = SceneType.Shop;
                 break;
             case MapType.RestArea:
+                //loadScene = SceneType.;
                 break;
         }
 
-        
+        await fadeCanvas.DOFade(ZERO, DEFAULT_FADE_TIME);
+
+        SceneManager.LoadScene((int)loadScene);
     }
 
     /// <summary>

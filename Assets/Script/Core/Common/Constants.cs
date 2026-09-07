@@ -92,6 +92,9 @@ public static class Constants
     public static int BOSS_GOLD_REWARD_MIN = 100;
     public static int BOSS_GOLD_REWARD_MAX = 151;
 
+    public static int ENEMY_THREE_COUNT_PERCENT = 65;
+    public static int ENEMY_TWO_COUNT_PERCENT = 20;
+    public static int ENEMY_ONE_COUNT_PERCENT = 15;
 
     // 저장 관련 상수
     public static string SAVE_FILE_NAME = "savefile.dat";

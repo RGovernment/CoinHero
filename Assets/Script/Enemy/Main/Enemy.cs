@@ -7,6 +7,7 @@ using static Enums;
 public class Enemy : Character
 {
     public int RoundValue { get; private set; }
+    [JsonConverter(typeof(StringEnumConverter))]
     public EnemyType Type { get; private set; }
     [JsonConverter(typeof(StringEnumConverter))]
     public EnemyClassType ClassType { get; private set; }

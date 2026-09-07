@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class EnemyCombat : CombatBase
 {
-    private void Awake()
+    public override void Init(Character chara)
     {
+        Character = chara;
         hitMat = new();
 
         CoinUI.gameObject.SetActive(false);
@@ -12,6 +13,8 @@ public class EnemyCombat : CombatBase
         statUI.combat = this;
         statUI.Init(Character.HP, Character.SP, Character.Sanity);
         renders = animator.transform.GetComponentsInChildren<SpriteRenderer>();
+
+        BattleManager.Instance.RegisterEnemy(this);
     }
 
     protected override void OnEnable()
@@ -24,11 +27,6 @@ public class EnemyCombat : CombatBase
     {
         base.OnDisable();
         Character.OnDead -= EnemyDead;
-    }
-
-    private void Start()
-    {
-        BattleManager.Instance.RegisterEnemy(this);
     }
 
     public void EnemyDead(Character chara)

@@ -19,6 +19,7 @@ public class RoundStartState : IState
     {
         Debug.Log("RoundStartState start");
         // 이번턴에 플레이어가 사용할 덱 초기화 
+
         manager.GetHandManager().CreateAllCard(manager.GetPlayerCombat().Character.CardList, manager.GetPlayerCombat().Character);
 
         CharaPosSet();

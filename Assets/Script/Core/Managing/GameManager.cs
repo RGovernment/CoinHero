@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Enums;
@@ -36,6 +37,13 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void Start()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayBGM(SceneType.Title);
+        SaveManager.Instance.OptionLoad();
+    }
+
     public void OnEnable()
     {
         SceneManager.activeSceneChanged += SceneMusicChanged;
@@ -44,12 +52,6 @@ public class GameManager : MonoBehaviour
     public void OnDisable()
     {
         SceneManager.activeSceneChanged -= SceneMusicChanged;
-    }
-
-    public void Start()
-    {
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.PlayBGM(SceneType.Title);
     }
 
     public void UpdateState(GameState newState)

@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Enums;
 using static Constants;
+using static Enums;
 using SF = UnityEngine.SerializeField;
 
 public class OptionManager : MonoBehaviour
@@ -64,10 +64,20 @@ public class OptionManager : MonoBehaviour
             .TryGetValue(SoundMixerType.BGM, out float bgmVolume))
             SoundManager.Instance.SetBGMVolume(bgmVolume);
 
-        MasterSlider.value = SoundManager.Instance.GetMixerVolume(SoundMixerType.Master);
-        SystemSlider.value = SoundManager.Instance.GetMixerVolume(SoundMixerType.System);
-        GameSlider.value = SoundManager.Instance.GetMixerVolume(SoundMixerType.Game);
-        BGMSlider.value = SoundManager.Instance.GetMixerVolume(SoundMixerType.BGM);
+        float masterCk = SoundManager.Instance.GetMixerVolume(SoundMixerType.Master);
+        float systemCk = SoundManager.Instance.GetMixerVolume(SoundMixerType.System);
+        float gameCk = SoundManager.Instance.GetMixerVolume(SoundMixerType.Game);
+        float bgmCk = SoundManager.Instance.GetMixerVolume(SoundMixerType.BGM);
+
+        MasterSlider.value = masterCk;
+        SystemSlider.value = systemCk;
+        GameSlider.value = gameCk;
+        BGMSlider.value = bgmCk;
+
+        masterText.text = Mathf.RoundToInt(masterCk * 100).ToString();
+        systemText.text = Mathf.RoundToInt(systemCk * 100).ToString();
+        gameText.text = Mathf.RoundToInt(gameCk * 100).ToString();
+        bgmText.text = Mathf.RoundToInt(bgmCk * 100).ToString();
     }
 
     public void SetMasterVolume(SoundMixerType type, float value)
@@ -76,15 +86,19 @@ public class OptionManager : MonoBehaviour
         {
             case SoundMixerType.Master:
                 SoundManager.Instance.SetMasterVolume(value);
+                masterText.text = Mathf.RoundToInt(value * 100).ToString();
                 break;
             case SoundMixerType.System:
                 SoundManager.Instance.SetSystemSFXVolume(value);
+                systemText.text = Mathf.RoundToInt(value * 100).ToString();
                 break;
             case SoundMixerType.BGM:
                 SoundManager.Instance.SetBGMVolume(value);
+                bgmText.text = Mathf.RoundToInt(value * 100).ToString();
                 break;
             case SoundMixerType.Game:
                 SoundManager.Instance.SetGameSFXVolume(value);
+                gameText.text = Mathf.RoundToInt(value * 100).ToString();
                 break;
         }
     }
@@ -109,7 +123,7 @@ public class OptionManager : MonoBehaviour
         };
         GameManager.Instance.optionData.SoundData = data;
 
-        OptionGroup.DOFade(ONE, DEFAULT_FADE_TIME)
+        OptionGroup.DOFade(ZERO, DEFAULT_FADE_TIME)
             .OnComplete(() => OptionGroup.gameObject.SetActive(false));
         
         SaveManager.Instance.OptionSave().Forget();

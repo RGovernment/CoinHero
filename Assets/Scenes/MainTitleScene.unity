@@ -1807,7 +1807,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC774\uC5B4\uD558\uAE30"
+  m_text: "\uC124\uC815"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: bdf652e3bb3eb6544b195f1819a6e571, type: 2}
   m_sharedMaterial: {fileID: 8859498313395230336, guid: bdf652e3bb3eb6544b195f1819a6e571, type: 2}
@@ -1816,8 +1816,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1694498815
-  m_fontColor: {r: 1, g: 1, b: 1, a: 0.39215687}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5086,10 +5086,10 @@ MonoBehaviour:
   BGMSlider: {fileID: 328176655}
   SystemSlider: {fileID: 314367348}
   GameSlider: {fileID: 96541365}
-  masterText: {fileID: 983569021}
-  bgmText: {fileID: 1903560144}
-  systemText: {fileID: 1216551348}
-  gameText: {fileID: 417386125}
+  masterText: {fileID: 1479740765}
+  bgmText: {fileID: 1216430717}
+  systemText: {fileID: 856118917}
+  gameText: {fileID: 381694898}
   closeBtn: {fileID: 87957460}
   gameExitBtn: {fileID: 108196340}
 --- !u!4 &1361305315

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2981505123335627743}
   - component: {fileID: 4073490328018679562}
   - component: {fileID: 6320941888137104795}
+  - component: {fileID: -3452594010018675399}
   m_Layer: 5
   m_Name: BossBtn
   m_TagString: Untagged
@@ -120,3 +121,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-3452594010018675399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4626656516844400942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 252be268b04cd824b87688d1caebe05b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SystemSFX
+  hoverType: 1
+  clickType: 0

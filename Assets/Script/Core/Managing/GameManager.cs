@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Enums;
@@ -21,12 +21,12 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             state = new();
+            nextRoundEnemies = new();
         }
         else
         {
             Destroy(gameObject);
         }
-        
     }
     public void OnEnable()
     {

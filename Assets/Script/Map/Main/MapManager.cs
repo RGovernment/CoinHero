@@ -1,8 +1,12 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Enums;
+using static Constants;
+
 using SF = UnityEngine.SerializeField;
 
 public class MapManager : MonoBehaviour
@@ -15,7 +19,7 @@ public class MapManager : MonoBehaviour
     [SF] private RectTransform mapContent;
     // 맵 좌우 여백
     [SF] private float horizontalPadding = 100f;
-
+    [SF] private CanvasGroup fadeCanvas;
     //
     [SF] private float lineGap = 20f;
 
@@ -45,6 +49,9 @@ public class MapManager : MonoBehaviour
 
     private void Awake()
     {
+        fadeCanvas.gameObject.SetActive(true);
+        fadeCanvas.DOFade(ZERO, DEFAULT_FADE_TIME)
+            .OnComplete(()=> fadeCanvas.gameObject.SetActive(false));
         GenerateMap();
     }
 
@@ -182,6 +189,8 @@ public class MapManager : MonoBehaviour
     /// <param name="node"></param>
     private void OnNodeClicked(MapNode node)
     {
+        fadeCanvas.gameObject.SetActive(true);
+        fadeCanvas.DOFade(ZERO, DEFAULT_FADE_TIME);
         // 클릭 조건 검사
         if (currentNode == null && node.y != 0) return;
         if (currentNode != null && !currentNode.nextNodes.Contains(node)) return;
@@ -194,7 +203,26 @@ public class MapManager : MonoBehaviour
         switch (node.mapType)
         {
             case MapType.Normal:
+                // 스폰 로직은 차후 디테일하게 수정할 것
                 GameManager.Instance.state.IsBoss = false;
+
+                int countRandom = Random.Range(0, 100);
+                int enemyCount = countRandom < 65 ? 3 : countRandom < 85  ? 2 : 1;
+
+                //현재는 적에 좀비만 존재하므로 좀비 리스트 가져오기
+                List<Enemy> zombieList = ResourceManager.Instance.EnemyZombieData;
+
+                GameManager.Instance.state.nextRoundEnemies.Clear();
+
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    Enemy enemyData = zombieList[Random.Range(0, zombieList.Count - 1)];
+
+                    GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
+                }
+
+                SceneManager.LoadScene((int)SceneType.Battle);
+
                 break;
             case MapType.Boss:
                 GameManager.Instance.state.IsBoss = true;
@@ -204,6 +232,8 @@ public class MapManager : MonoBehaviour
             case MapType.RestArea:
                 break;
         }
+
+        
     }
 
     /// <summary>

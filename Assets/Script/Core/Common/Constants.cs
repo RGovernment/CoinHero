@@ -6,6 +6,8 @@ public static class Constants
     public static string STATUS_EFFECT_DATA = "StatusEffectData";
     public static string PLAYER_CARD_DATA = "PlayerCardData";
     public static string ENEMY_CARD_DATA = "EnemyCardData";
+    public static string ENEMY_DATA = "EnemyData";
+    public static string ZOMBIE = "Zombie";
     
     public static string VALUE = "Value";
     public static string DURATION = "Duration";
@@ -79,6 +81,7 @@ public static class Constants
     //게임 관련
     public static int DEFAULT_MAX_CARD_REWARD_GOLD = 100;
     public static int REWARD_SORT_ORDER = 101;
+    public static int DEFAULT_PLAYER_ROUND_CLEAR_MAX_HP_GAIN = 5;
     public static string REWARD_SORT_LAYER_NAME = "StatusUI";
     public static float DEFAULT_FADE_TIME = 0.3f;
     public static int NORMAL_GOLD_REWARD_MIN = 20;

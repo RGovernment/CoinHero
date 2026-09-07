@@ -11,11 +11,13 @@ public class SystemSFX : MonoBehaviour, IPointerEnterHandler, IPointerClickHandl
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        SoundManager.Instance.PlaySystemSFX(clickType);
+        if(SoundManager.Instance != null)
+            SoundManager.Instance.PlaySystemSFX(clickType);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        SoundManager.Instance.PlaySystemSFX(hoverType);
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySystemSFX(hoverType);
     }
 }

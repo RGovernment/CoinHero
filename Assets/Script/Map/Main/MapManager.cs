@@ -1,11 +1,11 @@
 using DG.Tweening;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Enums;
 using static Constants;
+using static Utility;
 
 using SF = UnityEngine.SerializeField;
 using Cysharp.Threading.Tasks;
@@ -67,15 +67,24 @@ public class MapManager : MonoBehaviour
             // 맵 생성
             data = mapCreater.CreateMap();
             gameState.mapStatus = data;
+            //gameState.mapStatus = SaveMapSaveData(data);
         }
         // 있을 경우 재사용
         else
+            //data = LoadMapSaveData(gameState.mapStatus);
             data = gameState.mapStatus;
-        
-        if(GameManager.Instance.state.currentMapNode != null)
+
+
+        if (GameManager.Instance.state.currentMapNode != null)
             currentNode = GameManager.Instance.state.currentMapNode;
 
-        // 2. 노드 UI 생성 (좌표 계산 + 프리팹 인스턴스화)
+        //currentNode = GameManager.Instance.state.currentMapNodeId;
+
+        // 세이브 로드 구현 중 빌드를 위해 임시 제외
+
+        //currentNode = ToMapNode(data, GameManager.Instance.state.currentMapNodeId);
+
+        // 노드 UI 생성
         foreach (var floor in data.floors)
         {
             foreach (var node in floor)
@@ -84,7 +93,7 @@ public class MapManager : MonoBehaviour
             }
         }
 
-        // 3. 연결선 UI 생성 (모든 노드 좌표가 계산된 뒤에 그려야 함)
+        // 연결선 UI 생성 (모든 노드 좌표가 계산된 뒤에 그려야 함)
         foreach (var floor in data.floors)
         {
             foreach (var node in floor)

@@ -4641,9 +4641,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
   rewardManager: {fileID: 14642691}
-  StartPanel: {fileID: 814206803}
-  EndPanel: {fileID: 623072477}
-  endPanelText: {fileID: 0}
+  StartPanel: {fileID: 814206807}
+  EndPanel: {fileID: 623072481}
   handManager: {fileID: 1879259006}
   enemyHandManager: {fileID: 1316452622}
   playerCombat: {fileID: 0}
@@ -4663,6 +4662,8 @@ MonoBehaviour:
   enemyPrefabs:
   - type: 0
     combat: {fileID: 280062861804999061, guid: 29466c35822e34c40a5517c326348d33, type: 3}
+  - type: 1
+    combat: {fileID: 280062861804999061, guid: cee5874cdd2d94c49a1ccd585dd2d82d, type: 3}
   enemyBeforePos: {x: 0, y: 0, z: 0}
   enemyActionOrderCount: 0
   EnemyDeadTurn: 0

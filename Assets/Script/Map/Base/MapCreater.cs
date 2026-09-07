@@ -1,10 +1,9 @@
 ﻿using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using UnityEngine;
-using static Enums;
 using static Constants;
+using static Enums;
 
 public class MapCreater : MonoBehaviour
 {
@@ -21,7 +20,7 @@ public class MapCreater : MonoBehaviour
     public MapGraph CreateMap()
     {
         MapGraph graph = new();
-
+        int nodeId = 0;
         // 전체 노드 생성
         for (int i = 0; i < totalFloors; i++)
         {
@@ -34,6 +33,7 @@ public class MapCreater : MonoBehaviour
             {
                 MapNode node = new()
                 {
+                    id = nodeId++,
                     x = x,
                     y = i
                 };

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,6 +12,8 @@ using SF = UnityEngine.SerializeField;
 public class TitleManager : MonoBehaviour
 {
     [SF] private Button startBtn;
+    [SF] private Button continueBtn;
+    [SF] private TextMeshProUGUI continueBtnText;
     [SF] private Button closeBtn;
     [SF] private CanvasGroup titlePanel;
 
@@ -18,7 +21,18 @@ public class TitleManager : MonoBehaviour
     {
         titlePanel.alpha = ZERO;
         titlePanel.gameObject.SetActive(false);
-        SaveManager.Instance.SaveExists();
+
+        if (SaveManager.Instance.SaveExists())
+        {
+            continueBtn.interactable = true;
+            continueBtnText.alpha = ONE;
+        }
+        else
+        {
+            continueBtn.interactable = false;
+            float alpha = continueBtn.colors.disabledColor.a;
+            continueBtnText.alpha = alpha;
+        }
     }
 
     public void StartGame()
@@ -47,7 +61,8 @@ public class TitleManager : MonoBehaviour
 
     public void ContinueGame()
     {
-        SaveManager.Instance.Load();
+        // 빌드를 위해 임시 제외
+        //SaveManager.Instance.Load();
         if (!GameManager.Instance.state.IsBattle) 
             GameManager.Instance.nextScene = SceneType.Map;
         else

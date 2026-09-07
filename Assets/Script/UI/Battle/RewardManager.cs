@@ -133,6 +133,7 @@ public class RewardManager : MonoBehaviour
         GameManager.Instance.state.gold += gold;
         goldBtn.onClick.RemoveAllListeners();
         goldBtn.interactable = false;
+        goldText.alpha = goldBtn.colors.disabledColor.a;
         rewardCompleteCount++;
         OnRewardBtnClick?.Invoke();
     }
@@ -143,8 +144,8 @@ public class RewardManager : MonoBehaviour
     /// <param name="num"></param>
     public void OpenCardSelectView(int num)
     {
-        cardBtn.enabled = false;
         cardBtn.interactable = false;
+        cardText.alpha = cardBtn.colors.disabledColor.a;
         goldBtn.onClick.RemoveAllListeners();
         CardPanel.alpha = 0;
 
@@ -335,8 +336,11 @@ public class RewardManager : MonoBehaviour
 
                 GameManager.Instance.state.IsBattle = false;
                 GameManager.Instance.state.nextRoundEnemies.Clear();
-                
-                    SceneManager.LoadScene((int)SceneType.Loading);
+
+                // 빌드를 위해 임시 제외
+                //SaveManager.Instance.Save().Forget();
+
+                SceneManager.LoadScene((int)SceneType.Loading);
             });
         }
     }

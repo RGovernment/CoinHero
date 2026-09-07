@@ -4,11 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using TMPro;
-using UnityEditor.U2D.Animation;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.SceneManagement;
 using static Constants;
 using static Enums;
 
@@ -36,7 +32,6 @@ public class BattleManager : MonoBehaviour
     [SF] private RewardManager rewardManager;
     [SF] private CanvasGroup StartPanel;
     [SF] private CanvasGroup EndPanel;
-    [SF] private TextMeshProUGUI endPanelText;
 
     [Header("덱/패 관련")]
     [SF] private HandManager handManager;
@@ -87,6 +82,8 @@ public class BattleManager : MonoBehaviour
         
         SpawnCharacter();
         GameManager.Instance.state.IsBattle = true;
+        // 빌드를 위해 임시 제외
+        //SaveManager.Instance.Save().Forget();
     }
 
     private void Start()
@@ -94,7 +91,6 @@ public class BattleManager : MonoBehaviour
         StartPanel.alpha = ONE;
         StartPanel.gameObject.SetActive(true);
         state = new();
-
         stateGroup = new Dictionary<BattleStateType, IState>()
         {
             [BattleStateType.RoundStart] = new RoundStartState(Instance),

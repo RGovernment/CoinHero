@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Enums;
@@ -10,6 +11,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance {  get; private set; }
 
     public GameState state;
+
+    public OptionState optionData;
 
     [HIn] public SceneType nextScene;
     [HIn] public SceneType nowScene;
@@ -24,12 +27,23 @@ public class GameManager : MonoBehaviour
             {
                 nextRoundEnemies = new()
             };
+            optionData = new OptionState()
+            {
+                SoundData = new()
+            };
         }
         else
         {
             Destroy(gameObject);
         }
     }
+    public void Start()
+    {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayBGM(SceneType.Title);
+        SaveManager.Instance.OptionLoad();
+    }
+
     public void OnEnable()
     {
         SceneManager.activeSceneChanged += SceneMusicChanged;
@@ -40,25 +54,14 @@ public class GameManager : MonoBehaviour
         SceneManager.activeSceneChanged -= SceneMusicChanged;
     }
 
-    public void Start()
-    {
-        if (SoundManager.Instance != null)
-            SoundManager.Instance.PlayBGM(SceneType.Title);
-    }
-
     public void UpdateState(GameState newState)
     {
-        Debug.Log($"newState: {newState}");
-        Debug.Log($"playerData: {newState?.playerData}");
-        Debug.Log($"CardList: {newState?.playerData?.CardList}");
-        Debug.Log($"nextRoundEnemies: {newState?.nextRoundEnemies}");
-
         Player data = newState.playerData;
         state = new()
         {
             playerData = new Player(
                 data.Id, data.Name, data.MaxHP, data.HP, data.ClassType,
-                new(data.CardList)) ,
+                new(data.CardList)),
             NowRound = newState.NowRound,
             IsBoss = newState.IsBoss,
             IsBattle = newState.IsBattle,
@@ -70,6 +73,14 @@ public class GameManager : MonoBehaviour
             },
             currentMapNodeId = newState.currentMapNodeId,
             gold = newState.gold
+        };
+    }
+
+    public void UpdateState(OptionState newState)
+    {
+        optionData = new()
+        {
+            SoundData = new(newState.SoundData)
         };
     }
 

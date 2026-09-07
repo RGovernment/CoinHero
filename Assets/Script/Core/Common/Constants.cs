@@ -101,6 +101,7 @@ public static class Constants
 
     // 저장 관련 상수
     public static string SAVE_FILE_NAME = "savefile.dat";
+    public static string OPTION_FILE_NAME = "option.dat";
     public static string SAVE_FILE_ROOT_NAME = "saves";
 
     // 사운드 관련

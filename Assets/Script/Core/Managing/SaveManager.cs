@@ -66,6 +66,31 @@ public class SaveManager : MonoBehaviour
         DataReload(data);
     }
 
+    public async UniTask OptionSave()
+    {
+        var state = GameManager.Instance.optionData;
+
+        var data = new OptionData
+        {
+            optionData = JsonConvert.SerializeObject(state)
+        };
+
+        // 데이터 저장
+        await UniTask.RunOnThreadPool(() =>
+        {
+            WriteEncrypted(GetOptionSavePath(), data);
+        });
+    }
+
+    public void OptionLoad()
+    {
+        string path = GetOptionSavePath();
+        if (!File.Exists(path)) return;
+
+        OptionData data = ReadEncrypted<OptionData>(path);
+        DataReload(data);
+    }
+
     /// <summary>
     /// 로드한 데이터를 GameManager에 적용
     /// </summary>
@@ -77,10 +102,18 @@ public class SaveManager : MonoBehaviour
         GameManager.Instance.UpdateState(state);
     }
 
+    private void DataReload(OptionData data)
+    {
+        string stateString = data.optionData;
+        var state = JsonConvert.DeserializeObject<OptionState>(stateString);
+        GameManager.Instance.UpdateState(state);
+    }
+
     /// <summary>
     /// 세이브 파일이 존재하는지 확인
     /// </summary>
     public bool SaveExists() => File.Exists(GetSavePath());
+    public bool SaveOptionExists() => File.Exists(GetOptionSavePath());
 
     /// <summary>
     /// 세이브 파일 삭제
@@ -91,7 +124,6 @@ public class SaveManager : MonoBehaviour
 
         if (File.Exists(path))
             File.Delete(path);
-        
     }
 
     /// <summary>
@@ -106,6 +138,14 @@ public class SaveManager : MonoBehaviour
         return Path.Combine(SaveDir, SAVE_FILE_NAME);
     }
 
+    private string GetOptionSavePath()
+    {
+        if (string.IsNullOrEmpty(SaveDir))
+            SaveDir = Path.Combine(Application.persistentDataPath, SAVE_FILE_ROOT_NAME);
+
+        return Path.Combine(SaveDir, OPTION_FILE_NAME);
+    }
+
 
     /// <summary>
     /// 암호화된 데이터를 파일에 쓰는 메서드
@@ -116,8 +156,6 @@ public class SaveManager : MonoBehaviour
     private void WriteEncrypted<T>(string path, T data)
     {
         string json = JsonConvert.SerializeObject(data);
-        Debug.Log("암호화");
-        Debug.Log(json);
         string encrypted = Encrypt(json);
         File.WriteAllText(path, encrypted);
     }
@@ -132,10 +170,7 @@ public class SaveManager : MonoBehaviour
     {
         string encrypted = File.ReadAllText(path);
         string json = Decrypt(encrypted);
-        Debug.Log("복호화");
-        Debug.Log(json);
         return JsonConvert.DeserializeObject<T>(json);
-
     }
 
     /// <summary>

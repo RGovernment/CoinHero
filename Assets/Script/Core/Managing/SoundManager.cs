@@ -107,6 +107,26 @@ public class SoundManager : MonoBehaviour
         mainMixer.SetFloat(parameterName, dB);
     }
 
+    public float GetMixerVolume(SoundMixerType type)
+    {
+        string paraName = "";
+        switch (type)
+        {
+            case SoundMixerType.Master: paraName = MASTER_PARAM; break;
+            case SoundMixerType.BGM: paraName = BGM_PARAM; break;
+            case SoundMixerType.System: paraName = SYSTEM_SFX_PARAM; break;
+            case SoundMixerType.Game: paraName = GAME_SFX_PARAM; break;
+            default:
+                return 0f;
+        }
+
+        if(mainMixer.GetFloat(paraName,out float dB))
+            return Mathf.Pow(10f, dB / 20f);
+        
+        else
+            return 0;
+    }
+
     public void PlayBGM(SceneType type, bool loop = true)
     {
         if(!ResourceManager.Instance.BackgroundSoundData.TryGetValue(type, out AudioClip clip)) return;

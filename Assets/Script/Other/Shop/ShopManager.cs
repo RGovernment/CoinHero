@@ -41,6 +41,11 @@ public class ShopManager : MonoBehaviour
     private void CardSlotSetting()
     {
         Card[] getData = new Card[2];
+        List<Card> cardList  = new List<Card>();
+        foreach(var card in ResourceManager.Instance.CardData)
+        {
+            
+        }
         var cards = ResourceManager.Instance.CardData.Values
             .Where(x => x.MaxUpgradeLv > x.CurrentUpgradeLv)
             .ToList()
@@ -79,11 +84,22 @@ public class ShopManager : MonoBehaviour
                 CardData data = Instantiate(cardPrefab, box.cardStack);
 
                 data.Init(getData[i]);
+
+                data.cardBehind.SetActive(false);
+                data.labelImage.gameObject.SetActive(true);
+                data.starSlot.SetActive(true);
+                data.typeIcon.gameObject.SetActive(true);
+                data.gameObject.tag = INVEN_TAG;
+                data.description.raycastTarget = true;
+
                 data.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
                 data.transform.SetAsLastSibling();
+
                 box.priceText.text = price.ToString();
                 data.rewardAndShopBtn.enabled = true;
                 data.rewardAndShopBtn.onClick.AddListener(() => CardSelectEvent(data));
+
+                data.gameObject.SetActive(true);
             }
             else
             {
@@ -151,6 +167,10 @@ public class ShopManager : MonoBehaviour
             )
             .Join(card.transform.DORotate(
                 rotateAngle, cardStackTime)
+                .SetEase(Ease.Linear)
+            )
+            .Join(card.transform.DOScale(
+                Vector3.one * HAND_DROP_SCALE, cardStackTime)
             )
             .Join(card.canvasGroup.DOFade(
                 ZERO, cardStackTime).OnComplete(() =>

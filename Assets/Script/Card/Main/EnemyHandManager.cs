@@ -1,23 +1,27 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static Constants;
 using SF = UnityEngine.SerializeField;
 public class EnemyHandManager : MonoBehaviour
 {
     [SF] private BehindCardData cardData;
     [SF] private Transform holder;
 
-    public List<Card> CardSelect(List<Card> card)
+    public List<Card> CardSelect(List<Card> baseCards)
     {
-        List<Card> result = new(card);
-        result.Shuffle();
-        int pickCount = Mathf.Min(3, card.Count);
+        List<Card> baseCard = new();
 
-        for (int i = 0; i < pickCount; i++)
+        foreach (var item in baseCards)
         {
-            result.Add(card[i]);
+            Card newCard = new();
+            newCard = newCard.Init(item);
+            baseCard.Add(newCard);
+            Debug.Log(newCard.ToString());
         }
+        baseCard.Shuffle();
 
-        return result;
+        return baseCard.Take(ENEMY_HAND_MAX_COUNT).ToList();
     }
 
     public BehindCardData CardCreate(Card data)

@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
         state = new()
         {
             playerData = new Player(
-                data.Id, data.Name, data.MaxHP, data.HP, data.ClassType,
+                data.Id, data.Name, data.MaxHP, data.HP, data.Sanity, data.ClassType,
                 new(data.CardList)),
             NowRound = newState.NowRound,
             IsBoss = newState.IsBoss,

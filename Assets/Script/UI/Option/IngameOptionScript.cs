@@ -11,6 +11,7 @@ public class IngameOptionScript : MonoBehaviour
     {
         optionBtn.onClick.AddListener(() => OptionManager.Instance.OptionPanelOpen());
         GameManager.Instance.OnGoldChanged += GoldTextChange;
+        playerGoldText.text = GameManager.Instance.state.gold.ToString();
     }
 
     private void GoldTextChange(int value)

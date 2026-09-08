@@ -28,6 +28,11 @@ public class TurnEndState : IState
         // 사망 인원이 처리됐으므로 플래그 비활성화
         manager.EnemyDeadTurn = false;
 
+        // 턴 종료에 따른 지속형 버프/디버프 효과 지속시간 감소
+        manager.GetPlayerCombat().Character.DiscountEffect();
+        foreach (var item in manager.GetEnemyCombat())
+            item.Character.DiscountEffect();
+        
         manager.GetPlayerCombat().Character.OnDead -= manager.PlayerDead;
     }
 

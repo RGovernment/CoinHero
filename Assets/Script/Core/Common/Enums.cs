@@ -90,7 +90,7 @@ public static class Enums
     /// Shop : 상점 화면
     /// None : 없음
     /// </summary>
-    public enum SceneType { Title, Loading, Battle, Map, Shop, None };
+    public enum SceneType { Title, Loading, Battle, Map, Shop, RestArea, None };
 
     public enum SystemSoundType { Click, Hover, CardClick, CardHover, Inven, Reward , RewardBtn, None }
 

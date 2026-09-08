@@ -233,7 +233,7 @@ public class Card
     public override string ToString()
     {
         string result = 
-            $"Name : {Name}\nValue : {Value}\nCoin : {Coin}\nCoinPoint : {CoinPoint}\n" +
+            $"ID: {Id}\nName : {Name}\nValue : {Value}\nCoin : {Coin}\nCoinPoint : {CoinPoint}\n" +
             $"Type : {Type}\nDescription : {Description}";
         return result;
     }

@@ -285,6 +285,10 @@ public class RewardManager : MonoBehaviour
                 )
                 .Join(card.transform.DORotate(
                     rotateAngle, cardStackTime)
+                .SetEase(Ease.Linear)
+                )
+                .Join(card.transform.DOScale(
+                Vector3.one * HAND_DROP_SCALE, cardStackTime)
                 )
                 .Join(card.canvasGroup.DOFade(
                     ZERO, cardStackTime).OnComplete(() =>

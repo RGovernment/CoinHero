@@ -3284,6 +3284,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3997536629187371831, guid: 9ecbb340869a30349a6a0e185ac2588a, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 49945319}
+    - target: {fileID: 3997536629187371831, guid: 9ecbb340869a30349a6a0e185ac2588a, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3997536629187371831, guid: 9ecbb340869a30349a6a0e185ac2588a, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 735339829
+      objectReference: {fileID: 0}
     - target: {fileID: 6066390763905541820, guid: 9ecbb340869a30349a6a0e185ac2588a, type: 3}
       propertyPath: m_Name
       value: OtherCardDeckCanvas
@@ -4004,6 +4016,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 565106290828158771, guid: cd6161385abe7ba419bdc3d90ec3e282, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 49945319}
+    - target: {fileID: 565106290828158771, guid: cd6161385abe7ba419bdc3d90ec3e282, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1239921870674765151, guid: cd6161385abe7ba419bdc3d90ec3e282, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

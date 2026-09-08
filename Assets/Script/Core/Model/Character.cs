@@ -81,14 +81,14 @@ public abstract class Character : IDamageable, IBuffable
     /// </summary>
     public event Action<Character> OnDead;
 
-    public Character(int id, string name ,int maxHp, List<Card> data)
+    public Character(int id, string name ,int maxHp,int sanity, List<Card> data)
     {
         Id = id;
         Name = name;
         MaxHP = maxHp;
         HP = MaxHP;
         CardList = data;
-        Sanity = 50;
+        Sanity = sanity;
         StatusEffectList = new();
     }
 
@@ -189,8 +189,12 @@ public abstract class Character : IDamageable, IBuffable
     /// </summary>
     /// <param name="changeHp"></param>
     public void SetHP(int changeHp)
-    {
-        HP = changeHp;
+    { 
+
+        int nowHp = HP;
+        
+        HP = Mathf.Min(changeHp, MaxHP);
+        OnHPChanged?.Invoke(nowHp, HP);
     }
 
     public void SetMaxHP(int changeMaxHp)
@@ -213,10 +217,19 @@ public abstract class Character : IDamageable, IBuffable
     {
         StatusEffectList.Remove(effect);
     }
+
     public void RemoveEffect(int id)
     {
         int index = StatusEffectList.FindIndex(x => x.EffectData.Id == id);
 
         StatusEffectList.RemoveAt(index);
+    }
+
+    public void DiscountEffect()
+    {
+        foreach (var item in StatusEffectList)
+            item.Duration--;
+
+        StatusEffectList.RemoveAll(item => item.Duration <= 0);
     }
 }

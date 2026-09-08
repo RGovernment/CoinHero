@@ -147,6 +147,7 @@ public class BattleManager : MonoBehaviour
                 saveData.Name,
                 saveData.MaxHP,
                 saveData.HP,
+                saveData.Sanity,
                 saveData.ClassType,
                 card
                 );
@@ -208,7 +209,12 @@ public class BattleManager : MonoBehaviour
         List<Card> cd = new();
         foreach (var cardId in character.StartCardList)
         {
-            cd.Add(ResourceManager.Instance.GetCardData(cardId));
+            Card data = ResourceManager.Instance.GetCardData(cardId);
+            Card newCard = new();
+            newCard = newCard.Init(data);
+
+            cd.Add(newCard);
+
         }
 
         return cd;

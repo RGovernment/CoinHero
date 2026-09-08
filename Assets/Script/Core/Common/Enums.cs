@@ -53,19 +53,19 @@ public static class Enums
     /// Shop : 상점 맵
     /// Rest Area : 휴식 맵
     /// </summary>
-    public enum MapType { Normal, Boss, Shop, RestArea }
+    public enum MapType { Normal, Boss, Elite, Shop, RestArea }
 
     /// <summary>
     /// Normal : 일반
-    /// Elete : 엘리트
+    /// Elite : 엘리트
     /// Boss : 보스
     /// </summary>
-    public enum EnemyType { Normal, Elete, Boss}
+    public enum EnemyType { Normal, Elite, Boss }
     /// <summary>
     /// 적 세부 타입
     /// Zombie : 적 타입이 좀비임
     /// </summary>
-    public enum EnemyClassType { Zombie, ZombieBoss }
+    public enum EnemyClassType { Zombie, EliteZombie, ZombieBoss, Skeleton, EliteSkeleton }
 
     public enum PlayerClassType { Warrior }
     /// <summary>
@@ -90,12 +90,11 @@ public static class Enums
     /// Shop : 상점 화면
     /// None : 없음
     /// </summary>
-    public enum SceneType { Title, Loading, Battle, Map, Shop, None };
+    public enum SceneType { Title, Loading, Battle, Map, Shop, RestArea, None };
 
     public enum SystemSoundType { Click, Hover, CardClick, CardHover, Inven, Reward , RewardBtn, None }
 
     public enum BattleSoundType { Crash, Attack, Use, None }
-
 
     // Json 파일로의 저장시 참고용
     public enum EffectType { ValueUp, ValueDown, 

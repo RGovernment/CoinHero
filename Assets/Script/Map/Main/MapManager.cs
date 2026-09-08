@@ -1,14 +1,13 @@
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Enums;
 using static Constants;
+using static Enums;
 using static Utility;
-
 using SF = UnityEngine.SerializeField;
-using Cysharp.Threading.Tasks;
 
 public class MapManager : MonoBehaviour
 {
@@ -29,7 +28,7 @@ public class MapManager : MonoBehaviour
     [SF] private Button shopBtn;
     [SF] private Button restAreaBtn;
     [SF] private Button normalBtn;
-
+    [SF] private Button eliteBtn;
     [Header("Line Prefab")]
     [SF] private Image mapLine;
 
@@ -139,8 +138,9 @@ public class MapManager : MonoBehaviour
         return type switch
         {
             MapType.Boss => bossBtn,
+            MapType.Elite => eliteBtn,
             MapType.Shop => shopBtn,
-            MapType.RestArea => restAreaBtn, // 실제 enum 이름이 다르면 이 줄만 수정
+            MapType.RestArea => restAreaBtn,
             _ => normalBtn,
         };
     }
@@ -207,6 +207,11 @@ public class MapManager : MonoBehaviour
         // 항상 이번 적 목록 초기화
         GameManager.Instance.state.nextRoundEnemies.Clear();
 
+        List<Enemy> zombieList = ResourceManager.Instance.EnemyZombieData;
+        List<Enemy> skeletonList = ResourceManager.Instance.EnemySkeletonData;
+        List<Enemy> eliteZombieList = ResourceManager.Instance.EnemyEliteZombieData;
+        List<Enemy> eliteSkeletonList = ResourceManager.Instance.EnemyEliteSkeletonData;
+
         switch (node.mapType)
         {
             case MapType.Normal:
@@ -220,13 +225,44 @@ public class MapManager : MonoBehaviour
                     : countRandom < ENEMY_THREE_COUNT_PERCENT + ENEMY_TWO_COUNT_PERCENT ? 2 
                     : 1;
 
-                //현재는 적에 좀비만 존재하므로 좀비 리스트 가져오기
-                List<Enemy> zombieList = ResourceManager.Instance.EnemyZombieData;
 
                 for (int i = 0; i < enemyCount; i++)
                 {
-                    Enemy enemyData = zombieList[Random.Range(0, zombieList.Count)];
+                    int random = Random.Range(0, 100);
 
+                    if(random < SKELETON_SPAWN_WEIGHT)
+                    {
+                        Enemy enemyData = zombieList[Random.Range(0, zombieList.Count)];
+
+                        GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
+                    }
+                    else
+                    {
+                        Enemy enemyData = skeletonList[Random.Range(0, skeletonList.Count)];
+
+                        GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
+                    }
+                }
+
+                loadScene = SceneType.Battle;
+                break;
+            case MapType.Elite:
+
+                // 엘리트는 항상 2마리만 스폰
+                int enemyeliteCount = MAX_ELITE_SPAWN_COUNT;
+
+                for (int i = 0; i < enemyeliteCount; i++)
+                {
+                    int random = Random.Range(0, 100);
+                    Enemy enemyData;
+                    if (random < SKELETON_SPAWN_WEIGHT)
+                        enemyData = eliteZombieList[Random.Range(0, eliteZombieList.Count)];
+                    
+                    else
+                        enemyData = eliteSkeletonList[Random.Range(0, eliteSkeletonList.Count)];
+
+                        
+                   
                     GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
                 }
 
@@ -237,9 +273,9 @@ public class MapManager : MonoBehaviour
                 // 보스는 항상 3마리 스폰
                 int enemybossCount = MAX_ENEMY_COUNT;
                 int nowRonud = GameManager.Instance.state.NowRound;
-                for(int i = 0;i < enemybossCount; i++)
+                for(int i = 0; i < enemybossCount; i++)
                 {
-                    if (i == 0)
+                    if (i == ZERO)
                     {
                         Enemy enemyData = 
                             ResourceManager.Instance.EnemyBossData[nowRonud - 1];
@@ -248,9 +284,15 @@ public class MapManager : MonoBehaviour
                     }
                     else
                     {
-                        List<Enemy> bossLineList = ResourceManager.Instance.EnemyZombieData;
+                        int per = Random.Range(0, 100);
 
-                        Enemy enemyData = bossLineList[Random.Range(0, bossLineList.Count)];
+                        Enemy enemyData;
+
+                        if (per < SKELETON_SPAWN_WEIGHT)
+                            enemyData = zombieList[Random.Range(0, zombieList.Count)];
+                        else
+                            enemyData = skeletonList[Random.Range(0, skeletonList.Count)];
+                        
 
                         GameManager.Instance.state.nextRoundEnemies.Add(enemyData);
                     }
@@ -262,7 +304,7 @@ public class MapManager : MonoBehaviour
                 loadScene = SceneType.Shop;
                 break;
             case MapType.RestArea:
-                //loadScene = SceneType.;
+                loadScene = SceneType.RestArea;
                 break;
         }
 

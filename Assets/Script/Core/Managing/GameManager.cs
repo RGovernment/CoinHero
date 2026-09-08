@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -16,6 +17,8 @@ public class GameManager : MonoBehaviour
 
     [HIn] public SceneType nextScene;
     [HIn] public SceneType nowScene;
+
+    public event Action<int> OnGoldChanged;
 
     private void Awake()
     {
@@ -60,7 +63,7 @@ public class GameManager : MonoBehaviour
         state = new()
         {
             playerData = new Player(
-                data.Id, data.Name, data.MaxHP, data.HP, data.ClassType,
+                data.Id, data.Name, data.MaxHP, data.HP, data.Sanity, data.ClassType,
                 new(data.CardList)),
             NowRound = newState.NowRound,
             IsBoss = newState.IsBoss,
@@ -91,5 +94,11 @@ public class GameManager : MonoBehaviour
 
         int index = arg1.buildIndex;
         SoundManager.Instance.PlayBGM((SceneType)index);
+    }
+
+    public void GoldSet(int value)
+    {
+        state.gold = Mathf.Max(0, state.gold + value);
+        OnGoldChanged?.Invoke(state.gold);
     }
 }

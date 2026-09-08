@@ -17,4 +17,6 @@ public interface IBuffable
     /// 효과 제거
     /// </summary>
     public void RemoveEffect(int id);
+
+    public void DiscountEffect();
 }

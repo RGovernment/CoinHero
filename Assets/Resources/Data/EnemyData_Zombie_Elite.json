@@ -1,0 +1,18 @@
+[
+  {
+    "Type": "Elite",
+    "ClassType": "EliteZombie",
+    "Name": "오염된 좀비",
+    "MaxHP": 20,
+    "StartCardList": [ 5000, 5001, 5002, 6000, 7000 ],
+    "RoundValue": 2
+  },
+  {
+    "Type": "Elite",
+    "ClassType": "EliteZombie",
+    "Name": "강화된 좀비",
+    "MaxHP": 25,
+    "StartCardList": [ 5000, 5002, 6000, 6001, 7000 ],
+    "RoundValue": 1
+  }
+]

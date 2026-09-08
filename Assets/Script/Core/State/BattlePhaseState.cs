@@ -130,7 +130,6 @@ public class BattlePhaseState : IState
         {
             Card winCard = null, loseCard = null;
             ICombat winCombat = null, loseCombat = null;
-
             player.CoinUI.CoinSet(playerCard,player.Character);
             enemy.CoinUI.CoinSet(enemyCard, enemy.Character);
 
@@ -367,7 +366,7 @@ public class BattlePhaseState : IState
                 else
                     armorResult = user.TotalValueByWin(card, 0);
 
-                SP = flag == CrashType.Crash ? armorResult : armorResult / 2;
+                SP = flag == CrashType.Crash ? armorResult : Mathf.RoundToInt(armorResult / 2f);
                 user.Character.TakeShieldPoint(SP);
 
                 if(flag == CrashType.Crash)
@@ -381,7 +380,7 @@ public class BattlePhaseState : IState
 
                 user.AnimatorManager.OnCustom();
 
-                if (SP > 0) DamageSkinSpawner.Instance.TextSpawn(
+                if (SP >= 0) DamageSkinSpawner.Instance.TextSpawn(
                     user.BaseCharaObj.transform.position,
                     $"<color=#{SHIELD_COLOR}>실드 증가 {SP}</color>");
 

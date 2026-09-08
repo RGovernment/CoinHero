@@ -130,7 +130,7 @@ public class RewardManager : MonoBehaviour
     /// <param name="gold"></param>
     public void GetGold(int gold)
     {
-        GameManager.Instance.state.gold += gold;
+        GameManager.Instance.GoldSet(gold);
         goldBtn.onClick.RemoveAllListeners();
         goldBtn.interactable = false;
         goldText.alpha = goldBtn.colors.disabledColor.a;
@@ -179,7 +179,8 @@ public class RewardManager : MonoBehaviour
         data.starSlot.SetActive(true);
         data.typeIcon.gameObject.SetActive(true);
         data.gameObject.tag = REWARD_TAG;
-        data.AddComponent<Button>().onClick.AddListener(() => CardSelectEvent(data));
+        data.rewardAndShopBtn.enabled = true;
+        data.rewardAndShopBtn.onClick.AddListener(() => CardSelectEvent(data));
         data.gameObject.SetActive(true);
     }
 
@@ -205,9 +206,9 @@ public class RewardManager : MonoBehaviour
         
         int index = cardList.FindIndex(x => x.Id == card.cardData.Id);
         card.canvasGroup.interactable = false;
-        float cardUpgradeTime = 0.2f;
-        float starStackTime = 0.5f;
-        float cardStackTime = 0.5f;
+        float cardUpgradeTime = CARD_UPGRADE_ANIMATION_TIME;
+        float starStackTime = CARD_STAR_ANIMATION_TIME;
+        float cardStackTime = CARD_GET_ANIMATION_TIME;
         Vector3 rotateAngle = new(0, 0, 20);
 
         SoundManager.Instance.PlaySystemSFX(SystemSoundType.Reward);
@@ -216,7 +217,7 @@ public class RewardManager : MonoBehaviour
         if (index > -1)
         {
             Card cardData = cardList[index];
-            
+            DG.Tweening.Sequence seq = DOTween.Sequence();
             // 업그레이드가 가능할 경우
             if (cardData.MaxUpgradeLv > cardData.CurrentUpgradeLv)
             {
@@ -227,15 +228,22 @@ public class RewardManager : MonoBehaviour
             // 업그레이드가 불가능할 경우
             else
             {
-                GameManager.Instance.state.gold += DEFAULT_MAX_CARD_REWARD_GOLD;
+                GameManager.Instance.GoldSet(DEFAULT_MAX_CARD_REWARD_GOLD);
+
+                await seq
+                    .Join(card.transform.DOScale(
+                        Vector3.one * CARD_DEFAULT_EXPAND_SCALE, cardUpgradeTime)
+                    )
+                    .Insert(cardUpgradeTime, card.transform.DOScale(
+                        Vector3.one, cardUpgradeTime)
+                    ).Play().ToUniTask();
+                // 골드 획득 연출 추가
                 return;
             }
 
             // 카드 업그레이드 시 업그레이드 횟수 만큼 별 표시 활성화
             for (int i = 0; i < cardData.CurrentUpgradeLv; i++)
                 card.starSlot.transform.GetChild(i).gameObject.SetActive(true);
-            
-            DG.Tweening.Sequence seq = DOTween.Sequence();
             
             seq
                 .Join(card.transform.DOScale(
@@ -277,6 +285,10 @@ public class RewardManager : MonoBehaviour
                 )
                 .Join(card.transform.DORotate(
                     rotateAngle, cardStackTime)
+                .SetEase(Ease.Linear)
+                )
+                .Join(card.transform.DOScale(
+                Vector3.one * HAND_DROP_SCALE, cardStackTime)
                 )
                 .Join(card.canvasGroup.DOFade(
                     ZERO, cardStackTime).OnComplete(() =>
@@ -290,8 +302,7 @@ public class RewardManager : MonoBehaviour
         CardPanel.DOFade(ZERO, DEFAULT_FADE_TIME);
         CardPanel.gameObject.SetActive(false);
 
-        Button cardBtn = card.GetComponent<Button>();
-        cardBtn.onClick.RemoveAllListeners();
+        card.rewardAndShopBtn.onClick.RemoveAllListeners();
         cardBtn.interactable = false;
 
         rewardCompleteCount++;
@@ -320,8 +331,7 @@ public class RewardManager : MonoBehaviour
                 // 체력 갱신
                 data.SetHP(BattleManager.Instance.GetPlayerCombat().Character.HP);
 
-                // 최대 체력 증가
-                data.SetMaxHP(data.MaxHP + DEFAULT_PLAYER_ROUND_CLEAR_MAX_HP_GAIN);
+                // 시작 정신력 증가
                 data.SetSanity(data.Sanity + DEFAULT_PAYER_ROUND_CLEAR_SANITY_GAIN);
 
                 // 로비로 다시 이동하도록 설정, 라운드 추가시 증가하도록 설정

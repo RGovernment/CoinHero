@@ -37,7 +37,6 @@ public class TitleManager : MonoBehaviour
 
     public void StartGame()
     {
-        
         GameManager.Instance.nextScene = SceneType.Map;
         // 선택지 추가 후 변경 
         Player data = ResourceManager.Instance.PlayerData[ZERO];
@@ -53,10 +52,12 @@ public class TitleManager : MonoBehaviour
             data.Name,
             data.MaxHP,
             data.MaxHP,
+            DEFAULT_SANITY_VALUE,
             data.ClassType,
             cd
             );
         GameManager.Instance.state.NowRound = ONE;
+        GameManager.Instance.state.gold = 100;
         SaveManager.Instance.DeleteSave();
         SceneNext().Forget();
     }

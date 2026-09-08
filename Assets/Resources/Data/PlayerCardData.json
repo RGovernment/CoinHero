@@ -231,7 +231,7 @@
     "Type": "Armor",
     "Value": 3,
     "Coin": 2,
-    "CoinPoint": 3,
+    "CoinPoint": 1,
     "CurrentUpgradeLv": 0,
     "MaxUpgradeLv": 3,
     "UpgradeData": [
@@ -251,7 +251,7 @@
     "Effect": [
       {
         "EffectId": 103,
-        "Value": 2,
+        "Value": 1,
         "Duration": 2
       }
     ],

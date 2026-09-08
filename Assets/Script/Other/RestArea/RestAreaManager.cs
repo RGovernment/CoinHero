@@ -105,9 +105,9 @@ public class RestAreaManager : MonoBehaviour
 
     private void RestAreaIn()
     {
-        fadeCanvas.alpha = 0;
+        fadeCanvas.alpha = 1;
         fadeCanvas.gameObject.SetActive(true);
-        fadeCanvas.DOFade(ONE, DEFAULT_FADE_TIME).OnComplete(() =>
+        fadeCanvas.DOFade(ZERO, DEFAULT_FADE_TIME).OnComplete(() =>
         {
             fadeCanvas.gameObject.SetActive(false);
         });
@@ -121,7 +121,7 @@ public class RestAreaManager : MonoBehaviour
 
     private async UniTask RestAreaExit()
     {
-        fadeCanvas.alpha = 1;
+        fadeCanvas.alpha = 0;
         fadeCanvas.gameObject.SetActive(true);
         await fadeCanvas.DOFade(ONE, DEFAULT_FADE_TIME).ToUniTask();
 

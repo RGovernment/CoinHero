@@ -147,6 +147,7 @@ public class BattleManager : MonoBehaviour
                 saveData.Name,
                 saveData.MaxHP,
                 saveData.HP,
+                saveData.Sanity,
                 saveData.ClassType,
                 card
                 );

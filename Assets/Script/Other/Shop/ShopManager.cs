@@ -190,9 +190,9 @@ public class ShopManager : MonoBehaviour
 
     private void ShopIn()
     {
-        fadeCanvas.alpha = 0;
+        fadeCanvas.alpha = 1;
         fadeCanvas.gameObject.SetActive(true);
-        fadeCanvas.DOFade(ONE, DEFAULT_FADE_TIME).OnComplete(() =>
+        fadeCanvas.DOFade(ZERO, DEFAULT_FADE_TIME).OnComplete(() =>
         {
             fadeCanvas.gameObject.SetActive(false);
         });
@@ -206,7 +206,7 @@ public class ShopManager : MonoBehaviour
 
     private async UniTask ShopExit()
     {
-        fadeCanvas.alpha = 1;
+        fadeCanvas.alpha = 0;
         fadeCanvas.gameObject.SetActive(true);
         await fadeCanvas.DOFade(ONE, DEFAULT_FADE_TIME).ToUniTask();
 

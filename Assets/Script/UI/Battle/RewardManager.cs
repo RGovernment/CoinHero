@@ -331,8 +331,7 @@ public class RewardManager : MonoBehaviour
                 // 체력 갱신
                 data.SetHP(BattleManager.Instance.GetPlayerCombat().Character.HP);
 
-                // 최대 체력 증가
-                data.SetMaxHP(data.MaxHP + DEFAULT_PLAYER_ROUND_CLEAR_MAX_HP_GAIN);
+                // 시작 정신력 증가
                 data.SetSanity(data.Sanity + DEFAULT_PAYER_ROUND_CLEAR_SANITY_GAIN);
 
                 // 로비로 다시 이동하도록 설정, 라운드 추가시 증가하도록 설정

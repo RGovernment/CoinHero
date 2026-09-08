@@ -1743,6 +1743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RestAreaManager
   fadeCanvas: {fileID: 1578081026}
+  restBtn: {fileID: 1575591674}
   exitBtn: {fileID: 343593933}
   HPImage: {fileID: 2110692567}
   HPText: {fileID: 692814398}

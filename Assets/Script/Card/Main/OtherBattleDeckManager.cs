@@ -37,6 +37,8 @@ public class OtherBattleDeckManager : MonoBehaviour, IPointerEnterHandler, IPoin
         deckCanvasGroup.gameObject.SetActive(true);
         deckCanvasGroup.DOFade(ONE, FadeTime);
 
+        Debug.Log(GameManager.Instance.state.playerData.CardList.Count);
+
         DeckInfoLoad(GameManager.Instance.state.playerData.CardList);
     }
 
@@ -78,7 +80,7 @@ public class OtherBattleDeckManager : MonoBehaviour, IPointerEnterHandler, IPoin
         // 일괄 비활성화
         foreach (var item in deckCards)
             item.gameObject.SetActive(false);
-
+        Debug.Log(deckCards.Count);
         foreach (var item in deckCards)
         {
             item.rect.localScale = Vector3.one * INVEN_CARD_SCALE;
@@ -95,18 +97,6 @@ public class OtherBattleDeckManager : MonoBehaviour, IPointerEnterHandler, IPoin
             item.canvasGroup.alpha = 1;
 
         }
-    }
-
-    public void CrackCard(int id)
-    {
-        int index = deckCards.FindIndex(x => x.cardData.Id == id);
-        CardData data = deckCards[index];
-
-        deckCards.RemoveAt(index);
-
-        Destroy(data.gameObject);
-
-        DeckInfoLoad(GameManager.Instance.state.playerData.CardList);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

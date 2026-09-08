@@ -41,11 +41,7 @@ public class ShopManager : MonoBehaviour
     private void CardSlotSetting()
     {
         Card[] getData = new Card[2];
-        List<Card> cardList  = new List<Card>();
-        foreach(var card in ResourceManager.Instance.CardData)
-        {
-            
-        }
+
         var cards = ResourceManager.Instance.CardData.Values
             .Where(x => x.MaxUpgradeLv > x.CurrentUpgradeLv)
             .ToList()
@@ -89,7 +85,7 @@ public class ShopManager : MonoBehaviour
                 data.labelImage.gameObject.SetActive(true);
                 data.starSlot.SetActive(true);
                 data.typeIcon.gameObject.SetActive(true);
-                data.gameObject.tag = INVEN_TAG;
+                data.gameObject.tag = REWARD_TAG;
                 data.description.raycastTarget = true;
 
                 data.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
@@ -97,7 +93,7 @@ public class ShopManager : MonoBehaviour
 
                 box.priceText.text = price.ToString();
                 data.rewardAndShopBtn.enabled = true;
-                data.rewardAndShopBtn.onClick.AddListener(() => CardSelectEvent(data));
+                data.rewardAndShopBtn.onClick.AddListener(() => CardSelectEvent(data, price));
 
                 data.gameObject.SetActive(true);
             }
@@ -110,9 +106,9 @@ public class ShopManager : MonoBehaviour
         }
 
     }
-    private void CardSelectEvent(CardData data)
+    private void CardSelectEvent(CardData data, int price)
     {
-        CardSelect(data).Forget();
+        CardSelect(data, price).Forget();
     }
 
 #pragma warning disable CS4014
@@ -121,7 +117,7 @@ public class ShopManager : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <returns></returns>
-    private async UniTask CardSelect(CardData card)
+    private async UniTask CardSelect(CardData card, int price)
     {
         List<Card> cardList = GameManager.Instance.state.playerData.CardList;
 
@@ -159,6 +155,8 @@ public class ShopManager : MonoBehaviour
             cardList.Add(card.cardData);
         }
 
+        // 쓴 금액 만큼 골드 감소
+        GameManager.Instance.GoldSet(-price);
         Sequence seq = DOTween.Sequence();
 
         seq

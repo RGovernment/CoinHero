@@ -17,7 +17,6 @@ public class EnemyHandManager : MonoBehaviour
             Card newCard = new();
             newCard = newCard.Init(item);
             baseCard.Add(newCard);
-            Debug.Log(newCard.ToString());
         }
         baseCard.Shuffle();
 

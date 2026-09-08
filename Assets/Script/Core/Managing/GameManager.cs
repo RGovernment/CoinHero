@@ -60,6 +60,7 @@ public class GameManager : MonoBehaviour
     public void UpdateState(GameState newState)
     {
         Player data = newState.playerData;
+
         state = new()
         {
             playerData = new Player(

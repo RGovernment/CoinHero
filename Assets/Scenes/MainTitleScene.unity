@@ -282,7 +282,7 @@ AudioSource:
   m_GameObject: {fileID: 53350044}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -8186039794490994801, guid: e465650b60abf8c4faa5464a7af163c3, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
@@ -4313,6 +4313,8 @@ MonoBehaviour:
   - type: 3
     audioClip: {fileID: 8300000, guid: c3e8f2182f23169459cbdbaa837c1e50, type: 3}
   - type: 4
+    audioClip: {fileID: 8300000, guid: adeffcf5fd543bb4a991e8d0c56fea73, type: 3}
+  - type: 5
     audioClip: {fileID: 8300000, guid: adeffcf5fd543bb4a991e8d0c56fea73, type: 3}
   battleClips:
   - type: 0

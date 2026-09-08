@@ -98,6 +98,7 @@ public class SaveManager : MonoBehaviour
     private void DataReload(SaveData data)
     {
         string stateString = data.state;
+
         var state = JsonConvert.DeserializeObject<GameState>(stateString);
         GameManager.Instance.UpdateState(state);
     }

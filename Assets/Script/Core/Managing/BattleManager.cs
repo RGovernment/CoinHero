@@ -82,8 +82,6 @@ public class BattleManager : MonoBehaviour
         
         SpawnCharacter();
         GameManager.Instance.state.IsBattle = true;
-
-        SaveManager.Instance.Save().Forget();
     }
 
     private void Start()
@@ -107,6 +105,8 @@ public class BattleManager : MonoBehaviour
 
         state.ChangeState(stateGroup[BattleStateType.RoundStart]);
         TurnStart().Forget();
+
+        SaveManager.Instance.Save().Forget();
     }
 
     private void SpawnCharacter()

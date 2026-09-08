@@ -257,7 +257,6 @@ public class RewardManager : MonoBehaviour
             for (int i = 0; i <cardData.CurrentUpgradeLv; i++)
             {
                 Transform star = card.starSlot.transform.GetChild(i);
-                Debug.Log($"Star {i}");
 
                 seq.Insert(cardUpgradeTime + starStackTime * i, star.DOScale(
                     Vector3.one * STAR_DEFAULT_EXPAND_SCALE, starStackTime / 2)

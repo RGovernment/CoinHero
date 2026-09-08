@@ -68,7 +68,7 @@ public abstract class CombatBase : MonoBehaviour, ICombat
     public int TotalValueByWin(Card card, int APDiscount = 0)
     {
         // 승리 시 밸류 + 남은 코인 * 코인 위력 리턴
-        return Mathf.Max(1, (card.FinalValue(Character) + card.Coin * card.FinalCoinPoint(Character)) - APDiscount);
+        return Mathf.Max(1, (card.FinalValue(Character) + card.FinalCoin(Character) * card.FinalCoinPoint(Character)) - APDiscount);
     }
     public virtual int APDiscountByLose(Card card)
     {

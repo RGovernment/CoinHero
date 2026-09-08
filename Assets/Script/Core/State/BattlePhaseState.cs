@@ -553,7 +553,7 @@ public class BattlePhaseState : IState
                 target.Character.TakeDamage(result, user.Character);
                 break;
             case EffectType.InstantHeal:
-                bool[] healCoins = user.CoinToss(card, user.Character.Sanity);
+                bool[] healCoins = user.CoinToss(card);
                 int healCoinCount = healCoins.Length;
 
                 user.CoinUI.CoinFlip(user.Character);
@@ -595,12 +595,9 @@ public class BattlePhaseState : IState
                 user.Character.CardList.RemoveAt(removeId);
             return;
         }
-        Debug.Log(data.Name);
 
         StatusEffect effect = EffectCreate(data, effectValue, effectDuration);
         if (effect == null) return;
-
-        Debug.Log(effect.EffectData.Name);
 
         if (data.Target == TargetType.Caster)
             user.Character.TakeEffect(effect);

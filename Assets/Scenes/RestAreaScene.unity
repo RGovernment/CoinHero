@@ -619,6 +619,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3436354620411010704, guid: f5ba14da06c1de14bbf2aa59d8f53df6, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 49945319}
+    - target: {fileID: 3436354620411010704, guid: f5ba14da06c1de14bbf2aa59d8f53df6, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3436354620411010704, guid: f5ba14da06c1de14bbf2aa59d8f53df6, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 735339829
+      objectReference: {fileID: 0}
+    - target: {fileID: 3436354620411010704, guid: f5ba14da06c1de14bbf2aa59d8f53df6, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
@@ -1621,6 +1633,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 878213745}
   m_CullTransparentMesh: 1
+--- !u!1001 &947303068
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2189929709586680824, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_Name
+      value: ToolTipManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 4346426107721674676, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 49945319}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339707254296103286, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d80a6a1e809eb52458e1131d3a4eca74, type: 3}
 --- !u!1 &1001459692
 GameObject:
   m_ObjectHideFlags: 0
@@ -2172,12 +2245,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2805,6 +2878,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3997536629187371831, guid: 9ecbb340869a30349a6a0e185ac2588a, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 49945319}
+    - target: {fileID: 3997536629187371831, guid: 9ecbb340869a30349a6a0e185ac2588a, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3997536629187371831, guid: 9ecbb340869a30349a6a0e185ac2588a, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 735339829
+      objectReference: {fileID: 0}
     - target: {fileID: 6066390763905541820, guid: 9ecbb340869a30349a6a0e185ac2588a, type: 3}
       propertyPath: m_Name
       value: OtherCardDeckCanvas
@@ -2943,6 +3028,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 565106290828158771, guid: cd6161385abe7ba419bdc3d90ec3e282, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 49945319}
+    - target: {fileID: 565106290828158771, guid: cd6161385abe7ba419bdc3d90ec3e282, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1239921870674765151, guid: cd6161385abe7ba419bdc3d90ec3e282, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -3063,3 +3156,4 @@ SceneRoots:
   - {fileID: 1578081025}
   - {fileID: 9000351710900076755}
   - {fileID: 6755741679277399507}
+  - {fileID: 947303068}

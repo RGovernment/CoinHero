@@ -88,8 +88,8 @@ public static class Constants
     public static int DEFAULT_PAYER_ROUND_CLEAR_SANITY_GAIN = 5;
     public static string REWARD_SORT_LAYER_NAME = "StatusUI";
     public static float DEFAULT_FADE_TIME = 0.3f;
-    public static int NORMAL_GOLD_REWARD_MIN = 20;
-    public static int NORMAL_GOLD_REWARD_MAX = 51;
+    public static int NORMAL_GOLD_REWARD_MIN = 200;
+    public static int NORMAL_GOLD_REWARD_MAX = 510;
     public static int ELETE_GOLD_REWARD_MIN = 35;
     public static int ELETE_GOLD_REWARD_MAX = 81;
     public static int BOSS_GOLD_REWARD_MIN = 100;
@@ -98,6 +98,9 @@ public static class Constants
     public static int ENEMY_THREE_COUNT_PERCENT = 65;
     public static int ENEMY_TWO_COUNT_PERCENT = 20;
     public static int ENEMY_ONE_COUNT_PERCENT = 15;
+
+    public static int SHOP_CARD_MIN_PRICE = 100;
+    public static int SHOP_CARD_MAX_PRICE = 201;
 
     // 저장 관련 상수
     public static string SAVE_FILE_NAME = "savefile.dat";
@@ -113,4 +116,9 @@ public static class Constants
     // 맵 관련
     public const float NODE_LINE_BY_THREE_ABLE = 0.85f;
     public const float NODE_LINE_BY_TWO_ABLE = 0.55f;
+
+    //상점, 보상 관련
+    public const float CARD_GET_ANIMATION_TIME = 0.5f;
+    public const float CARD_UPGRADE_ANIMATION_TIME = 0.2f;
+    public const float CARD_STAR_ANIMATION_TIME = 0.5f;
 }

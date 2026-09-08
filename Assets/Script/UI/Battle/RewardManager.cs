@@ -130,7 +130,7 @@ public class RewardManager : MonoBehaviour
     /// <param name="gold"></param>
     public void GetGold(int gold)
     {
-        GameManager.Instance.state.gold += gold;
+        GameManager.Instance.GoldSet(gold);
         goldBtn.onClick.RemoveAllListeners();
         goldBtn.interactable = false;
         goldText.alpha = goldBtn.colors.disabledColor.a;
@@ -179,7 +179,7 @@ public class RewardManager : MonoBehaviour
         data.starSlot.SetActive(true);
         data.typeIcon.gameObject.SetActive(true);
         data.gameObject.tag = REWARD_TAG;
-        data.AddComponent<Button>().onClick.AddListener(() => CardSelectEvent(data));
+        data.rewardAndShopBtn.onClick.AddListener(() => CardSelectEvent(data));
         data.gameObject.SetActive(true);
     }
 
@@ -205,9 +205,9 @@ public class RewardManager : MonoBehaviour
         
         int index = cardList.FindIndex(x => x.Id == card.cardData.Id);
         card.canvasGroup.interactable = false;
-        float cardUpgradeTime = 0.2f;
-        float starStackTime = 0.5f;
-        float cardStackTime = 0.5f;
+        float cardUpgradeTime = CARD_UPGRADE_ANIMATION_TIME;
+        float starStackTime = CARD_STAR_ANIMATION_TIME;
+        float cardStackTime = CARD_GET_ANIMATION_TIME;
         Vector3 rotateAngle = new(0, 0, 20);
 
         SoundManager.Instance.PlaySystemSFX(SystemSoundType.Reward);
@@ -227,7 +227,7 @@ public class RewardManager : MonoBehaviour
             // 업그레이드가 불가능할 경우
             else
             {
-                GameManager.Instance.state.gold += DEFAULT_MAX_CARD_REWARD_GOLD;
+                GameManager.Instance.GoldSet(DEFAULT_MAX_CARD_REWARD_GOLD);
                 return;
             }
 
@@ -290,8 +290,7 @@ public class RewardManager : MonoBehaviour
         CardPanel.DOFade(ZERO, DEFAULT_FADE_TIME);
         CardPanel.gameObject.SetActive(false);
 
-        Button cardBtn = card.GetComponent<Button>();
-        cardBtn.onClick.RemoveAllListeners();
+        card.rewardAndShopBtn.onClick.RemoveAllListeners();
         cardBtn.interactable = false;
 
         rewardCompleteCount++;

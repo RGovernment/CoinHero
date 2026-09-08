@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08b8e36661688694a96f3a2ff8fb78cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapCreate
-  totalFloors: 2
+  totalFloors: 3
   mapWidth: 3
   mapConfigs:
   - mapType: 0

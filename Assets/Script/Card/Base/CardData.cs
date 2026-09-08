@@ -32,6 +32,8 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     /// </summary>
     public Sprite[] typeIconSprite;
 
+    [Header("출력 상황 카드 버튼용")]
+    public Button rewardAndShopBtn;
 
     [Header("카드 텍스트")]
     public TextMeshProUGUI nameText;

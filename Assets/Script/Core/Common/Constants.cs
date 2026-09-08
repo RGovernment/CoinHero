@@ -9,8 +9,10 @@ public static class Constants
     public static string ENEMY_DATA = "EnemyData";
     public static string PLAYER_DATA = "PlayerData";
     public static string BOSS = "Boss";
+    public static string ELITE = "Elite";
     public static string ZOMBIE = "Zombie";
-    
+    public static string SKELETON = "Skeleton";
+
     public static string VALUE = "Value";
     public static string DURATION = "Duration";
     public static string COIN_POINT = "CoinPoint";
@@ -88,10 +90,10 @@ public static class Constants
     public static int DEFAULT_PAYER_ROUND_CLEAR_SANITY_GAIN = 5;
     public static string REWARD_SORT_LAYER_NAME = "StatusUI";
     public static float DEFAULT_FADE_TIME = 0.3f;
-    public static int NORMAL_GOLD_REWARD_MIN = 200;
-    public static int NORMAL_GOLD_REWARD_MAX = 510;
-    public static int ELETE_GOLD_REWARD_MIN = 35;
-    public static int ELETE_GOLD_REWARD_MAX = 81;
+    public static int NORMAL_GOLD_REWARD_MIN = 20;
+    public static int NORMAL_GOLD_REWARD_MAX = 51;
+    public static int ELITE_GOLD_REWARD_MIN = 35;
+    public static int ELITE_GOLD_REWARD_MAX = 81;
     public static int BOSS_GOLD_REWARD_MIN = 100;
     public static int BOSS_GOLD_REWARD_MAX = 151;
 

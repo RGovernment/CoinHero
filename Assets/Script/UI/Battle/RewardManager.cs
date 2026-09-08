@@ -217,7 +217,7 @@ public class RewardManager : MonoBehaviour
         if (index > -1)
         {
             Card cardData = cardList[index];
-            
+            DG.Tweening.Sequence seq = DOTween.Sequence();
             // 업그레이드가 가능할 경우
             if (cardData.MaxUpgradeLv > cardData.CurrentUpgradeLv)
             {
@@ -229,14 +229,21 @@ public class RewardManager : MonoBehaviour
             else
             {
                 GameManager.Instance.GoldSet(DEFAULT_MAX_CARD_REWARD_GOLD);
+
+                await seq
+                    .Join(card.transform.DOScale(
+                        Vector3.one * CARD_DEFAULT_EXPAND_SCALE, cardUpgradeTime)
+                    )
+                    .Insert(cardUpgradeTime, card.transform.DOScale(
+                        Vector3.one, cardUpgradeTime)
+                    ).Play().ToUniTask();
+                // 골드 획득 연출 추가
                 return;
             }
 
             // 카드 업그레이드 시 업그레이드 횟수 만큼 별 표시 활성화
             for (int i = 0; i < cardData.CurrentUpgradeLv; i++)
                 card.starSlot.transform.GetChild(i).gameObject.SetActive(true);
-            
-            DG.Tweening.Sequence seq = DOTween.Sequence();
             
             seq
                 .Join(card.transform.DOScale(

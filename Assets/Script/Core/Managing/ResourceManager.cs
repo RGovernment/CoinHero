@@ -17,6 +17,9 @@ public class ResourceManager : MonoBehaviour
     public Dictionary<int, StatusEffectData> EffectData { get; private set; }
 
     public List<Enemy> EnemyZombieData {  get; private set; }
+    public List<Enemy> EnemyEliteZombieData { get; private set; }
+    public List <Enemy> EnemyEliteSkeletonData { get; private set; }
+    public List <Enemy> EnemySkeletonData { get; private set;  }
     public List<Enemy> EnemyBossData { get; private set; }
     public List<Player> PlayerData {  get; private set; }
 
@@ -49,8 +52,12 @@ public class ResourceManager : MonoBehaviour
         BackgroundSoundData = new();
         BattleSoundData = new();
         EnemyZombieData = new();
+        EnemyEliteZombieData = new();
+        EnemySkeletonData = new();
+        EnemyEliteSkeletonData = new();
         EnemyBossData = new();
         PlayerData = new();
+
         ResourceLoad();
         CardImageLoad();
     }
@@ -71,6 +78,12 @@ public class ResourceManager : MonoBehaviour
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{BOSS}").text;
         string enemyZombieJson
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{ZOMBIE}").text;
+        string enemyEliteZombieJson
+            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{ZOMBIE}_{ELITE}").text;
+        string enemySkeletonJson
+            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{SKELETON}").text;
+        string enemyEliteSkeletonJson
+            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{SKELETON}_{ELITE}").text;
         string playerJson
             = Resources.Load<TextAsset>(ASSET_DATA_PATH + PLAYER_DATA).text;
 
@@ -83,8 +96,11 @@ public class ResourceManager : MonoBehaviour
 
         PlayerData = JsonConvert.DeserializeObject<List<Player>>(playerJson);
         EnemyZombieData = JsonConvert.DeserializeObject<List<Enemy>>(enemyZombieJson);
-        EnemyBossData = JsonConvert.DeserializeObject<List<Enemy>>(enemyBossJson);
+        EnemyEliteZombieData = JsonConvert.DeserializeObject<List<Enemy>>(enemyEliteZombieJson);
+        EnemySkeletonData = JsonConvert.DeserializeObject<List<Enemy>>(enemySkeletonJson);
+        EnemyEliteSkeletonData = JsonConvert.DeserializeObject<List<Enemy>>(enemyEliteSkeletonJson);
 
+        EnemyBossData = JsonConvert.DeserializeObject<List<Enemy>>(enemyBossJson);
         CardData = cardList.ToDictionary(x => x.Id);
         EnemyCardData = enemyCardList.ToDictionary(x => x.Id);
         EffectData = effectList.ToDictionary(x => x.Id);

@@ -232,6 +232,8 @@ public class MapManager : MonoBehaviour
 
                 loadScene = SceneType.Battle;
                 break;
+            case MapType.Elite:
+                break;
             case MapType.Boss:
                 GameManager.Instance.state.IsBoss = true;
                 // 보스는 항상 3마리 스폰

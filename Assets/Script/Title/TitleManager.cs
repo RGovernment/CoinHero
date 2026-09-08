@@ -57,6 +57,7 @@ public class TitleManager : MonoBehaviour
             cd
             );
         GameManager.Instance.state.NowRound = ONE;
+        GameManager.Instance.state.gold = 100;
         SaveManager.Instance.DeleteSave();
         SceneNext().Forget();
     }

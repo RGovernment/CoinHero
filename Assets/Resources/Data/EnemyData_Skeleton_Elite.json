@@ -1,0 +1,18 @@
+[
+  {
+    "Type": "Elite",
+    "ClassType": "EliteSkeleton",
+    "Name": "강화된 스켈레톤",
+    "MaxHP": 35,
+    "StartCardList": [ 5000, 5001, 5003, 6000, 6001, 7001 ],
+    "RoundValue": 2
+  },
+  {
+    "Type": "Elite",
+    "ClassType": "EliteSkeleton",
+    "Name": "격노한 스켈레톤",
+    "MaxHP": 37,
+    "StartCardList": [ 5003, 5004 ,6000, 6001, 7000, 7001 ],
+    "RoundValue": 2
+  }
+]

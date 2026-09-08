@@ -1,0 +1,18 @@
+[
+  {
+    "Type": "Normal",
+    "ClassType" :  "Skeleton",
+    "Name": "스켈레톤",
+    "MaxHP": 15,
+    "StartCardList": [ 5000, 5003, 5004, 6000 ],
+    "RoundValue": 2
+  },
+  {
+    "Type": "Normal",
+    "ClassType": "Skeleton",
+    "Name": "방패 든 스켈레톤",
+    "MaxHP": 20,
+    "StartCardList": [ 5000, 5003 ,6000 ,6001 ],
+    "RoundValue": 2
+  }
+]

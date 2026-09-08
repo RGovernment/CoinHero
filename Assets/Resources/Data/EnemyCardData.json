@@ -28,6 +28,49 @@
     "Description": "돌."
   },
   {
+    "Name": "좀비의 일격",
+    "Id": 5002,
+    "Type": "Weapon",
+    "Value": 3,
+    "Coin": 3,
+    "CoinPoint": 2,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+    ],
+    "Effect": [],
+    "Description": "좀비의 일격"
+  },
+  {
+    "Name": "낡은 검",
+    "Id": 5003,
+    "Type": "Weapon",
+    "Value": 2,
+    "Coin": 5,
+    "CoinPoint": 1,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+    ],
+    "Effect": [],
+    "Description": "낡은 검"
+  },
+  {
+    "Name": "부식된 도끼",
+    "Id": 5004,
+    "Type": "Weapon",
+    "Value": 2,
+    "Coin": 1,
+    "CoinPoint": 6,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+
+    ],
+    "Effect": [],
+    "Description": "낡은 도끼"
+  },
+  {
     "Name": "허름한 방패",
     "Id": 6000,
     "Type": "Armor",
@@ -40,6 +83,20 @@
     ],
     "Effect": [],
     "Description": "허름한 방패."
+  },
+  {
+    "Name": "누군가의 방패",
+    "Id": 6001,
+    "Type": "Armor",
+    "Value": 4,
+    "Coin": 1,
+    "CoinPoint": 2,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+    ],
+    "Effect": [],
+    "Description": "누군가의 방패 였던 것."
   },
   {
     "Name": "재생",
@@ -60,5 +117,25 @@
       }
     ],
     "Description": "{InstantHeal} [Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
+  },
+  {
+    "Name": "오염된 악취",
+    "Id": 7001,
+    "Type": "Item",
+    "Value": 1,
+    "Coin": 2,
+    "CoinPoint": 2,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+    ],
+    "Effect": [
+      {
+        "EffectId": 201,
+        "Value": -1,
+        "Duration": 0
+      }
+    ],
+    "Description": "{InstantDamage} [Value] ~ [ValuePlusCoinMultiplyCoinPoint]"
   }
 ]

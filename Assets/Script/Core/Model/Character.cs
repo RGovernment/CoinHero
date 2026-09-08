@@ -189,8 +189,12 @@ public abstract class Character : IDamageable, IBuffable
     /// </summary>
     /// <param name="changeHp"></param>
     public void SetHP(int changeHp)
-    {
-        HP = changeHp;
+    { 
+
+        int nowHp = HP;
+        
+        HP = Mathf.Min(changeHp, MaxHP);
+        OnHPChanged?.Invoke(nowHp, HP);
     }
 
     public void SetMaxHP(int changeMaxHp)

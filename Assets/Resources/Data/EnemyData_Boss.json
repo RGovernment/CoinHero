@@ -5,7 +5,7 @@
     "ClassType" :  "ZombieBoss",
     "Name": "갑옷 좀비",
     "MaxHP": 80,
-    "StartCardList": [ 5000, 5001, 6000, 7000 ],
+    "StartCardList": [ 5000, 5001, 5002, 5003, 6000, 6001, 7000, 7001 ],
     "RoundValue": 1
   }
 ]

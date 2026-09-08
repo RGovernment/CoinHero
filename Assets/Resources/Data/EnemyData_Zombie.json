@@ -3,7 +3,7 @@
     "Type": "Normal",
     "ClassType" :  "Zombie",
     "Name": "농부 좀비",
-    "MaxHP": 20,
+    "MaxHP": 15,
     "StartCardList": [ 5000 ],
     "RoundValue": 2
   },
@@ -19,7 +19,7 @@
     "Type": "Normal",
     "ClassType": "Zombie",
     "Name": "방패를 든 좀비",
-    "MaxHP": 30,
+    "MaxHP": 20,
     "StartCardList": [ 5000, 6000 ],
     "RoundValue": 2
   },
@@ -27,7 +27,7 @@
     "Type": "Normal",
     "ClassType": "Zombie",
     "Name": "회복하는 좀비",
-    "MaxHP": 25,
+    "MaxHP": 20,
     "StartCardList": [ 5000, 7000 ],
     "RoundValue": 2
   }

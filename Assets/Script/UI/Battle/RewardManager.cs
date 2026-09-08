@@ -179,6 +179,7 @@ public class RewardManager : MonoBehaviour
         data.starSlot.SetActive(true);
         data.typeIcon.gameObject.SetActive(true);
         data.gameObject.tag = REWARD_TAG;
+        data.rewardAndShopBtn.enabled = true;
         data.rewardAndShopBtn.onClick.AddListener(() => CardSelectEvent(data));
         data.gameObject.SetActive(true);
     }

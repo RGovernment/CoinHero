@@ -20,6 +20,9 @@ public class ShopManager : MonoBehaviour
         public Transform cardStack;
         public TextMeshProUGUI priceText;
     }
+    [Header("인벤토리 관련")]
+    [SF] private OtherBattleDeckManager manager;
+
     [Header("상점 내 컨텐츠 관련")]
     [SF] private CardBox[] cardSlot;
     [SF] private CardData cardPrefab;
@@ -79,6 +82,7 @@ public class ShopManager : MonoBehaviour
                 data.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
                 data.transform.SetAsLastSibling();
                 box.priceText.text = price.ToString();
+                data.rewardAndShopBtn.enabled = true;
                 data.rewardAndShopBtn.onClick.AddListener(() => CardSelectEvent(data));
             }
             else
@@ -159,6 +163,8 @@ public class ShopManager : MonoBehaviour
         card.rewardAndShopBtn.onClick.RemoveAllListeners();
         card.rewardAndShopBtn.interactable = false;
         card.gameObject.SetActive(false);
+        manager.NewDeckCardAdd(card.cardData);
+
         SaveManager.Instance.Save().Forget();
     }
 

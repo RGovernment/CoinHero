@@ -9100,6 +9100,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3436354620411010704, guid: f5ba14da06c1de14bbf2aa59d8f53df6, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 281334120}
+    - target: {fileID: 3436354620411010704, guid: f5ba14da06c1de14bbf2aa59d8f53df6, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3436354620411010704, guid: f5ba14da06c1de14bbf2aa59d8f53df6, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1343726559
+      objectReference: {fileID: 0}
     - target: {fileID: 5210393678483040075, guid: f5ba14da06c1de14bbf2aa59d8f53df6, type: 3}
       propertyPath: m_Name
       value: OptionCanvas

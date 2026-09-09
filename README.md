@@ -121,10 +121,10 @@ Script/
 <img width="600" height="200" alt="image" src="https://github.com/user-attachments/assets/a44241ef-ac7d-4bab-892f-d32b4e1b2439" />
   </p>
 행동할 플레이어와 적의 카드를 Queue로 적재하고, 해당 Queue에 맞춰 행동, 행동에 따라 합/일방 행동을 사용하여 행동마다 각각의 상황에 맞는 값을 부여함.  
-
-
+  
 9. UniTask, Json/AES 암호화
-
+  
+  
 UniTask 선택 이유 : struct값으로 이루어져 코루틴에 비해 GC(가비지 커넥터)가 매우 적고, 호출 및 사용, 값 반환 등의 다양한 사용에 제한이 적음.  
 Json/AES 암호화 선택 이유 : Json 데이터 자체가 관리가 쉬우며 NewtonSoft에서 제공하는 라이브러리로 인해 사용이 편함.  
                            AES 암호화는 사용자의 간단한 세이브 파일 변조를 1차적으로 막기 위함.

@@ -119,6 +119,13 @@ public class ShopManager : MonoBehaviour
     /// <returns></returns>
     private async UniTask CardSelect(CardData card, int price)
     {
+        if (price > GameManager.Instance.state.gold)
+        {
+            DamageSkinSpawner.Instance.TextSpawn(card.transform.position,
+                $"<color=#{GOLD_NOT_ENOUGH_COLOR}>골드 부족</color>");
+            return;
+        }
+
         List<Card> cardList = GameManager.Instance.state.playerData.CardList;
 
         int index = cardList.FindIndex(x => x.Id == card.cardData.Id);
@@ -146,6 +153,8 @@ public class ShopManager : MonoBehaviour
                 GameManager.Instance.GoldSet(DEFAULT_MAX_CARD_REWARD_GOLD);
                 return;
             }
+
+            manager.UpdateCard(cardData);
         }
 
         // 목록에 존재하지 않을 경우
@@ -153,6 +162,7 @@ public class ShopManager : MonoBehaviour
         {
             Debug.Log($"카드 {card.cardData.Name} 추가");
             cardList.Add(card.cardData);
+            manager.NewDeckCardAdd(card.cardData);
         }
 
         // 쓴 금액 만큼 골드 감소
@@ -181,7 +191,6 @@ public class ShopManager : MonoBehaviour
         card.rewardAndShopBtn.onClick.RemoveAllListeners();
         card.rewardAndShopBtn.interactable = false;
         card.gameObject.SetActive(false);
-        manager.NewDeckCardAdd(card.cardData);
 
         SaveManager.Instance.Save().Forget();
     }

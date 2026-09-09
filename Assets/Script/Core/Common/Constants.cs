@@ -30,6 +30,7 @@ public static class Constants
     public const string ATTACK_COLOR = "CC2424";
     public const string SHIELD_COLOR = "16E9FC";
     public const string HEAL_COLOR = "81F65A";
+    public const string GOLD_NOT_ENOUGH_COLOR = "F5D32D";
 
     // 씬 넘버
     public const int TITLE_SCENE = 0;

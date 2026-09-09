@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: baa7840546ae79f49a160abec08e33ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToolTipManager
+  toolTipCanvas: {fileID: 4346426107721674676}
   toolTipRect: {fileID: 4062933807613724097}
   backgroundRect: {fileID: 8602404145122849878}
   nameText: {fileID: 2388013456064122273}

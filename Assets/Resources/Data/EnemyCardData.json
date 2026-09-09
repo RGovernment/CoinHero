@@ -71,6 +71,21 @@
     "Description": "낡은 도끼"
   },
   {
+    "Name": "거대한 검",
+    "Id": 5005,
+    "Type": "Weapon",
+    "Value": 4,
+    "Coin": 1,
+    "CoinPoint": 10,
+    "CurrentUpgradeLv": 0,
+    "MaxUpgradeLv": 0,
+    "UpgradeData": [
+
+    ],
+    "Effect": [],
+    "Description": "거대한 검"
+  },
+  {
     "Name": "허름한 방패",
     "Id": 6000,
     "Type": "Armor",

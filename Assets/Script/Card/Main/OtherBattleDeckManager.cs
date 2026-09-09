@@ -29,6 +29,8 @@ public class OtherBattleDeckManager : MonoBehaviour, IPointerEnterHandler, IPoin
     public void Start()
     {
         deckCards = new();
+
+        DeckInfoLoad(GameManager.Instance.state.playerData.CardList);
     }
 
     public void DeckOpen()
@@ -63,6 +65,13 @@ public class OtherBattleDeckManager : MonoBehaviour, IPointerEnterHandler, IPoin
         deckCards.Add(deckCard);
     }
 
+    public void UpdateCard(Card card)
+    {
+        CardData data = deckCards.Find(x => x.cardData.Id == card.Id);
+
+        data.cardData.CurrentUpgradeLv++;
+    }
+
     public void DeckInfoLoad(List<Card> allCard)
     {
         // 비어있을 경우 덱에 새로 로드
@@ -80,7 +89,7 @@ public class OtherBattleDeckManager : MonoBehaviour, IPointerEnterHandler, IPoin
         // 일괄 비활성화
         foreach (var item in deckCards)
             item.gameObject.SetActive(false);
-        Debug.Log(deckCards.Count);
+
         foreach (var item in deckCards)
         {
             item.rect.localScale = Vector3.one * INVEN_CARD_SCALE;

@@ -56,6 +56,12 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private Vector3 beforeLocalPos;
     private Quaternion beforeLocalRotate;
 
+    private void Awake()
+    {
+        for (int i = 0; i < CARD_MAX_UPGRADE_COUNT; i++)
+            Instantiate(starImage, starSlot.transform).gameObject.SetActive(false);
+    }
+
     private void OnEnable()
     {
         if (cardData == null) return;
@@ -69,8 +75,14 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         string descriptionText 
             = cardData.GetDescription(ResourceManager.Instance.EffectData, user);
 
-        for(int i = 0; i< cardData.CurrentUpgradeLv; i++)
-            Instantiate(starImage, starSlot.transform).gameObject.SetActive(true);
+        for (int i = 0; i < starSlot.transform.childCount; i++)
+            starSlot.transform.GetChild(i).gameObject.SetActive(false);
+
+        for (int i = 0; i< cardData.CurrentUpgradeLv; i++)
+        {
+            starSlot.transform.GetChild(i).gameObject.SetActive(true);
+        }
+            
         
         description.text = descriptionText;
         nameText.text = name;
@@ -80,9 +92,6 @@ public class CardData : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         typeIcon.sprite = typeIconSprite[typeInt];
         if(ResourceManager.Instance.CardImageData.TryGetValue(cardData.Id,out Sprite sp))
             itemImage.sprite = sp;
-
-        for(int i = starSlot.transform.childCount - 1; i >= cardData.CurrentUpgradeLv; i--)
-            starSlot.transform.GetChild(i).gameObject.SetActive(false);
     }
 
     public void Init(Card cardData)

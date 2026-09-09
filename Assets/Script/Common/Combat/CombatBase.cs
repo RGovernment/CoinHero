@@ -74,7 +74,7 @@ public abstract class CombatBase : MonoBehaviour, ICombat
     {
         int coinVal = ResourceManager.Instance.GetCardData(card.Id).FinalCoin(Character);
 
-        return card.Value + coinVal;
+        return card.FinalValue(Character) + coinVal;
     }
 
     protected virtual void DamageSkinSpawn(int damage, Character chara)

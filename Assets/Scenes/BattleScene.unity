@@ -156,7 +156,7 @@ MonoBehaviour:
   goldText: {fileID: 1918202279}
   cardBtn: {fileID: 1792691845}
   cardText: {fileID: 1723367274}
-  giveUpBtn: {fileID: 1575912615}
+  giveUpBtn: {fileID: 615606433}
   rewardCompleteBtn: {fileID: 1575912615}
   cardLayout: {fileID: 462894346}
   cardPrefab: {fileID: 2054587120764609412, guid: 4608168f327af8544b505d93dd4954d3, type: 3}

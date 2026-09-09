@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using static Enums;
+using static Constants;
 
 [Serializable]
 public class Card
@@ -147,8 +148,6 @@ public class Card
             }
         }
         
-
-
         return CoinPoint + result;
     }
 
@@ -169,10 +168,7 @@ public class Card
             }
         }
 
-
-        // 추후 Contants로 이관
-        int MAX_COIN = 5;
-        return Mathf.Min(Coin + result, MAX_COIN);
+        return Mathf.Min(Coin + result, COIN_NAX_COUNT);
     }
 
     public string GetDescription(Dictionary<int, StatusEffectData> list, Character user)

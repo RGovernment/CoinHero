@@ -11,11 +11,11 @@
     "UpgradeData": [
       {
         "statType": "Value",
-        "value": 2
+        "value": 1
       },
       {
         "statType": "Value",
-        "value": 3
+        "value": 2
       },
       {
         "statType": "CoinPoint",
@@ -31,7 +31,7 @@
     "Type": "Weapon",
     "Value": 2,
     "Coin": 1,
-    "CoinPoint": 6,
+    "CoinPoint": 5,
     "CurrentUpgradeLv": 0,
     "MaxUpgradeLv": 3,
     "UpgradeData": [
@@ -145,7 +145,7 @@
     "Name": "레이피어",
     "Id": 1005,
     "Type": "Weapon",
-    "Value": 4,
+    "Value": 2,
     "Coin": 3,
     "CoinPoint": 1,
     "CurrentUpgradeLv": 0,
@@ -203,9 +203,9 @@
     "Name": "마법 방패",
     "Id": 2001,
     "Type": "Armor",
-    "Value": 1,
+    "Value": 2,
     "Coin": 3,
-    "CoinPoint": 3,
+    "CoinPoint": 2,
     "CurrentUpgradeLv": 0,
     "MaxUpgradeLv": 3,
     "UpgradeData": [

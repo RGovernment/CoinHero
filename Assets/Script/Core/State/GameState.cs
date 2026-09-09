@@ -10,10 +10,6 @@ public class GameState
     public bool IsBattle;
     public List<Enemy> nextRoundEnemies;
 
-    /*public MapGraph mapStatus;
-
-    public MapNode currentMapNode;*/
-
     // ╦й ╩Себ
     public MapGraphData mapStatus;
 

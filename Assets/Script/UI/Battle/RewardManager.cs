@@ -203,7 +203,7 @@ public class RewardManager : MonoBehaviour
     private async UniTask CardSelect(CardData card)
     {
         List<Card> cardList = GameManager.Instance.state.playerData.CardList;
-        
+        giveUpBtn.interactable = false;
         int index = cardList.FindIndex(x => x.Id == card.cardData.Id);
         card.canvasGroup.interactable = false;
         float cardUpgradeTime = CARD_UPGRADE_ANIMATION_TIME;

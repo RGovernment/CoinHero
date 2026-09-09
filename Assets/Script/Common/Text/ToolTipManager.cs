@@ -1,11 +1,12 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using SF = UnityEngine.SerializeField;
 public class ToolTipManager : MonoBehaviour
 {
     public static ToolTipManager Instance { get; private set;  }
-
+    [SF] private Canvas toolTipCanvas;
     [SF] private RectTransform toolTipRect;
     [SF] private RectTransform backgroundRect;
     [SF] private TextMeshProUGUI nameText;
@@ -31,12 +32,35 @@ public class ToolTipManager : MonoBehaviour
     {
         HyperLink.OnLinkClick -= BuffEndDebuffClick;
         HyperLink.OnLinkClick += BuffEndDebuffClick;
+        SceneManager.activeSceneChanged += CameraRegister;
     }
 
     private void OnDisable()
     {
         HyperLink.OnLinkClick -= BuffEndDebuffClick;
+        SceneManager.activeSceneChanged -= CameraRegister;
     }
+
+    private void Start()
+    {
+        toolTipCanvas.worldCamera = Camera.main;
+    }
+
+    private void CameraRegister(Scene before, Scene now)
+    {
+        toolTipCanvas.worldCamera = Camera.main;
+    }
+
+    /*public void CallInfoToolTip(RectTransform transform, string text)
+    {
+        // 마우스 호버용 툴팁 호출
+    }
+    
+    public void CloseInfoToolTip(RectTransform transform, string text)
+    {
+        // 마우스 호버용 툴팁 제거
+    }
+     */
 
     public void BuffEndDebuffClick(RectTransform transform, string id)
     {

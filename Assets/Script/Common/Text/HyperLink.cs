@@ -27,5 +27,16 @@ public class HyperLink : MonoBehaviour, IPointerClickHandler
 
             OnLinkClick?.Invoke(clickedRect, linkId);
         }
+        else
+        {
+            if (transform.parent != null)
+            {
+                ExecuteEvents.ExecuteHierarchy(
+                    transform.parent.gameObject,
+                    eventData,
+                    ExecuteEvents.pointerClickHandler
+                );
+            }
+        }
     }
 }

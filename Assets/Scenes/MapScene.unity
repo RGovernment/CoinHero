@@ -711,11 +711,11 @@ MonoBehaviour:
   mapWidth: 3
   mapConfigs:
   - mapType: 0
-    weight: 60
+    weight: 55
     minFloor: 0
     allowConsecutive: 1
   - mapType: 2
-    weight: 15
+    weight: 20
     minFloor: 2
     allowConsecutive: 0
   - mapType: 3

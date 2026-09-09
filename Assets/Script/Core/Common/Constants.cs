@@ -81,6 +81,7 @@ public static class Constants
     public const float CARD_DEFAULT_EXPAND_SCALE = 1.1f;
     public const float STAR_DEFAULT_EXPAND_SCALE = 3f;
     public const int CARD_MAX_UPGRADE_COUNT = 5;
+    public const int COIN_NAX_COUNT = 5;
 
     //인벤토리 관련
     public const float INVEN_CARD_SCALE = 0.85f;

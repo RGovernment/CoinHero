@@ -146,9 +146,9 @@ public class RewardManager : MonoBehaviour
     {
         cardBtn.interactable = false;
         cardText.alpha = cardBtn.colors.disabledColor.a;
-        goldBtn.onClick.RemoveAllListeners();
         CardPanel.alpha = 0;
-
+        rewardCompleteCount++;
+        
         List<Card> cardList = ResourceManager.Instance.CardData.Values.ToList().Shuffle();
         for (int i = 0; i < num; i++)
         {
@@ -161,9 +161,6 @@ public class RewardManager : MonoBehaviour
         CardPanel.DOFade(ONE, DEFAULT_FADE_TIME);
 
         // 지금은 랜덤, 나중에 카드 희귀도를 도입할 경우 희귀도별 가중치를 구분할 것
-        
-        
-
     }
 
     /// <summary>
@@ -238,6 +235,7 @@ public class RewardManager : MonoBehaviour
                         Vector3.one, cardUpgradeTime)
                     ).Play().ToUniTask();
                 // 골드 획득 연출 추가
+                OnRewardBtnClick?.Invoke();
                 return;
             }
 
@@ -302,9 +300,8 @@ public class RewardManager : MonoBehaviour
         CardPanel.gameObject.SetActive(false);
 
         card.rewardAndShopBtn.onClick.RemoveAllListeners();
-        cardBtn.interactable = false;
+        giveUpBtn.interactable = false;
 
-        rewardCompleteCount++;
         OnRewardBtnClick?.Invoke();
     }
 
@@ -315,7 +312,7 @@ public class RewardManager : MonoBehaviour
     {
         CardPanel.DOFade(ZERO, DEFAULT_FADE_TIME);
         CardPanel.gameObject.SetActive(false);
-        rewardCompleteCount++;
+        OnRewardBtnClick?.Invoke();
     }
 
     public void RewardCompleteCheck()

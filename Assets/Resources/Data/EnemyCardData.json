@@ -103,9 +103,9 @@
     "Name": "누군가의 방패",
     "Id": 6001,
     "Type": "Armor",
-    "Value": 3,
-    "Coin": 1,
-    "CoinPoint": 3,
+    "Value": 2,
+    "Coin": 2,
+    "CoinPoint": 2,
     "CurrentUpgradeLv": 0,
     "MaxUpgradeLv": 0,
     "UpgradeData": [

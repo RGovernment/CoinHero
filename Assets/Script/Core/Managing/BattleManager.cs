@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static Constants;
 using static Enums;
 
@@ -368,6 +369,12 @@ public class BattleManager : MonoBehaviour
             EndPanel.alpha = ZERO;
             EndPanel.gameObject.SetActive(true);
             await EndPanel.DOFade(ONE, DEFAULT_FADE_TIME);
+
+            SaveManager.Instance.DeleteSave();
+            
+            GameManager.Instance.nowScene = SceneType.Title;
+
+            SceneManager.LoadScene((int)SceneType.Loading);
         }
     }
 

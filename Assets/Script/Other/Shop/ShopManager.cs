@@ -217,6 +217,7 @@ public class ShopManager : MonoBehaviour
         fadeCanvas.gameObject.SetActive(true);
         await fadeCanvas.DOFade(ONE, DEFAULT_FADE_TIME).ToUniTask();
 
-        SceneManager.LoadScene((int)SceneType.Map);
+        GameManager.Instance.nextScene = SceneType.Map;
+        SceneManager.LoadScene((int)SceneType.Loading);
     }
 }

@@ -252,6 +252,12 @@ public class MapCreater : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 노드 위치를 배정하는 함수
+    /// </summary>
+    /// <param name="floor"></param>
+    /// <param name="targetNode"></param>
+    /// <returns></returns>
     public int GetSlotForNode(List<MapNode> floor, MapNode targetNode)
     {
         int index = floor.IndexOf(targetNode);
@@ -280,11 +286,11 @@ public class MapCreater : MonoBehaviour
             ).ToList();
         }
 
-        // 2. 가중치 합산
+        // 가중치 합산
         int totalWeight = validConfigs.Sum(config => config.weight);
         int randomValue = Random.Range(0, totalWeight);
 
-        // 3. 가중치 기반 랜덤 선택
+        // 가중치 기반 랜덤 선택
         int currentSum = 0;
         foreach (var config in validConfigs)
         {

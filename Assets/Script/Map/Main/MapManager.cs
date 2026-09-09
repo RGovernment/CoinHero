@@ -309,8 +309,8 @@ public class MapManager : MonoBehaviour
         }
 
         await fadeCanvas.DOFade(ONE, DEFAULT_FADE_TIME);
-
-        SceneManager.LoadScene((int)loadScene);
+        GameManager.Instance.nextScene = loadScene;
+        SceneManager.LoadScene((int)SceneType.Loading);
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using ScrollBGTest;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -17,6 +18,10 @@ public class TitleManager : MonoBehaviour
     [SF] private Button closeBtn;
     [SF] private CanvasGroup titlePanel;
 
+    [SF] private ScrollBackgroundCtrl scroller;
+
+    [SF] private float scrollSpeed;
+
     private void Start()
     {
         titlePanel.alpha = ZERO;
@@ -33,6 +38,11 @@ public class TitleManager : MonoBehaviour
             float alpha = continueBtn.colors.disabledColor.a;
             continueBtnText.alpha = alpha;
         }
+    }
+
+    private void Update()
+    {
+        BackgroundScrolling();
     }
 
     public void StartGame()
@@ -96,5 +106,10 @@ public class TitleManager : MonoBehaviour
 #else
          Application.Quit();
 #endif
+    }
+
+    public void BackgroundScrolling()
+    {
+        scroller.MoveValue += scrollSpeed * Time.deltaTime;
     }
 }

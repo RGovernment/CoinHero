@@ -3003,7 +3003,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -1224127783
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &746221357
@@ -5054,6 +5054,79 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1260328684}
   m_CullTransparentMesh: 1
+--- !u!1001 &1292931813
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -14.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581870, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581871, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: MoveValue
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581871, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: SkyScrollSpeed
+      value: -0.003
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868303119862581872, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+      propertyPath: m_Name
+      value: MysteriousForest
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
 --- !u!1 &1361305313
 GameObject:
   m_ObjectHideFlags: 0
@@ -5845,6 +5918,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1711041981 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8868303119862581871, guid: e1dc5084fdff5b741b131db03a854c26, type: 3}
+  m_PrefabInstance: {fileID: 1292931813}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 897647232a538864caa4944878fc816b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1713946631
 GameObject:
   m_ObjectHideFlags: 0
@@ -6081,7 +6165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.9411765}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6586,6 +6670,8 @@ MonoBehaviour:
   continueBtnText: {fileID: 846774495}
   closeBtn: {fileID: 520043485}
   titlePanel: {fileID: 1195976949}
+  scroller: {fileID: 1711041981}
+  scrollSpeed: 0.015
 --- !u!4 &2115541968
 Transform:
   m_ObjectHideFlags: 0
@@ -6605,6 +6691,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1292931813}
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 815646105}

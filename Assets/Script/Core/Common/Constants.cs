@@ -50,7 +50,7 @@ public static class Constants
     public const float MOVE_TIMER = 0.8f;
 
     // 패 버릴 때 필요한 상수
-    public static float HAND_DROP_JUMP_POWER = 30f;
+    public const float HAND_DROP_JUMP_POWER = 30f;
     public const float HAND_DROP_TURN_TIME = 0.2f;
     public const float HAND_DROP_TIME = 0.15f;
     public const float HAND_DROP_SCALE = 0.3f;

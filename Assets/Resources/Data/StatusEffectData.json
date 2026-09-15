@@ -97,5 +97,15 @@
     "Trigger": "OnPlay",
     "Zone": "Slot",
     "Target": "TargetEnemy"
+  },
+  {
+    "Name": "버프 이름",
+    "Id": "999",
+    "Description": "해당 효과의 설명",
+    "Type": "Tutorial",
+    "Trigger": "OnPlay",
+    "Zone": "Slot",
+    "Target": "TargetEnemy"
   }
+
 ]

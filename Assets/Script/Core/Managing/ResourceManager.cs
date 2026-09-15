@@ -1,11 +1,11 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using UnityEngine;
 using static Constants;
 using static Enums;
-using System.Linq;
-using Newtonsoft.Json.Linq;
 
 public class ResourceManager : MonoBehaviour
 {
@@ -67,48 +67,130 @@ public class ResourceManager : MonoBehaviour
     /// </summary>
     public void ResourceLoad()
     {
-        // 플레이어 카드 및 기본 효과 데이터 로드
-        string playerCardJson 
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + PLAYER_CARD_DATA).text;
-        string enemyCardJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + ENEMY_CARD_DATA).text;
-        string statusEffectJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + STATUS_EFFECT_DATA).text;
-        string enemyBossJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{BOSS}").text;
-        string enemyZombieJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{ZOMBIE}").text;
-        string enemyEliteZombieJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{ZOMBIE}_{ELITE}").text;
-        string enemySkeletonJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{SKELETON}").text;
-        string enemyEliteSkeletonJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{SKELETON}_{ELITE}").text;
-        string playerJson
-            = Resources.Load<TextAsset>(ASSET_DATA_PATH + PLAYER_DATA).text;
+        string playerCardJson = "", enemyCardJson = "", statusEffectJson = "",
+               enemyBossJson = "", enemyZombieJson = "", enemyEliteZombieJson = "",
+               enemySkeletonJson = "", enemyEliteSkeletonJson = "", playerJson = "";
 
-        List<Card> cardList 
-            = JsonConvert.DeserializeObject<List<Card>>(playerCardJson);
-        List<Card> enemyCardList
-            = JsonConvert.DeserializeObject<List<Card>>(enemyCardJson);
-        List<StatusEffectData> effectList 
-            = JsonConvert.DeserializeObject<List<StatusEffectData>>(statusEffectJson);
+        try
+        {
+            playerCardJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + PLAYER_CARD_DATA).text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 플레이어 카드 데이터 파일 로드 실패: {e.Message}");
+        }
 
-        PlayerData = JsonConvert.DeserializeObject<List<Player>>(playerJson);
-        EnemyZombieData = JsonConvert.DeserializeObject<List<Enemy>>(enemyZombieJson);
-        EnemyEliteZombieData = JsonConvert.DeserializeObject<List<Enemy>>(enemyEliteZombieJson);
-        EnemySkeletonData = JsonConvert.DeserializeObject<List<Enemy>>(enemySkeletonJson);
-        EnemyEliteSkeletonData = JsonConvert.DeserializeObject<List<Enemy>>(enemyEliteSkeletonJson);
+        try
+        {
+            enemyCardJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + ENEMY_CARD_DATA).text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 적 카드 데이터 파일 로드 실패: {e.Message}");
+        }
 
-        EnemyBossData = JsonConvert.DeserializeObject<List<Enemy>>(enemyBossJson);
-        CardData = cardList.ToDictionary(x => x.Id);
-        EnemyCardData = enemyCardList.ToDictionary(x => x.Id);
-        EffectData = effectList.ToDictionary(x => x.Id);
-        EffectDataByType = effectList.ToDictionary(x => x.Type);
+        try
+        {
+            statusEffectJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + STATUS_EFFECT_DATA).text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 상태 이상 데이터 파일 로드 실패: {e.Message}");
+        }
+
+        try
+        {
+            enemyBossJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{BOSS}").text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 보스 데이터 파일 로드 실패: {e.Message}");
+        }
+
+        try
+        {
+            enemyZombieJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{ZOMBIE}").text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 좀비 데이터 파일 로드 실패: {e.Message}");
+        }
+
+        try
+        {
+            enemyEliteZombieJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{ZOMBIE}_{ELITE}").text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 엘리트 좀비 데이터 파일 로드 실패: {e.Message}");
+        }
+
+        try
+        {
+            enemySkeletonJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{SKELETON}").text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 스켈레톤 데이터 파일 로드 실패: {e.Message}");
+        }
+
+        try
+        {
+            enemyEliteSkeletonJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + $"{ENEMY_DATA}_{SKELETON}_{ELITE}").text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 엘리트 스켈레톤 데이터 파일 로드 실패: {e.Message}");
+        }
+
+        try
+        {
+            playerJson = Resources.Load<TextAsset>(ASSET_DATA_PATH + PLAYER_DATA).text;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DataLoad] 플레이어 스탯 데이터 파일 로드 실패: {e.Message}");
+        }
+
+        try
+        {
+            // 리스트 변환
+            List<Card> cardList = JsonConvert.DeserializeObject<List<Card>>(playerCardJson);
+            List<Card> enemyCardList = JsonConvert.DeserializeObject<List<Card>>(enemyCardJson);
+            List<StatusEffectData> effectList = JsonConvert.DeserializeObject<List<StatusEffectData>>(statusEffectJson);
+
+            PlayerData = JsonConvert.DeserializeObject<List<Player>>(playerJson);
+            EnemyZombieData = JsonConvert.DeserializeObject<List<Enemy>>(enemyZombieJson);
+            EnemyEliteZombieData = JsonConvert.DeserializeObject<List<Enemy>>(enemyEliteZombieJson);
+            EnemySkeletonData = JsonConvert.DeserializeObject<List<Enemy>>(enemySkeletonJson);
+            EnemyEliteSkeletonData = JsonConvert.DeserializeObject<List<Enemy>>(enemyEliteSkeletonJson);
+            EnemyBossData = JsonConvert.DeserializeObject<List<Enemy>>(enemyBossJson);
+
+            // 딕셔너리 가공
+            CardData = cardList?.ToDictionary(x => x.Id) ?? new Dictionary<int, Card>();
+            EnemyCardData = enemyCardList?.ToDictionary(x => x.Id) ?? new Dictionary<int, Card>();
+            EffectData = effectList?.ToDictionary(x => x.Id) ?? new Dictionary<int, StatusEffectData>();
+            EffectDataByType = effectList?.ToDictionary(x => x.Type) ?? new Dictionary<EffectType, StatusEffectData>();
+        }
+        catch (JsonException jsonEx)
+        {
+            // JSON 문법(쉼표 누락, 중괄호 미닫힘 등) 오류 발생 시
+            Debug.LogError($"[JSON Parsing] JSON 데이터 파싱 중 문법 오류가 발생했습니다: {jsonEx.Message}");
+        }
+        catch (Exception e)
+        {
+            // 이외 런타임 에러
+            Debug.LogError($"[DataProcessing] 데이터 변환 및 딕셔너리 구성 중 오류 발생: {e.Message}");
+        }
+
     }
 
     private void CardImageLoad()
     {
+        try
+        {
+
+        
         foreach (var item in CardData)
         {
             int id = item.Value.Id;
@@ -121,6 +203,11 @@ public class ResourceManager : MonoBehaviour
             int id = item.Value.Id;
             Sprite sprite = Resources.Load<Sprite>(CARD_IMAGE_PATH + $"Card_{id}");
             CardImageData[id] = sprite;
+        }
+        }
+        catch
+        {
+            Debug.LogError("카드 데이터에 문제가 있습니다.");
         }
     }
 

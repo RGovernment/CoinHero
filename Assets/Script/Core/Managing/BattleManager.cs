@@ -31,6 +31,7 @@ public class BattleManager : MonoBehaviour
 
     [Header("패널 관련")]
     [SF] private RewardManager rewardManager;
+    [SF] private Canvas tutorialCanvas;
     [SF] private CanvasGroup StartPanel;
     [SF] private CanvasGroup EndPanel;
 
@@ -87,6 +88,9 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
+        if (!GameManager.Instance.state.IsTutorialCompleted &&
+            !GameManager.Instance.optionData.isTutorialSkip) 
+            tutorialCanvas.gameObject.SetActive(true);
         StartPanel.alpha = ONE;
         StartPanel.gameObject.SetActive(true);
         state = new();
@@ -372,7 +376,8 @@ public class BattleManager : MonoBehaviour
 
             SaveManager.Instance.DeleteSave();
             
-            GameManager.Instance.nowScene = SceneType.Title;
+            
+            GameManager.Instance.nextScene = SceneType.Title;
 
             SceneManager.LoadScene((int)SceneType.Loading);
         }

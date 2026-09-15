@@ -48,9 +48,10 @@ public static class Constants
     public const int COIN_NEXT_TIMER = 300;
     public const int BATTLE_END_DELAY = 1000;
     public const float MOVE_TIMER = 0.8f;
+    public const float DELAY_TIMEOUT_TIMER = 5;
 
     // 패 버릴 때 필요한 상수
-    public static float HAND_DROP_JUMP_POWER = 30f;
+    public const float HAND_DROP_JUMP_POWER = 30f;
     public const float HAND_DROP_TURN_TIME = 0.2f;
     public const float HAND_DROP_TIME = 0.15f;
     public const float HAND_DROP_SCALE = 0.3f;

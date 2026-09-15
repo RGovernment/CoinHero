@@ -100,7 +100,8 @@ public static class Enums
     public enum EffectType { ValueUp, ValueDown, 
         InstantHeal, InstantDamage, 
         ExtraSlot, Burn, ItemCounter,
-        AttackUpEffect, AttackDownEffect, Crack, Silence
+        AttackUpEffect, AttackDownEffect, Crack, Silence,
+        Tutorial
     }
 
     public enum SoundMixerType

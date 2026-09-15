@@ -2,8 +2,10 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using static Constants;
 using static Enums;
@@ -23,14 +25,17 @@ public class OptionManager : MonoBehaviour
     [SF] private TextMeshProUGUI systemText;
     [SF] private TextMeshProUGUI gameText;
     [SF] private Button closeBtn;
+    [SF] private Button titleBtn;
     [SF] private Button gameExitBtn;
-
-
+    [SF] private Toggle tutorialToggle;
+    private PlayerUIAction playerUIInput;
+    private bool isOptionFade;
     private void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        playerUIInput = new();
     }
 
     private void Start()
@@ -44,6 +49,29 @@ public class OptionManager : MonoBehaviour
             .AddListener(x => { SetMasterVolume(SoundMixerType.Game, x); });
         SystemSlider.onValueChanged
             .AddListener(x => { SetMasterVolume(SoundMixerType.System, x); });
+    }
+
+    private void OnEnable()
+    {
+        playerUIInput.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerUIInput.Disable();
+    }
+
+    private void Update()
+    {
+        if (playerUIInput.UI.Option.WasPressedThisFrame() && 
+            GameManager.Instance.nowScene != SceneType.Title &&
+            GameManager.Instance.nowScene != SceneType.Loading)
+        {
+            if (!OptionGroup.gameObject.activeSelf)
+                OptionPanelOpen();
+            else
+                OptionPanelClose();
+        }
     }
 
     private void SoundSliderSetting()
@@ -105,28 +133,45 @@ public class OptionManager : MonoBehaviour
 
     public void OptionPanelOpen()
     {
+        if (isOptionFade) return;
+        isOptionFade = true;
         OptionGroup.alpha = 0;
+
+        if(GameManager.Instance.nowScene == SceneType.Title)
+        {
+            gameExitBtn.gameObject.SetActive(false);
+            titleBtn.gameObject.SetActive(false);
+        }
+        else
+        {
+            gameExitBtn.gameObject.SetActive(true);
+            titleBtn.gameObject.SetActive(true);
+        }
+
         OptionGroup.gameObject.SetActive(true);
-        OptionGroup.DOFade(ONE, DEFAULT_FADE_TIME);
+        OptionGroup.DOFade(ONE, DEFAULT_FADE_TIME).OnComplete(() => isOptionFade = false);
+        if (GameManager.Instance.optionData.isTutorialSkip) tutorialToggle.isOn = true;
+        else tutorialToggle.isOn = false;
     }
 
 
     public void OptionPanelClose()
     {
+        if (isOptionFade) return;
+        isOptionFade = true;
         
-        Dictionary<SoundMixerType, float> data = new()
-        {
-            [SoundMixerType.Master] = SoundManager.Instance.GetMixerVolume(SoundMixerType.Master),
-            [SoundMixerType.System] = SoundManager.Instance.GetMixerVolume(SoundMixerType.System),
-            [SoundMixerType.Game] = SoundManager.Instance.GetMixerVolume(SoundMixerType.Game),
-            [SoundMixerType.BGM] = SoundManager.Instance.GetMixerVolume(SoundMixerType.BGM)
-        };
-        GameManager.Instance.optionData.SoundData = data;
+        SaveOption();
 
         OptionGroup.DOFade(ZERO, DEFAULT_FADE_TIME)
-            .OnComplete(() => OptionGroup.gameObject.SetActive(false));
+            .OnComplete(() => { OptionGroup.gameObject.SetActive(false); 
+                isOptionFade = false; });
         
         SaveManager.Instance.OptionSave().Forget();
+    }
+
+    public void TutorialSkipBtn()
+    {
+        GameManager.Instance.optionData.isTutorialSkip = tutorialToggle.isOn;
     }
 
     public void GameExit()
@@ -134,7 +179,42 @@ public class OptionManager : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
-         Application.Quit();
+        SaveOptionData().Forget(); 
 #endif
+
+    }
+
+    public void SaveOption()
+    {
+        Dictionary<SoundMixerType, float> data = new()
+        {
+            [SoundMixerType.Master] = SoundManager.Instance.GetMixerVolume(SoundMixerType.Master),
+            [SoundMixerType.System] = SoundManager.Instance.GetMixerVolume(SoundMixerType.System),
+            [SoundMixerType.Game] = SoundManager.Instance.GetMixerVolume(SoundMixerType.Game),
+            [SoundMixerType.BGM] = SoundManager.Instance.GetMixerVolume(SoundMixerType.BGM)
+        };
+
+        GameManager.Instance.optionData.SoundData = data;
+    }
+
+    public async UniTask SaveOptionData()
+    {
+        SaveOption();
+        await SaveManager.Instance.OptionSave();
+        Application.Quit();
+    }
+
+    public void GoToTitleSceneBtn()
+    {
+        TitleScene().Forget();
+    }
+
+    public async UniTask TitleScene()
+    {
+        SaveOption();
+        OptionGroup.gameObject.SetActive(false);
+        await SaveManager.Instance.OptionSave();
+        GameManager.Instance.nextScene = SceneType.Title;
+        SceneManager.LoadScene((int)SceneType.Loading);
     }
 }

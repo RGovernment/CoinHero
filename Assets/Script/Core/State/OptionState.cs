@@ -4,4 +4,5 @@ using static Enums;
 public class OptionState
 {
     public Dictionary<SoundMixerType, float> SoundData;
+    public bool isTutorialSkip;
 }

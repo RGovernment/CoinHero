@@ -84,7 +84,8 @@ public class GameManager : MonoBehaviour
     {
         optionData = new()
         {
-            SoundData = new(newState.SoundData)
+            SoundData = new(newState.SoundData),
+            isTutorialSkip = newState.isTutorialSkip
         };
     }
 

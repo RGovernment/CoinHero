@@ -88,7 +88,8 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        if (!GameManager.Instance.state.IsTutorialCompleted) 
+        if (!GameManager.Instance.state.IsTutorialCompleted &&
+            !GameManager.Instance.optionData.isTutorialSkip) 
             tutorialCanvas.gameObject.SetActive(true);
         StartPanel.alpha = ONE;
         StartPanel.gameObject.SetActive(true);

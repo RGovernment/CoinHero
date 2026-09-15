@@ -375,7 +375,8 @@ public class BattleManager : MonoBehaviour
 
             SaveManager.Instance.DeleteSave();
             
-            GameManager.Instance.nowScene = SceneType.Title;
+            
+            GameManager.Instance.nextScene = SceneType.Title;
 
             SceneManager.LoadScene((int)SceneType.Loading);
         }

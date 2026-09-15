@@ -143,15 +143,29 @@ public class BattlePhaseState : IState
 
                 player.CoinUI.CoinFlip(player.Character);
                 enemy.CoinUI.CoinFlip(enemy.Character);
-
-                await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
+                try
+                {
+                    await UniTask.Delay(COIN_FLIP_TIMER, cancellationToken: cts);
+                }
+                catch
+                {
+                    Debug.LogError("코인 회전 에러");
+                }
+                
                 // 코인 표시
                 for (int i = 0; i < coinCount; i++)
                 {
                     if (i < playerCoins.Length) player.CoinUI.CoinStop(playerCoins[i], player.Character);
                     if (i < enemyCoins.Length) enemy.CoinUI.CoinStop(enemyCoins[i], enemy.Character);
-
-                    await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
+                    try
+                    {
+                        await UniTask.Delay(COIN_NEXT_TIMER, cancellationToken: cts);
+                    }
+                    catch
+                    {
+                        Debug.LogError("코인 정지 에러");
+                    }
+                    
                 }
 
                 int playerResult = playerCard.CalcCoinValue(playerCoins, player.Character);

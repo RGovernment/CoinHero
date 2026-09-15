@@ -32,6 +32,7 @@ public class SceneLoadManager : MonoBehaviour
         charaAnimator.SetBool(_1MoveHash, true);
         loadingBar.fillAmount = ZERO;
         loadingValueText.text = $"{ZERO}%";
+        GameManager.Instance.nowScene = Enums.SceneType.Loading;
     }
 
     private async UniTask LoadSceneAsyncWithDelay()
@@ -45,7 +46,7 @@ public class SceneLoadManager : MonoBehaviour
         // 비동기 씬 로드 시작
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync((int)GameManager.Instance.nextScene);
         asyncLoad.allowSceneActivation = false;
-
+        
         float targetProgress = 0;
         float currentDisplayProgress = 0;
         float elapsed = 0f;
@@ -81,6 +82,7 @@ public class SceneLoadManager : MonoBehaviour
         fade.gameObject.SetActive(true);
 
         await fade.DOFade(1, fadeDuration).ToUniTask();
+        GameManager.Instance.nowScene = GameManager.Instance.nextScene;
         charaAnimator.SetBool("1_Move", false);
         // 씬 활성화
         asyncLoad.allowSceneActivation = true;

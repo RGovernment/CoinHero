@@ -61,8 +61,18 @@ public class SaveManager : MonoBehaviour
         string path = GetSavePath();
         if (!File.Exists(path)) return;
 
-        SaveData data = ReadEncrypted<SaveData>(path);
-        DataReload(data);
+        try
+        {
+            SaveData data = ReadEncrypted<SaveData>(path);
+            DataReload(data);
+        }
+        catch
+        {
+
+            Debug.LogError("세이브 데이터에 문제가 생겨 로드할 수 없습니다.");
+            //이후 경고창 제작 후 경고창 띄울 것
+        }
+        
     }
 
     public async UniTask OptionSave()

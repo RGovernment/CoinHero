@@ -23,6 +23,11 @@ public class DamageSkinSpawner : MonoBehaviour
     {
         string damageStr = damage.ToString();
         sb.Clear();
+        sb.Append("<color=#");
+        sb.Append(ATTACK_COLOR);
+        sb.Append(">");
+        sb.Append("-");
+        sb.Append("</color>");
         for (int i = 0; i < damageStr.Length; i++)
         {
             sb.Append($"<sprite=");
@@ -70,6 +75,12 @@ public class DamageSkinSpawner : MonoBehaviour
     {
         string damageStr = damage.ToString();
         sb.Clear();
+
+        sb.Append("<color=#");
+        sb.Append(HEAL_COLOR);
+        sb.Append(">");
+        sb.Append("-");
+        sb.Append("</color>");
         for (int i = 0; i < damageStr.Length; i++)
         {
             sb.Append($"<sprite=");

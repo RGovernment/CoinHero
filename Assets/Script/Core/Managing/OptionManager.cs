@@ -24,13 +24,14 @@ public class OptionManager : MonoBehaviour
     [SF] private TextMeshProUGUI gameText;
     [SF] private Button closeBtn;
     [SF] private Button gameExitBtn;
-
-
+    private PlayerUIAction playerUIInput;
+    private bool isOptionFade;
     private void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        playerUIInput = new();
     }
 
     private void Start()
@@ -44,6 +45,29 @@ public class OptionManager : MonoBehaviour
             .AddListener(x => { SetMasterVolume(SoundMixerType.Game, x); });
         SystemSlider.onValueChanged
             .AddListener(x => { SetMasterVolume(SoundMixerType.System, x); });
+    }
+
+    private void OnEnable()
+    {
+        playerUIInput.Enable();
+    }
+
+    private void OnDisable()
+    {
+        playerUIInput.Disable();
+    }
+
+    private void Update()
+    {
+        if (playerUIInput.UI.Option.WasPressedThisFrame() && 
+            GameManager.Instance.nowScene != SceneType.Title &&
+            GameManager.Instance.nowScene != SceneType.Loading)
+        {
+            if (!OptionGroup.gameObject.activeSelf)
+                OptionPanelOpen();
+            else
+                OptionPanelClose();
+        }
     }
 
     private void SoundSliderSetting()
@@ -105,15 +129,18 @@ public class OptionManager : MonoBehaviour
 
     public void OptionPanelOpen()
     {
+        if (isOptionFade) return;
+        isOptionFade = true;
         OptionGroup.alpha = 0;
         OptionGroup.gameObject.SetActive(true);
-        OptionGroup.DOFade(ONE, DEFAULT_FADE_TIME);
+        OptionGroup.DOFade(ONE, DEFAULT_FADE_TIME).OnComplete(() => isOptionFade = false);
     }
 
 
     public void OptionPanelClose()
     {
-        
+        if (isOptionFade) return;
+        isOptionFade = true;
         Dictionary<SoundMixerType, float> data = new()
         {
             [SoundMixerType.Master] = SoundManager.Instance.GetMixerVolume(SoundMixerType.Master),
@@ -124,7 +151,8 @@ public class OptionManager : MonoBehaviour
         GameManager.Instance.optionData.SoundData = data;
 
         OptionGroup.DOFade(ZERO, DEFAULT_FADE_TIME)
-            .OnComplete(() => OptionGroup.gameObject.SetActive(false));
+            .OnComplete(() => { OptionGroup.gameObject.SetActive(false); 
+                isOptionFade = false; });
         
         SaveManager.Instance.OptionSave().Forget();
     }
